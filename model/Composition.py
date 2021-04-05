@@ -8,3 +8,11 @@ class Composition:
         self.champions = champions
         assert isinstance(traits, dict)
         self.traits = traits
+
+
+class CompositionGroup:
+    def __init__(self, compositions):
+        assert isinstance(compositions, list)
+        self.compositions = compositions
+
+        self.counter = len(compositions)
