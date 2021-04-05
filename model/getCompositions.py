@@ -92,9 +92,10 @@ def get_compositions(region, players_per_region, games_per_player):
             # create list of champions
             champions   = []
             for unit in participant["units"]:
-                champions.append(Champion(  name    = unit["name"],
-                                            items   = unit["items"],
-                                            tier    = unit["tier"]))
+                champions.append(Champion(  name            = unit["name"],
+                                            items           = unit["items"],
+                                            tier            = unit["tier"],
+                                            character_id    = unit["character_id"]))
 
             # create dictionary with e.g. Vanguard:1 (= Bronze Vanguard)
             trait_dict = {}
