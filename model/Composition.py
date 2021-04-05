@@ -6,5 +6,5 @@ class Composition:
         self.placement = placement
         assert isinstance(champions, list)
         self.champions = champions
-        assert isinstance(traits, list)
+        assert isinstance(traits, dict)
         self.traits = traits
