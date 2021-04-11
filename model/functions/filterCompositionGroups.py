@@ -44,6 +44,28 @@ def filter_composition_groups(composition_groups, filters):
 
     # filter for champions
     #if champion_filter_active:
-        #result_composition_groups = filter_composition_groups_by_champions(composition_groups, filters["champions"])
+        # loop over every composition group
+        # for current_comp_group in composition_groups:
+
+        #     # composition groups can have 1 or more equal composition-traits
+        #     #   => consider only first composition
+        #     current = current_comp_group.compositions[0]
+
+        #     # decides, whether composition is accepted by the filter or not
+        #     eligible = True
+
+        #     # iterate over filter dictionary
+        #     for key in filters["traits"]:
+        #         try:
+        #             # value not equal
+        #             if current.traits[key] != filters["traits"][key]:
+        #                 eligible = False
+        #         # key does not exist
+        #         except KeyError:
+        #             eligible = False
+            
+        #     # append the composition group to result if filters are accepted
+        #     if eligible:
+        #         result_composition_groups.append(current_comp_group)
 
     return result_composition_groups

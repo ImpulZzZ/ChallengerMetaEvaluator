@@ -1,6 +1,7 @@
-from model.functions.getCompositions          import get_compositions
-from model.functions.groupCompositions        import group_compositions_by_traits
-from model.functions.filterCompositionGroups  import filter_composition_groups
+from model.functions.getCompositions            import get_compositions
+from model.functions.groupCompositions          import group_compositions_by_traits
+from model.functions.filterCompositionGroups    import filter_composition_groups
+from model.functions.dissolveCompositionGroups  import dissolve_composition_groups
 
 from view import main_gui               as main_gui
 from view import composition_group_view as composition_group_view
@@ -253,6 +254,16 @@ def run_main_gui():
                     # add the elements into the table
                     current = QTableWidgetItem(str(champion.name))
                     ui.tableWidget.setItem(counter, keycounter, current)
+
+                    # background color depending on champion stars
+                    if champion.tier == 1:
+                        ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
+                    elif champion.tier == 2:
+                        ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
+                    elif champion.tier == 3:
+                        ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
+                    else:
+                        ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
 
                     keycounter = keycounter + 1
 
