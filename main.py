@@ -1,5 +1,5 @@
 from model.functions.getCompositions            import get_compositions
-from model.functions.groupCompositions          import group_compositions_by_traits
+from model.functions.groupCompositions          import group_compositions_by_traits, group_compositions_by_champions
 from model.functions.filterCompositionGroups    import filter_composition_groups
 from model.functions.dissolveCompositionGroups  import dissolve_composition_groups
 
@@ -12,13 +12,17 @@ from PyQt5.QtGui import QColor
 # starts the main gui
 def run_main_gui():
 
-    # initialize composition group fields
-    euw_comps           = []
-    kr_comps            = []
+    euw_composition_groups = {
+        "groups"    : [],
+        "grouped_by": "none",
+        "loaded"    : False
+    }
 
-    # boolean whether or not region data was loaded from api
-    euw_loaded          = False
-    kr_loaded           = False
+    kr_composition_groups = {
+        "groups"    : [],
+        "grouped_by": "none",
+        "loaded"    : False
+    }
 
     # list of current traits possible to choose in filter dropdown menu
     CURRENT_SET_TRAITS = [  "Cultist",
@@ -85,10 +89,26 @@ def run_main_gui():
         ui.tableWidget.setHorizontalHeaderLabels(headers)
 
         if checkboxes["euw"]:
-            considered_regions.update({"euw" : euw_comps})
+            # if composition group is not already grouped by traits, do it
+            if euw_composition_groups["grouped_by"] != "traits":
+                # dissolve current composition group
+                compositions = dissolve_composition_groups(euw_composition_groups["groups"])
+                # and create a new one, grouped by traits
+                euw_composition_groups["groups"]        = group_compositions_by_traits(compositions)
+                euw_composition_groups["grouped_by"]    = "traits"
+
+            considered_regions.update({"euw" : euw_composition_groups["groups"]})
 
         if checkboxes["kr"]:
-            considered_regions.update({"kr" : kr_comps})
+            # if composition group is not already grouped by traits, do it
+            if kr_composition_groups["grouped_by"] != "traits":
+                # dissolve current composition group
+                compositions = dissolve_composition_groups(kr_composition_groups["groups"])
+                # and create a new one, grouped by traits
+                kr_composition_groups["groups"]     = group_compositions_by_traits(compositions)
+                kr_composition_groups["grouped_by"] = "traits"
+
+            considered_regions.update({"kr" : kr_composition_groups["groups"]})
 
         # loop over every considered region
         counter = 0
@@ -164,6 +184,9 @@ def run_main_gui():
 
     #############################################################################
     def champions_button_pressed():
+        nonlocal euw_composition_groups
+        nonlocal kr_composition_groups
+
         # reset table view
         ui.tableWidget.setRowCount(0)
         ui.tableWidget.clearContents()
@@ -197,10 +220,26 @@ def run_main_gui():
         ui.tableWidget.setHorizontalHeaderLabels(headers)
 
         if checkboxes["euw"]:
-            considered_regions.update({"euw" : euw_comps})
+            # if composition group is not already grouped by champions, do it
+            if euw_composition_groups["grouped_by"] != "champions":
+                # dissolve current composition group
+                compositions = dissolve_composition_groups(euw_composition_groups["groups"])
+                # and create a new one, grouped by champions
+                euw_composition_groups["groups"]        = group_compositions_by_champions(compositions)
+                euw_composition_groups["grouped_by"]    = "champions"
+
+            considered_regions.update({"euw" : euw_composition_groups["groups"]})
 
         if checkboxes["kr"]:
-            considered_regions.update({"kr" : kr_comps})
+            # if composition group is not already grouped by champions, do it
+            if kr_composition_groups["grouped_by"] != "champions":
+                # dissolve current composition group
+                compositions = dissolve_composition_groups(kr_composition_groups["groups"])
+                # and create a new one, grouped by champions
+                kr_composition_groups["groups"]     = group_compositions_by_champions(compositions)
+                kr_composition_groups["grouped_by"] = "champions"u
+
+            considered_regions.update({"kr" : kr_composition_groups["groups"]})
 
         # loop over every considered region
         counter = 0
@@ -276,33 +315,38 @@ def run_main_gui():
     #############################################################################
     def load_data_button_pressed():
         # to modify outer variables in inner function
-        nonlocal euw_comps
-        nonlocal kr_comps
-        nonlocal euw_loaded
-        nonlocal kr_loaded
+        nonlocal euw_composition_groups
+        nonlocal kr_composition_groups
 
         # verify which checkboxes are pressed or not pressed
         checkboxes = {  "euw":  ui.euwCheckBox.isChecked(),
                         "kr":   ui.krCheckBox.isChecked()}
 
+        # if no regions are chosen, do nothing
         if not checkboxes["euw"] and not checkboxes["kr"]:
             return
 
-        if checkboxes["euw"] and not euw_loaded:
+        # if euw is checked and not already loaded
+        if checkboxes["euw"] and not euw_composition_groups["loaded"]:
             europe = get_compositions(  region="europe",
                                         games_per_player=4,
                                         players_per_region=5,
                                         current_patch=ui.currentPatchFilter.text())     
 
-            # sort composition group on occurences
+            # sort composition group by traits
             euw_comps_unsorted = group_compositions_by_traits(europe)
             euw_comps_unsorted.sort(key=lambda x: x.counter, reverse=True)
-            euw_comps = sorted(euw_comps_unsorted, key=lambda x: x.counter, reverse=True)
 
-            euw_loaded = True
+            # fill the composition_group dictionary
+            euw_composition_groups["groups"] = sorted(euw_comps_unsorted, key=lambda x: x.counter, reverse=True)
+            euw_composition_groups["grouped_by"] = "traits"
+            euw_composition_groups["loaded"] = True
+
+            # green checkbox to signalize loading is done
             ui.euwCheckBox.setStyleSheet("color: green;")
 
-        if checkboxes["kr"] and not kr_loaded:
+        # if kr is checked and not already loaded
+        if checkboxes["kr"] and not kr_composition_groups["loaded"]:
             korea = get_compositions(   region="korea",
                                         games_per_player=4,
                                         players_per_region=5,
@@ -311,9 +355,13 @@ def run_main_gui():
             # sort composition group on occurences
             kr_comps_unsorted = group_compositions_by_traits(korea)
             kr_comps_unsorted.sort(key=lambda x: x.counter, reverse=True)
-            kr_comps = sorted(kr_comps_unsorted, key=lambda x: x.counter, reverse=True)
 
-            kr_loaded = True
+            # fill the composition_group dictionary
+            kr_composition_groups["groups"] = sorted(kr_comps_unsorted, key=lambda x: x.counter, reverse=True)
+            euw_composition_groups["grouped_by"] = "traits"
+            kr_composition_groups["loaded"] = True
+
+            # green checkbox to signalize loading is done
             ui.krCheckBox.setStyleSheet("color: green;")
 
     #############################################################################
