@@ -1,6 +1,6 @@
-from model.getCompositions          import get_compositions
-from model.groupCompositions        import group_compositions_by_traits
-from model.filterCompositionGroups  import filter_composition_groups
+from model.functions.getCompositions          import get_compositions
+from model.functions.groupCompositions        import group_compositions_by_traits
+from model.functions.filterCompositionGroups  import filter_composition_groups
 
 from view import main_gui               as main_gui
 from view import composition_group_view as composition_group_view
@@ -51,7 +51,7 @@ def run_main_gui():
     #############################################################################
     def traits_button_pressed():
 
-
+        # reset table view
         ui.tableWidget.setRowCount(0)
         ui.tableWidget.clearContents()
 
@@ -89,8 +89,8 @@ def run_main_gui():
         if checkboxes["kr"]:
             considered_regions.update({"kr" : kr_comps})
 
-        counter = 0
         # loop over every considered region
+        counter = 0
         for region in considered_regions:
 
             # initialize filter dictionary with following shape
@@ -121,11 +121,10 @@ def run_main_gui():
             filtered_composition_groups = filter_composition_groups(considered_regions[region], filters)
 
             # loop over compisitiongroups of each region
-            #for composition_group in considered_regions[region]:0
             for composition_group in filtered_composition_groups:
                 
-                # composition groups can have 1 or more equal composition-traits
-                #   => consider only first composition
+                # assert composition groups to be grouped by traits, so entries should be equal
+                #   => consider only first entry
                 element = composition_group.compositions[0]
 
                 # change table size dynamically
@@ -164,7 +163,100 @@ def run_main_gui():
 
     #############################################################################
     def champions_button_pressed():
-        print("Work in Progress")
+        # reset table view
+        ui.tableWidget.setRowCount(0)
+        ui.tableWidget.clearContents()
+
+        # verify which checkboxes are pressed or not pressed
+        checkboxes = {  "euw"       : ui.euwCheckBox.isChecked(),
+                        "kr"        : ui.krCheckBox.isChecked(),
+                        "trait1"    : ui.traitFilterCheckBox1.isChecked(),
+                        "trait2"    : ui.traitFilterCheckBox2.isChecked(),
+                        "trait3"    : ui.traitFilterCheckBox3.isChecked(),
+                        "trait4"    : ui.traitFilterCheckBox4.isChecked(),
+                        "champion1" : ui.championFilterCheckBox1.isChecked(),
+                        "champion2" : ui.championFilterCheckBox2.isChecked(),
+                        "champion3" : ui.championFilterCheckBox3.isChecked(),
+                        "champion4" : ui.championFilterCheckBox4.isChecked()
+                        }
+
+        if not checkboxes["euw"] and not checkboxes["kr"]:
+            return
+
+        considered_regions = {}
+
+        # show maximum of 15 champions per composition
+        COLUMN_COUNT = 15
+        ui.tableWidget.setColumnCount(COLUMN_COUNT)
+
+        headers = ["Occurences", "Champions"]
+        for i in range(2, COLUMN_COUNT):
+            headers.append("")
+            
+        ui.tableWidget.setHorizontalHeaderLabels(headers)
+
+        if checkboxes["euw"]:
+            considered_regions.update({"euw" : euw_comps})
+
+        if checkboxes["kr"]:
+            considered_regions.update({"kr" : kr_comps})
+
+        # loop over every considered region
+        counter = 0
+        for region in considered_regions:
+
+            # initialize filter dictionary with following shape
+            filters={"traits"   : {},
+                    "champions" : {},
+                    "placements": [] 
+                    }
+        
+            # build up filter dictionary by iterating over filter elements
+            if checkboxes["trait1"]:
+                filters["traits"].update({ui.traitFilter1.currentText() : ui.traitFilterSlider1.value()})
+            if checkboxes["trait2"]:
+                filters["traits"].update({ui.traitFilter2.currentText() : ui.traitFilterSlider2.value()})
+            if checkboxes["trait3"]:
+                filters["traits"].update({ui.traitFilter3.currentText() : ui.traitFilterSlider3.value()})
+            if checkboxes["trait4"]:
+                filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
+            if checkboxes["champion1"]:
+                filters["champions"].update({ui.championFilter1.text() : ui.championFilterSlider1.value()})
+            if checkboxes["champion2"]:
+                filters["champions"].update({ui.championFilter2.text() : ui.championFilterSlider2.value()})
+            if checkboxes["champion3"]:
+                filters["champions"].update({ui.championFilter3.text() : ui.championFilterSlider3.value()})
+            if checkboxes["champion4"]:
+                filters["champions"].update({ui.championFilter4.text() : ui.championFilterSlider4.value()})
+
+            # apply possible filters on dataset
+            filtered_composition_groups = filter_composition_groups(considered_regions[region], filters)
+
+            # loop over compisitiongroups of each region
+            for composition_group in filtered_composition_groups:
+                
+                # assert composition groups to be grouped by champions, so entries should be equal
+                #   => only consider first entry
+                element = composition_group.compositions[0]
+
+                # change table size dynamically
+                ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
+
+                # add the counter to table
+                current_counter = QTableWidgetItem(str(composition_group.counter))
+                ui.tableWidget.setItem(counter, 0, current_counter)
+
+                # fill row starting at second index (counter is at first index)
+                keycounter = 1
+
+                for champion in element.champions:
+                    # add the elements into the table
+                    current = QTableWidgetItem(str(champion.name))
+                    ui.tableWidget.setItem(counter, keycounter, current)
+
+                    keycounter = keycounter + 1
+
+                counter = counter + 1
 
     #############################################################################
     def items_button_pressed():

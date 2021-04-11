@@ -10,11 +10,3 @@ class Composition:
         self.traits = traits
         assert isinstance(patch, str)
         self.patch = patch
-
-
-class CompositionGroup:
-    def __init__(self, compositions):
-        assert isinstance(compositions, list)
-        self.compositions = compositions
-
-        self.counter = len(compositions)

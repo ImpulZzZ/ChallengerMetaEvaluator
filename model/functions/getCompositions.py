@@ -1,5 +1,5 @@
-from model.Composition import Composition
-from model.Champion import Champion
+from model.classes.Composition  import Composition
+from model.classes.Champion     import Champion
 
 import requests
 import re
@@ -98,12 +98,17 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                 continue      
 
             # create list of champions
-            champions   = []
+            champions_unsorted   = []
             for unit in participant["units"]:
-                champions.append(Champion(  name            = unit["name"],
+                champions_unsorted.append(Champion(  name            = unit["character_id"],
                                             items           = unit["items"],
                                             tier            = unit["tier"],
-                                            character_id    = unit["character_id"]))
+                                            rarity          = unit["rarity"]))
+
+            # sort champions on stars (=tiers)
+            champions_unsorted.sort(key=lambda x: x.tier, reverse=True)
+            champions = sorted(champions_unsorted, key=lambda x: x.tier, reverse=True)
+
 
             # create dictionary with e.g. Vanguard:1 (= Bronze Vanguard)
             trait_dict = {}

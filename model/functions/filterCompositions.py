@@ -1,4 +1,4 @@
-from model.Composition import CompositionGroup
+from model.classes.CompositionGroup import CompositionGroup
 
 def filter_compositions_by_traits(compositions, traits):
 
@@ -35,7 +35,7 @@ def filter_compositions_by_placements(compositions, placements):
         eligible = True
 
         for champion in current.placements:
-            if champion.character_id not in placements:
+            if champion.name not in placements:
                 eligible = False
 
         # append the composition to result if filters are accepted
@@ -55,7 +55,7 @@ def filter_compositions_by_champions(compositions, champions):
         eligible = True
 
         for champion in current.champions:
-            if champion.character_id not in champions:
+            if champion.name not in champions:
                 eligible = False
 
         # append the composition to result if filters are accepted
