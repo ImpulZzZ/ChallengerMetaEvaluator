@@ -22,7 +22,7 @@ def request_matches_by_puuid(region, api_key, base_url, parameter_url, count):
     url = "https://" + region + "." + base_url + parameter_url + "?count=" + str(count) + "&api_key=" + api_key
     return requests.get(url).json()
     
-def get_compositions(region, players_per_region, games_per_player):
+def get_compositions(region, players_per_region, games_per_player, current_patch):
 
     # initialize API Request variables
     api_key     = open("apikey.txt", "r").read()
@@ -87,6 +87,10 @@ def get_compositions(region, players_per_region, games_per_player):
 
         participants    = api_result["info"]["participants"]
         patch = re.search("<Releases/(.*)>", api_result["info"]["game_version"]).group(1)
+
+        # only consider current patch
+        if patch != current_patch:
+            continue
 
         for participant in participants:
             # only consider top4

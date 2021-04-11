@@ -188,18 +188,28 @@ def run_main_gui():
         if checkboxes["euw"] and not euw_loaded:
             europe = get_compositions(  region="europe",
                                         games_per_player=4,
-                                        players_per_region=5)     
+                                        players_per_region=5,
+                                        current_patch=ui.currentPatchFilter.text())     
 
-            euw_comps = group_compositions_by_traits(europe)
+            # sort composition group on occurences
+            euw_comps_unsorted = group_compositions_by_traits(europe)
+            euw_comps_unsorted.sort(key=lambda x: x.counter, reverse=True)
+            euw_comps = sorted(euw_comps_unsorted, key=lambda x: x.counter, reverse=True)
+
             euw_loaded = True
             ui.euwCheckBox.setStyleSheet("color: green;")
 
         if checkboxes["kr"] and not kr_loaded:
             korea = get_compositions(   region="korea",
                                         games_per_player=4,
-                                        players_per_region=5)
+                                        players_per_region=5,
+                                        current_patch=ui.currentPatchFilter.text())
             
-            kr_comps  = group_compositions_by_traits(korea)
+            # sort composition group on occurences
+            kr_comps_unsorted = group_compositions_by_traits(korea)
+            kr_comps_unsorted.sort(key=lambda x: x.counter, reverse=True)
+            kr_comps = sorted(kr_comps_unsorted, key=lambda x: x.counter, reverse=True)
+
             kr_loaded = True
             ui.krCheckBox.setStyleSheet("color: green;")
 

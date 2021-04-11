@@ -18,8 +18,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
-      <width>321</width>
+      <y>0</y>
+      <width>221</width>
       <height>41</height>
      </rect>
     </property>
@@ -29,14 +29,14 @@
      </font>
     </property>
     <property name="text">
-     <string>Current Patch: 11.7</string>
+     <string>Current Patch:</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="euwCheckBox">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>690</y>
+      <x>290</x>
+      <y>10</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -51,8 +51,8 @@
    <widget class="QCheckBox" name="krCheckBox">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>710</y>
+      <x>290</x>
+      <y>30</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -67,8 +67,8 @@
    <widget class="QPushButton" name="compositionsButton">
     <property name="geometry">
      <rect>
-      <x>990</x>
-      <y>680</y>
+      <x>810</x>
+      <y>690</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -80,8 +80,8 @@
    <widget class="QPushButton" name="traitsButton">
     <property name="geometry">
      <rect>
-      <x>990</x>
-      <y>720</y>
+      <x>810</x>
+      <y>730</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -93,8 +93,8 @@
    <widget class="QPushButton" name="championsButton">
     <property name="geometry">
      <rect>
-      <x>990</x>
-      <y>800</y>
+      <x>810</x>
+      <y>810</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -106,8 +106,8 @@
    <widget class="QPushButton" name="itemsButton">
     <property name="geometry">
      <rect>
-      <x>990</x>
-      <y>760</y>
+      <x>810</x>
+      <y>770</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -120,7 +120,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>50</y>
+      <y>60</y>
       <width>1451</width>
       <height>581</height>
      </rect>
@@ -129,8 +129,8 @@
    <widget class="QPushButton" name="loadDataButton">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>740</y>
+      <x>350</x>
+      <y>10</y>
       <width>80</width>
       <height>25</height>
      </rect>
@@ -142,8 +142,8 @@
    <widget class="QComboBox" name="traitFilter1">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>680</y>
+      <x>40</x>
+      <y>690</y>
       <width>131</width>
       <height>31</height>
      </rect>
@@ -152,8 +152,8 @@
    <widget class="QComboBox" name="traitFilter3">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>760</y>
+      <x>40</x>
+      <y>770</y>
       <width>131</width>
       <height>31</height>
      </rect>
@@ -162,8 +162,8 @@
    <widget class="QComboBox" name="traitFilter2">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>720</y>
+      <x>40</x>
+      <y>730</y>
       <width>131</width>
       <height>31</height>
      </rect>
@@ -172,8 +172,8 @@
    <widget class="QComboBox" name="traitFilter4">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>800</y>
+      <x>40</x>
+      <y>810</y>
       <width>131</width>
       <height>31</height>
      </rect>
@@ -182,8 +182,8 @@
    <widget class="QSlider" name="traitFilterSlider1">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>685</y>
+      <x>180</x>
+      <y>695</y>
       <width>160</width>
       <height>21</height>
      </rect>
@@ -207,8 +207,8 @@
    <widget class="QSlider" name="traitFilterSlider2">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>730</y>
+      <x>180</x>
+      <y>740</y>
       <width>160</width>
       <height>21</height>
      </rect>
@@ -232,8 +232,8 @@
    <widget class="QSlider" name="traitFilterSlider3">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>770</y>
+      <x>180</x>
+      <y>780</y>
       <width>160</width>
       <height>21</height>
      </rect>
@@ -257,8 +257,8 @@
    <widget class="QSlider" name="traitFilterSlider4">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>810</y>
+      <x>180</x>
+      <y>820</y>
       <width>160</width>
       <height>21</height>
      </rect>
@@ -282,8 +282,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>1010</x>
-      <y>640</y>
+      <x>830</x>
+      <y>650</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -304,8 +304,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>640</y>
+      <x>40</x>
+      <y>650</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -326,8 +326,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>580</x>
-      <y>640</y>
+      <x>400</x>
+      <y>650</y>
       <width>161</width>
       <height>31</height>
      </rect>
@@ -348,8 +348,8 @@
    <widget class="QSlider" name="championFilterSlider3">
     <property name="geometry">
      <rect>
-      <x>790</x>
-      <y>770</y>
+      <x>610</x>
+      <y>780</y>
       <width>160</width>
       <height>21</height>
      </rect>
@@ -373,8 +373,8 @@
    <widget class="QSlider" name="championFilterSlider2">
     <property name="geometry">
      <rect>
-      <x>790</x>
-      <y>730</y>
+      <x>610</x>
+      <y>740</y>
       <width>160</width>
       <height>21</height>
      </rect>
@@ -398,8 +398,8 @@
    <widget class="QSlider" name="championFilterSlider4">
     <property name="geometry">
      <rect>
-      <x>790</x>
-      <y>810</y>
+      <x>610</x>
+      <y>820</y>
       <width>160</width>
       <height>21</height>
      </rect>
@@ -423,8 +423,8 @@
    <widget class="QSlider" name="championFilterSlider1">
     <property name="geometry">
      <rect>
-      <x>790</x>
-      <y>690</y>
+      <x>610</x>
+      <y>700</y>
       <width>160</width>
       <height>21</height>
      </rect>
@@ -448,8 +448,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>660</y>
+      <x>240</x>
+      <y>670</y>
       <width>54</width>
       <height>17</height>
      </rect>
@@ -461,8 +461,8 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>860</x>
-      <y>660</y>
+      <x>680</x>
+      <y>670</y>
       <width>54</width>
       <height>17</height>
      </rect>
@@ -474,8 +474,8 @@
    <widget class="QCheckBox" name="traitFilterCheckBox1">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>680</y>
+      <x>10</x>
+      <y>690</y>
       <width>21</width>
       <height>23</height>
      </rect>
@@ -487,8 +487,8 @@
    <widget class="QCheckBox" name="traitFilterCheckBox2">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>720</y>
+      <x>10</x>
+      <y>730</y>
       <width>21</width>
       <height>23</height>
      </rect>
@@ -500,8 +500,8 @@
    <widget class="QCheckBox" name="traitFilterCheckBox4">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>800</y>
+      <x>10</x>
+      <y>810</y>
       <width>21</width>
       <height>23</height>
      </rect>
@@ -513,8 +513,8 @@
    <widget class="QCheckBox" name="traitFilterCheckBox3">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>760</y>
+      <x>10</x>
+      <y>770</y>
       <width>21</width>
       <height>23</height>
      </rect>
@@ -526,8 +526,8 @@
    <widget class="QCheckBox" name="championFilterCheckBox4">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>800</y>
+      <x>380</x>
+      <y>810</y>
       <width>21</width>
       <height>23</height>
      </rect>
@@ -539,8 +539,8 @@
    <widget class="QCheckBox" name="championFilterCheckBox3">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>760</y>
+      <x>380</x>
+      <y>770</y>
       <width>21</width>
       <height>23</height>
      </rect>
@@ -552,8 +552,8 @@
    <widget class="QCheckBox" name="championFilterCheckBox1">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>680</y>
+      <x>380</x>
+      <y>690</y>
       <width>21</width>
       <height>23</height>
      </rect>
@@ -565,8 +565,8 @@
    <widget class="QCheckBox" name="championFilterCheckBox2">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>720</y>
+      <x>380</x>
+      <y>730</y>
       <width>21</width>
       <height>23</height>
      </rect>
@@ -578,8 +578,8 @@
    <widget class="QLineEdit" name="championFilter1">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>680</y>
+      <x>410</x>
+      <y>690</y>
       <width>191</width>
       <height>25</height>
      </rect>
@@ -588,8 +588,8 @@
    <widget class="QLineEdit" name="championFilter2">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>720</y>
+      <x>410</x>
+      <y>730</y>
       <width>191</width>
       <height>25</height>
      </rect>
@@ -598,8 +598,8 @@
    <widget class="QLineEdit" name="championFilter3">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>760</y>
+      <x>410</x>
+      <y>770</y>
       <width>191</width>
       <height>25</height>
      </rect>
@@ -608,11 +608,24 @@
    <widget class="QLineEdit" name="championFilter4">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>800</y>
+      <x>410</x>
+      <y>810</y>
       <width>191</width>
       <height>25</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="currentPatchFilter">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>10</y>
+      <width>41</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>11.7</string>
     </property>
    </widget>
   </widget>
