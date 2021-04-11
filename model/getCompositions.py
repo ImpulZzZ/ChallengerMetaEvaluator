@@ -2,6 +2,7 @@ from model.Composition import Composition
 from model.Champion import Champion
 
 import requests
+import re
 
 
 # requests Api
@@ -79,10 +80,13 @@ def get_compositions(region, players_per_region, games_per_player):
     # loop over each match
     for match in analyzed_games:
         current_url = "/tft/match/v1/matches/" + match
-        participants = request_matches_by_match_id( region          = regional_routing_value,
+        api_result  = request_matches_by_match_id(  region          = regional_routing_value,
                                                     api_key         = api_key,
                                                     base_url        = base_url,
-                                                    parameter_url   = current_url)["info"]["participants"]
+                                                    parameter_url   = current_url)
+
+        participants    = api_result["info"]["participants"]
+        patch = re.search("<Releases/(.*)>", api_result["info"]["game_version"]).group(1)
 
         for participant in participants:
             # only consider top4
@@ -102,13 +106,26 @@ def get_compositions(region, players_per_region, games_per_player):
             for trait in participant["traits"]:
                 # only consider active traits
                 if trait["style"] > 0:
-                    trait_dict.update({trait["name"] : trait["style"]})
+                    trait_name = trait["name"].split("_")
+                    if len(trait_name) > 1:
+                        trait_name_short = trait_name[1]
+                    else:
+                        trait_name_short = trait_name[0]
 
+                    trait_dict.update({trait_name_short : trait["style"]})
+
+            # sort the trait dictionary for tiers
+            sorted_traits = {}
+            sorted_keys = sorted(trait_dict, key=trait_dict.get, reverse=True)
+            
+            for x in sorted_keys:
+                sorted_traits[x] = trait_dict[x]
 
             # create a composition of current player and append it to list
             compositions.append(Composition(level       = participant["level"],
                                             placement   = participant["placement"],
                                             champions   = champions,
-                                            traits      = trait_dict))
+                                            traits      = sorted_traits,
+                                            patch       = patch))
 
     return compositions

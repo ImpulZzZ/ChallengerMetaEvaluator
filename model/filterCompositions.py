@@ -1,4 +1,7 @@
+from model.Composition import CompositionGroup
+
 def filter_compositions_by_traits(compositions, traits):
+
     result_compositions = []
     
     # loop over every composition
@@ -63,9 +66,9 @@ def filter_compositions_by_champions(compositions, champions):
 
 
 def filter_compositions(compositions, filters):
-    trait_filter_active     = filters["traits"]     != []
-    placement_filter_active = filters["placements"] != []
-    champion_filter_active  = filters["champions"]  != []
+    trait_filter_active     = len(filters["traits"])    > 0
+    champion_filter_active  = len(filters["champions"]) > 0
+    placement_filter_active = filters["placements"]     != []
 
     # no filters set
     if not trait_filter_active and not placement_filter_active and not champion_filter_active:

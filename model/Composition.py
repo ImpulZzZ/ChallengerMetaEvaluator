@@ -1,5 +1,5 @@
 class Composition:
-    def __init__(self, level, placement, champions, traits):
+    def __init__(self, level, placement, champions, traits, patch):
         assert isinstance(level, int)
         self.level = level
         assert isinstance(placement, int)
@@ -8,6 +8,8 @@ class Composition:
         self.champions = champions
         assert isinstance(traits, dict)
         self.traits = traits
+        assert isinstance(patch, str)
+        self.patch = patch
 
 
 class CompositionGroup:
