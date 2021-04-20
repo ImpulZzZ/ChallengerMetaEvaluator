@@ -12,6 +12,9 @@ from PyQt5.QtGui import QColor
 # starts the main gui
 def run_main_gui():
 
+    # current list of composition groups that is shown in tableview
+    filtered_composition_groups = []
+
     euw_composition_groups = {
         "groups"    : [],
         "grouped_by": "none",
@@ -57,6 +60,8 @@ def run_main_gui():
 
     #############################################################################
     def traits_button_pressed():
+
+        nonlocal filtered_composition_groups
 
         # reset table view
         ui.tableWidget.setRowCount(0)
@@ -187,6 +192,11 @@ def run_main_gui():
     #############################################################################
     def champions_button_pressed():
 
+        nonlocal euw_composition_groups
+        nonlocal kr_composition_groups
+        nonlocal filtered_composition_groups
+        considered_regions = {}
+
         # verify which checkboxes are pressed or not pressed
         checkboxes = {  "euw"       : ui.euwCheckBox.isChecked(),
                         "kr"        : ui.krCheckBox.isChecked(),
@@ -202,10 +212,6 @@ def run_main_gui():
 
         if not checkboxes["euw"] and not checkboxes["kr"]:
             return
-
-        nonlocal euw_composition_groups
-        nonlocal kr_composition_groups
-        considered_regions = {}
 
         # reset table view
         ui.tableWidget.setRowCount(0)
@@ -315,6 +321,108 @@ def run_main_gui():
         print("Work in Progress")
 
     #############################################################################
+    def item_double_clicked():
+
+        # prevents infinite loop of function calls
+        ui.tableWidget.itemDoubleClicked = False
+
+        popup.setupUi(popup_window)
+
+        # reset table view
+        popup.tableWidget.setRowCount(0)
+        popup.tableWidget.clearContents()
+        popup.tableWidget.setColumnCount(15)
+
+        # get selected composition group
+        selected_composition_group = filtered_composition_groups[ui.tableWidget.currentItem().row()]
+
+        row_counter = 0
+        for composition in selected_composition_group.compositions:
+
+            # change table size dynamically
+            popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
+
+            # mark start of composition
+            popup.tableWidget.setItem(row_counter, 0, QTableWidgetItem())
+            popup.tableWidget.setItem(row_counter, 1, QTableWidgetItem())
+            popup.tableWidget.setItem(row_counter, 2, QTableWidgetItem())
+            popup.tableWidget.item(row_counter, 0).setBackground(QColor("black"))
+            popup.tableWidget.item(row_counter, 1).setBackground(QColor("black"))
+            popup.tableWidget.item(row_counter, 2).setBackground(QColor("black"))
+
+            # change table size dynamically and add counter
+            popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
+            row_counter = row_counter + 1
+
+            # change table size dynamically
+            popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
+
+            # show placement of compositon
+            popup.tableWidget.setItem(row_counter, 0, QTableWidgetItem("Placement: " + str(composition.placement)))
+
+            # change table size dynamically and add counter
+            popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
+            row_counter = row_counter + 1
+
+            # description of current row
+            current_text = QTableWidgetItem("Traits:")
+            popup.tableWidget.setItem(row_counter, 0, current_text)
+
+            column_counter = 1
+            for trait in composition.traits:
+            
+                current_trait = QTableWidgetItem(str(composition.traits[trait]) + " " + trait)
+                popup.tableWidget.setItem(row_counter, column_counter, current_trait)
+
+                # background color depending on trait class
+                if composition.traits[trait] == 1:
+                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("brown"))
+                elif composition.traits[trait] == 2:
+                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("silver"))
+                elif composition.traits[trait] == 3:
+                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("gold"))
+                else:
+                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("cyan"))
+
+                column_counter = column_counter + 1
+
+
+            # change table size dynamically
+            popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
+            row_counter = row_counter + 1
+
+            # description of current row
+            current_text = QTableWidgetItem("Champions:")
+            popup.tableWidget.setItem(row_counter, 0, current_text)
+
+            column_counter = 1
+            for champion in composition.champions:
+
+                # TODO: add view of items per champion
+            
+                current_champion = QTableWidgetItem(champion.name)
+                popup.tableWidget.setItem(row_counter, column_counter, current_champion)
+
+                # background color depending on champion stars
+                if champion.tier == 1:
+                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("brown"))
+                elif champion.tier == 2:
+                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("silver"))
+                elif champion.tier == 3:
+                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("gold"))
+                else:
+                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("cyan"))
+
+                column_counter = column_counter + 1
+
+
+            row_counter = row_counter + 1
+        
+        popup_window.show()
+        
+
+
+    #############################################################################
     def load_data_button_pressed():
         # to modify outer variables in inner function
         nonlocal euw_composition_groups
@@ -404,6 +512,7 @@ def run_main_gui():
     ui.championsButton.clicked.connect(champions_button_pressed)
     ui.itemsButton.clicked.connect(items_button_pressed)
     ui.loadDataButton.clicked.connect(load_data_button_pressed)
+    ui.tableWidget.itemDoubleClicked.connect(item_double_clicked)
 
     # add traits to dropdown filters
     ui.traitFilter1.addItems(CURRENT_SET_TRAITS)

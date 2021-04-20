@@ -13,12 +13,16 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_compositionGroupView(object):
     def setupUi(self, compositionGroupView):
         compositionGroupView.setObjectName("compositionGroupView")
-        compositionGroupView.resize(1222, 525)
+        compositionGroupView.resize(1271, 701)
         self.tableWidget = QtWidgets.QTableWidget(compositionGroupView)
-        self.tableWidget.setGeometry(QtCore.QRect(20, 30, 1171, 471))
+        self.tableWidget.setGeometry(QtCore.QRect(20, 20, 1231, 661))
+        self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.tableWidget.setShowGrid(False)
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(0)
         self.tableWidget.setRowCount(0)
+        self.tableWidget.horizontalHeader().setVisible(False)
+        self.tableWidget.verticalHeader().setVisible(False)
 
         self.retranslateUi(compositionGroupView)
         QtCore.QMetaObject.connectSlotsByName(compositionGroupView)
