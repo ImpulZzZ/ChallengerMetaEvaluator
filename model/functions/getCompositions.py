@@ -22,7 +22,7 @@ def request_matches_by_puuid(region, api_key, base_url, parameter_url, count):
     url = "https://" + region + "." + base_url + parameter_url + "?count=" + str(count) + "&api_key=" + api_key
     return requests.get(url).json()
     
-def get_compositions(region, players_per_region, games_per_player, current_patch):
+def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league):
 
     # initialize API Request variables
     api_key     = open("apikey.txt", "r").read()
@@ -43,15 +43,15 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
         regional_routing_value  = "unknown"
 
 
-    # request for current challenger players and consider only the highest rankeds
+    # request for current players and consider only the highest rankeds
     response = request_api( region          = platform_routing_value,
                             api_key         = api_key, 
                             base_url        = base_url, 
-                            parameter_url   = "/tft/league/v1/challenger")
+                            parameter_url   = "/tft/league/v1/" + ranked_league)
 
-    challenger_players = response["entries"]
-    challenger_players = sorted(challenger_players, key=lambda k: k['leaguePoints'], reverse=True)
-    best_players = challenger_players[0:players_per_region]
+    player_list = response["entries"]
+    player_list = sorted(player_list, key=lambda k: k['leaguePoints'], reverse=True)
+    best_players = player_list[0:players_per_region]
 
     # loop over each player
     for player in best_players:
@@ -100,10 +100,10 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
             # create list of champions
             champions_unsorted   = []
             for unit in participant["units"]:
-                champions_unsorted.append(Champion(  name            = unit["character_id"],
-                                            items           = unit["items"],
-                                            tier            = unit["tier"],
-                                            rarity          = unit["rarity"]))
+                champions_unsorted.append(Champion( name   = unit["character_id"],
+                                                    items  = unit["items"],
+                                                    tier   = unit["tier"],
+                                                    rarity = unit["rarity"]))
 
             # sort champions on stars (=tiers)
             champions_unsorted.sort(key=lambda x: x.tier, reverse=True)
