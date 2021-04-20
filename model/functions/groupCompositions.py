@@ -26,6 +26,7 @@ def group_compositions_by_traits(compositions):
     
     return result
 
+# TODO does not work correctly
 def group_compositions_by_champions(compositions):
     processed   = []
     num_comps   = len(compositions)
