@@ -14,163 +14,103 @@ from PyQt5.QtGui import QPixmap
 # starts the main gui
 def run_main_gui():
 
-    # current list of composition groups that is shown in tableview
-    filtered_composition_groups = []
+    def build_filters(checkboxes):
 
-    euw_composition_groups = {
-        "groups"    : [],
-        "grouped_by": "none",
-        "loaded"    : False
-    }
+        # initialize filter dictionary with following shape
+        filters={
+            "traits"   : {},
+            "champions" : {},
+            "placements": ui.placementFilter.value() 
+            }
 
-    kr_composition_groups = {
-        "groups"    : [],
-        "grouped_by": "none",
-        "loaded"    : False
-    }
+        if checkboxes["trait1"]:
+            filters["traits"].update({ui.traitFilter1.currentText() : ui.traitFilterSlider1.value()})
+        if checkboxes["trait2"]:
+            filters["traits"].update({ui.traitFilter2.currentText() : ui.traitFilterSlider2.value()})
+        if checkboxes["trait3"]:
+            filters["traits"].update({ui.traitFilter3.currentText() : ui.traitFilterSlider3.value()})
+        if checkboxes["trait4"]:
+            filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
+        if checkboxes["champion1"]:
+            filters["champions"].update({ui.championFilter1.text() : ui.championFilterSlider1.value()})
+        if checkboxes["champion2"]:
+            filters["champions"].update({ui.championFilter2.text() : ui.championFilterSlider2.value()})
+        if checkboxes["champion3"]:
+            filters["champions"].update({ui.championFilter3.text() : ui.championFilterSlider3.value()})
+        if checkboxes["champion4"]:
+            filters["champions"].update({ui.championFilter4.text() : ui.championFilterSlider4.value()})
 
-    CURRENT_PATCH = "11.8"
+        return filters
 
-    # list of current traits possible to choose in filter dropdown menu
-    CURRENT_SET_TRAITS = [  "Cultist",
-                            "Daredevil",
-                            "Divine",
-                            "Dragonsoul",
-                            "Elderwood",
-                            "Enlightened",
-                            "Exile",
-                            "Fabled",
-                            "Fortune",
-                            "Ninja",
-                            "Spirit",
-                            "Boss",
-                            "Warlord",
-                            "Adept",
-                            "Assassin",
-                            "Blacksmith",
-                            "Brawler",
-                            "Duelist",
-                            "Emperor",
-                            "Executioner",
-                            "Keeper",
-                            "Mage",
-                            "Mystic",
-                            "Sharpshooter",
-                            "Slayer",
-                            "Syphoner",
-                            "Vanguard"]
-
-    # list of current champions possible to choose in filter dropdown menu
-    CURRENT_SET_CHAMPIONS = [   "Aatrox",
-                                "Shyvana",
-                                "Zilean"]
-
-    # list of current items possible to choose in filter dropdown menu
-    CURRENT_SET_ITEMS = [   "Bloodthirster",
-                            "Redemption",
-                            "Zephyr"]
-
-    #############################################################################
-    def traits_button_pressed():
-
-        nonlocal filtered_composition_groups
-        nonlocal latest_placement_filter
-
-        # reset table view
+    def reset_tableview(headers):  
         ui.tableWidget.setRowCount(0)
         ui.tableWidget.clearContents()
-        considered_regions = {}
 
-        # verify which checkboxes are pressed or not pressed
-        checkboxes = {  "euw"       : ui.euwCheckBox.isChecked(),
-                        "kr"        : ui.krCheckBox.isChecked(),
-                        "trait1"    : ui.traitFilterCheckBox1.isChecked(),
-                        "trait2"    : ui.traitFilterCheckBox2.isChecked(),
-                        "trait3"    : ui.traitFilterCheckBox3.isChecked(),
-                        "trait4"    : ui.traitFilterCheckBox4.isChecked(),
-                        "champion1" : ui.championFilterCheckBox1.isChecked(),
-                        "champion2" : ui.championFilterCheckBox2.isChecked(),
-                        "champion3" : ui.championFilterCheckBox3.isChecked(),
-                        "champion4" : ui.championFilterCheckBox4.isChecked(),
-                        "item"      : ui.itemFilterCheckBox.isChecked()
-                        }
-
-        if not checkboxes["euw"] and not checkboxes["kr"]:
-            return
-
-        # show maximum of 10 traits per composition
-        COLUMN_COUNT = 15
         ui.tableWidget.setColumnCount(COLUMN_COUNT)
 
-        headers = ["Occurences", "Traits"]
-        for i in range(2, COLUMN_COUNT):
+        for i in range(len(headers), COLUMN_COUNT):
             headers.append("")
             
         ui.tableWidget.setHorizontalHeaderLabels(headers)
 
-        if checkboxes["euw"]:
-            # if composition group is not already grouped by traits, do it
-            if euw_composition_groups["grouped_by"] != "traits":
-                # dissolve current composition group
-                compositions = dissolve_composition_groups(euw_composition_groups["groups"])
-                # and create a new one, grouped by traits
-                euw_composition_groups["groups"]        = group_compositions_by_traits(compositions)
-                euw_composition_groups["grouped_by"]    = "traits"
 
-            considered_regions.update({"euw" : euw_composition_groups["groups"]})
+    # verify which checkboxes are pressed or not pressed
+    def get_checkboxes():
+        
+        return {
+                "trait1"    : ui.traitFilterCheckBox1.isChecked(),
+                "trait2"    : ui.traitFilterCheckBox2.isChecked(),
+                "trait3"    : ui.traitFilterCheckBox3.isChecked(),
+                "trait4"    : ui.traitFilterCheckBox4.isChecked(),
+                "champion1" : ui.championFilterCheckBox1.isChecked(),
+                "champion2" : ui.championFilterCheckBox2.isChecked(),
+                "champion3" : ui.championFilterCheckBox3.isChecked(),
+                "champion4" : ui.championFilterCheckBox4.isChecked(),
+                "item"      : ui.itemFilterCheckBox.isChecked(),
+                "regions" : {
+                    "euw"       : ui.euwCheckBox.isChecked(),
+                    "kr"        : ui.krCheckBox.isChecked()
+                    }
+                }
 
-        if checkboxes["kr"]:
-            # if composition group is not already grouped by traits, do it
-            if kr_composition_groups["grouped_by"] != "traits":
-                # dissolve current composition group
-                compositions = dissolve_composition_groups(kr_composition_groups["groups"])
-                # and create a new one, grouped by traits
-                kr_composition_groups["groups"]     = group_compositions_by_traits(compositions)
-                kr_composition_groups["grouped_by"] = "traits"
+    #############################################################################
+    def show_traits():
 
-            considered_regions.update({"kr" : kr_composition_groups["groups"]})
+        nonlocal composition_groups_shown_in_table
+        nonlocal latest_placement_filter
+
+        considered_regions = {}
+
+        checkboxes = get_checkboxes()
+
+        reset_tableview(headers=["Occurences", "Traits"])
+
+        no_regions_selected = True
+        for region in checkboxes["regions"]:
+            if checkboxes["regions"][region]:
+                if regional_composition_groups[region]["grouped_by"] != "traits":
+                    compositions = dissolve_composition_groups(regional_composition_groups[region]["groups"])
+                    regional_composition_groups[region]["groups"]        = group_compositions_by_traits(compositions)
+                    regional_composition_groups[region]["grouped_by"]    = "traits"
+
+                considered_regions.update({region : regional_composition_groups[region]["groups"]})
+                no_regions_selected = False
+
+        # do nothing if no region was selected to load
+        if no_regions_selected:
+            return
+
+        filters = build_filters(checkboxes)
 
         # loop over every considered region
         counter = 0
         for region in considered_regions:
-
-            # initialize filter dictionary with following shape
-            filters={"traits"   : {},
-                    "champions" : {},
-                    "placements": ui.placementFilter.value() 
-                    }
-        
-            # build up filter dictionary by iterating over filter elements
-            if checkboxes["trait1"]:
-                filters["traits"].update({ui.traitFilter1.currentText() : ui.traitFilterSlider1.value()})
-            if checkboxes["trait2"]:
-                filters["traits"].update({ui.traitFilter2.currentText() : ui.traitFilterSlider2.value()})
-            if checkboxes["trait3"]:
-                filters["traits"].update({ui.traitFilter3.currentText() : ui.traitFilterSlider3.value()})
-            if checkboxes["trait4"]:
-                filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
-            if checkboxes["champion1"]:
-                filters["champions"].update({ui.championFilter1.text() : ui.championFilterSlider1.value()})
-            if checkboxes["champion2"]:
-                filters["champions"].update({ui.championFilter2.text() : ui.championFilterSlider2.value()})
-            if checkboxes["champion3"]:
-                filters["champions"].update({ui.championFilter3.text() : ui.championFilterSlider3.value()})
-            if checkboxes["champion4"]:
-                filters["champions"].update({ui.championFilter4.text() : ui.championFilterSlider4.value()})
-
+            
             # apply possible filters on dataset
-            filtered_composition_groups = filter_composition_groups(considered_regions[region], filters)
-
-            filtered_composition_groups_2 = filtered_composition_groups
-
-            # filter for placements if filter slider was changed
-            if latest_placement_filter != ui.placementFilter.value():
-                latest_placement_filter = ui.placementFilter.value()
-                filtered_composition_groups_2 = filter_composition_groups_by_placement(filtered_composition_groups, latest_placement_filter)
-
+            composition_groups_shown_in_table = filter_composition_groups(considered_regions[region], filters)
 
             # loop over compisitiongroups of each region
-            for composition_group in filtered_composition_groups_2:
+            for composition_group in composition_groups_shown_in_table:
                 
                 # assert composition groups to be grouped by traits, so entries should be equal
                 #   => consider only first entry
@@ -206,107 +146,47 @@ def run_main_gui():
                 counter = counter + 1
 
     #############################################################################
-    def champions_button_pressed():
+    def show_champions():
 
-        nonlocal euw_composition_groups
-        nonlocal kr_composition_groups
-        nonlocal filtered_composition_groups
+        nonlocal regional_composition_groups
+        nonlocal composition_groups_shown_in_table
         nonlocal latest_placement_filter
         considered_regions = {}
 
         # verify which checkboxes are pressed or not pressed
-        checkboxes = {  "euw"       : ui.euwCheckBox.isChecked(),
-                        "kr"        : ui.krCheckBox.isChecked(),
-                        "trait1"    : ui.traitFilterCheckBox1.isChecked(),
-                        "trait2"    : ui.traitFilterCheckBox2.isChecked(),
-                        "trait3"    : ui.traitFilterCheckBox3.isChecked(),
-                        "trait4"    : ui.traitFilterCheckBox4.isChecked(),
-                        "champion1" : ui.championFilterCheckBox1.isChecked(),
-                        "champion2" : ui.championFilterCheckBox2.isChecked(),
-                        "champion3" : ui.championFilterCheckBox3.isChecked(),
-                        "champion4" : ui.championFilterCheckBox4.isChecked(),
-                        "item"      : ui.itemFilterCheckBox.isChecked()
-                        }
+        checkboxes = get_checkboxes()
 
-        if not checkboxes["euw"] and not checkboxes["kr"]:
+        if not checkboxes["regions"]["euw"] and not checkboxes["regions"]["kr"]:
             return
 
-        # reset table view
-        ui.tableWidget.setRowCount(0)
-        ui.tableWidget.clearContents()
+        reset_tableview(headers=["Occurences", "Champions"])
 
-        # show maximum of 15 champions per composition
-        COLUMN_COUNT = 15
-        ui.tableWidget.setColumnCount(COLUMN_COUNT)
+        no_regions_selected = True
+        for region in checkboxes["regions"]:
+            if checkboxes["regions"][region]:
+                if regional_composition_groups[region]["grouped_by"] != "champions":
+                    compositions = dissolve_composition_groups(regional_composition_groups[region]["groups"])
+                    regional_composition_groups[region]["groups"]        = group_compositions_by_champions(compositions)
+                    regional_composition_groups[region]["grouped_by"]    = "champions"
 
-        headers = ["Occurences", "Champions"]
-        for i in range(2, COLUMN_COUNT):
-            headers.append("")
-            
-        ui.tableWidget.setHorizontalHeaderLabels(headers)
+                considered_regions.update({region : regional_composition_groups[region]["groups"]})
+                no_regions_selected = False
 
-        if checkboxes["euw"]:
-            # if composition group is not already grouped by champions, do it
-            if euw_composition_groups["grouped_by"] != "champions":
-                # dissolve current composition group
-                compositions = dissolve_composition_groups(euw_composition_groups["groups"])
-                # and create a new one, grouped by champions
-                euw_composition_groups["groups"]        = group_compositions_by_champions(compositions)
-                euw_composition_groups["grouped_by"]    = "champions"
+        # do nothing if no region was selected to load
+        if no_regions_selected:
+            return
 
-            considered_regions.update({"euw" : euw_composition_groups["groups"]})
-
-        if checkboxes["kr"]:
-            # if composition group is not already grouped by champions, do it
-            if kr_composition_groups["grouped_by"] != "champions":
-                # dissolve current composition group
-                compositions = dissolve_composition_groups(kr_composition_groups["groups"])
-                # and create a new one, grouped by champions
-                kr_composition_groups["groups"]     = group_compositions_by_champions(compositions)
-                kr_composition_groups["grouped_by"] = "champions"
-
-            considered_regions.update({"kr" : kr_composition_groups["groups"]})
+        filters = build_filters(checkboxes)
 
         # loop over every considered region
         counter = 0
         for region in considered_regions:
 
-            # initialize filter dictionary with following shape
-            filters={"traits"   : {},
-                    "champions" : {},
-                    "placements": ui.placementFilter.value()
-                    }
-        
-            # build up filter dictionary by iterating over filter elements
-            if checkboxes["trait1"]:
-                filters["traits"].update({ui.traitFilter1.currentText() : ui.traitFilterSlider1.value()})
-            if checkboxes["trait2"]:
-                filters["traits"].update({ui.traitFilter2.currentText() : ui.traitFilterSlider2.value()})
-            if checkboxes["trait3"]:
-                filters["traits"].update({ui.traitFilter3.currentText() : ui.traitFilterSlider3.value()})
-            if checkboxes["trait4"]:
-                filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
-            if checkboxes["champion1"]:
-                filters["champions"].update({ui.championFilter1.text() : ui.championFilterSlider1.value()})
-            if checkboxes["champion2"]:
-                filters["champions"].update({ui.championFilter2.text() : ui.championFilterSlider2.value()})
-            if checkboxes["champion3"]:
-                filters["champions"].update({ui.championFilter3.text() : ui.championFilterSlider3.value()})
-            if checkboxes["champion4"]:
-                filters["champions"].update({ui.championFilter4.text() : ui.championFilterSlider4.value()})
-
             # apply possible filters on dataset
-            filtered_composition_groups = filter_composition_groups(considered_regions[region], filters)
-
-            filtered_composition_groups_2 = filtered_composition_groups
-
-            # filter for placements if filter slider was changed
-            if latest_placement_filter != ui.placementFilter.value():
-                latest_placement_filter = ui.placementFilter.value()
-                filtered_composition_groups_2 = filter_composition_groups_by_placement(filtered_composition_groups, latest_placement_filter)
+            composition_groups_shown_in_table = filter_composition_groups(considered_regions[region], filters)
 
             # loop over compisitiongroups of each region
-            for composition_group in filtered_composition_groups_2:
+            for composition_group in composition_groups_shown_in_table:
                 
                 # assert composition groups to be grouped by champions, so entries should be equal
                 #   => only consider first entry
@@ -348,11 +228,11 @@ def run_main_gui():
                 counter = counter + 1
 
     #############################################################################
-    def items_button_pressed():
+    def show_items():
         print("Work in Progress")
 
     #############################################################################
-    def item_double_clicked():
+    def show_composition_group():
 
         # prevents infinite loop of function calls
         ui.tableWidget.itemDoubleClicked = False
@@ -362,10 +242,10 @@ def run_main_gui():
         # reset table view
         popup.tableWidget.setRowCount(0)
         popup.tableWidget.clearContents()
-        popup.tableWidget.setColumnCount(15)
+        popup.tableWidget.setColumnCount(COLUMN_COUNT)
 
         # get selected composition group
-        selected_composition_group = filtered_composition_groups[ui.tableWidget.currentItem().row()]
+        selected_composition_group = composition_groups_shown_in_table[ui.tableWidget.currentItem().row()]
 
         row_counter = 0
         for composition in selected_composition_group.compositions:
@@ -445,15 +325,12 @@ def run_main_gui():
         
         popup_window.show()
         
-
-
     #############################################################################
-    def load_data_button_pressed():
+    def load_data():
         # to modify outer variables in inner function
-        nonlocal euw_composition_groups
-        nonlocal kr_composition_groups
+        nonlocal regional_composition_groups
 
-        # verify which checkboxes are pressed or not pressed
+        # verify which loading checkboxes are pressed or not pressed
         checkboxes = {  "euw"           : ui.euwCheckBox.isChecked(),
                         "kr"            : ui.krCheckBox.isChecked(),
                         "challenger"    : ui.challengerCheckBox.isChecked(),
@@ -478,7 +355,7 @@ def run_main_gui():
                     return
 
         # if euw is checked and not already loaded
-        if checkboxes["euw"] and not euw_composition_groups["loaded"]:
+        if checkboxes["euw"] and not regional_composition_groups["euw"]["loaded"]:
             europe = get_compositions(  region              = "europe",
                                         games_per_player    = int(ui.gamesPerPlayer.text()),
                                         players_per_region  = int(ui.playersPerRegion.text()),
@@ -490,15 +367,15 @@ def run_main_gui():
             euw_comps_unsorted.sort(key=lambda x: x.counter, reverse=True)
 
             # fill the composition_group dictionary
-            euw_composition_groups["groups"]        = sorted(euw_comps_unsorted, key=lambda x: x.counter, reverse=True)
-            euw_composition_groups["grouped_by"]    = "traits"
-            euw_composition_groups["loaded"]        = True
+            regional_composition_groups["euw"]["groups"]        = sorted(euw_comps_unsorted, key=lambda x: x.counter, reverse=True)
+            regional_composition_groups["euw"]["grouped_by"]    = "traits"
+            regional_composition_groups["euw"]["loaded"]        = True
 
             # green checkbox to signalize loading is done
             ui.euwCheckBox.setStyleSheet("color: green;")
 
         # if kr is checked and not already loaded
-        if checkboxes["kr"] and not kr_composition_groups["loaded"]:
+        if checkboxes["kr"] and not regional_composition_groups["kr"]["loaded"]:
             korea = get_compositions(   region              = "korea",
                                         games_per_player    = int(ui.gamesPerPlayer.text()),
                                         players_per_region  = int(ui.playersPerRegion.text()),
@@ -510,18 +387,12 @@ def run_main_gui():
             kr_comps_unsorted.sort(key=lambda x: x.counter, reverse=True)
 
             # fill the composition_group dictionary
-            kr_composition_groups["groups"]         = sorted(kr_comps_unsorted, key=lambda x: x.counter, reverse=True)
-            euw_composition_groups["grouped_by"]    = "traits"
-            kr_composition_groups["loaded"]         = True
+            regional_composition_groups["kr"]["groups"]         = sorted(kr_comps_unsorted, key=lambda x: x.counter, reverse=True)
+            regional_composition_groups["euw"]["grouped_by"]    = "traits"
+            regional_composition_groups["kr"]["loaded"]         = True
 
             # green checkbox to signalize loading is done
             ui.krCheckBox.setStyleSheet("color: green;")
-
-    #############################################################################
-    # shows details of a compositiongroup
-    def run_composition_group_view_gui():
-        popup.setupUi(popup_window)
-        popup_window.show()
 
     ##############################################################################
 
@@ -531,14 +402,63 @@ def run_main_gui():
     ui = main_gui.Ui_mainWindow()
     ui.setupUi(main_window)
 
+    # setup global variables
+    CURRENT_PATCH = "11.8"
+    CURRENT_SET_TRAITS = [  "Cultist",
+                            "Daredevil",
+                            "Divine",
+                            "Dragonsoul",
+                            "Elderwood",
+                            "Enlightened",
+                            "Exile",
+                            "Fabled",
+                            "Fortune",
+                            "Ninja",
+                            "Spirit",
+                            "Boss",
+                            "Warlord",
+                            "Adept",
+                            "Assassin",
+                            "Blacksmith",
+                            "Brawler",
+                            "Duelist",
+                            "Emperor",
+                            "Executioner",
+                            "Keeper",
+                            "Mage",
+                            "Mystic",
+                            "Sharpshooter",
+                            "Slayer",
+                            "Syphoner",
+                            "Vanguard"]
+    CURRENT_SET_CHAMPIONS = [   "Aatrox",
+                                "Shyvana",
+                                "Zilean"]
+    CURRENT_SET_ITEMS = [   "Bloodthirster",
+                            "Redemption",
+                            "Zephyr"]
+    regional_composition_groups = {
+        "euw" : {
+            "groups"    : [],
+            "grouped_by": "none",
+            "loaded"    : False
+        },
+        "kr" : {
+            "groups"    : [],
+            "grouped_by": "none",
+            "loaded"    : False
+        }
+    }
     latest_placement_filter = ui.placementFilter.value()
+    composition_groups_shown_in_table = []
+    COLUMN_COUNT = 15
 
     # bind functions to the buttons
-    ui.traitsButton.clicked.connect(traits_button_pressed)
-    ui.championsButton.clicked.connect(champions_button_pressed)
-    ui.itemsButton.clicked.connect(items_button_pressed)
-    ui.loadDataButton.clicked.connect(load_data_button_pressed)
-    ui.tableWidget.itemDoubleClicked.connect(item_double_clicked)
+    ui.traitsButton.clicked.connect(show_traits)
+    ui.championsButton.clicked.connect(show_champions)
+    ui.itemsButton.clicked.connect(show_items)
+    ui.tableWidget.itemDoubleClicked.connect(show_composition_group)
+    ui.loadDataButton.clicked.connect(load_data)
 
     # add traits to dropdown filters
     ui.traitFilter1.addItems(CURRENT_SET_TRAITS)

@@ -44,20 +44,30 @@ def filter_composition_groups(composition_groups, filters):
 
 def filter_composition_groups_by_placement(composition_groups, max_placement):
 
+    print("filter_composition_groups_by_placement()")
+
     # list of resulting composition groups
     result_composition_groups = []
        
     # loop over every composition group
     for current_comp_group in composition_groups:
 
+        print("New current comp group:")
+
         current_compositions = current_comp_group.compositions.copy()
 
         for composition in current_compositions:
 
+            print("composition.placement = ", composition.placement, " > ", max_placement,  "?")
+
             # append the composition group to current filtered composition group if placement is better or equal than filter
             if composition.placement > max_placement:
+                print("Yes! => Remove")
                 current_compositions.remove(composition)
+            else:
+                print("No! => Keep")
 
+        print("len(current_compositions) = ", len(current_compositions))
         # if the filtered composition group has more than 1 composition, append it to result
         if len(current_compositions) > 0:
             result_composition_groups.append(CompositionGroup(current_compositions))
