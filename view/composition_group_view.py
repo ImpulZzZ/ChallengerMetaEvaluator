@@ -30,7 +30,7 @@ class Ui_compositionGroupView(object):
 
     def retranslateUi(self, compositionGroupView):
         _translate = QtCore.QCoreApplication.translate
-        compositionGroupView.setWindowTitle(_translate("compositionGroupView", "Compisition View"))
+        compositionGroupView.setWindowTitle(_translate("compositionGroupView", "Composition View"))
 
 
 if __name__ == "__main__":
