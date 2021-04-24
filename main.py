@@ -8,9 +8,14 @@ from view import composition_group_view as composition_group_view
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QPixmap
 
 # starts the main gui
 def run_main_gui():
+
+    # current list of composition groups that is shown in tableview
+    filtered_composition_groups = []
 
     euw_composition_groups = {
         "groups"    : [],
@@ -57,6 +62,8 @@ def run_main_gui():
 
     #############################################################################
     def traits_button_pressed():
+
+        nonlocal filtered_composition_groups
 
         # reset table view
         ui.tableWidget.setRowCount(0)
@@ -187,6 +194,11 @@ def run_main_gui():
     #############################################################################
     def champions_button_pressed():
 
+        nonlocal euw_composition_groups
+        nonlocal kr_composition_groups
+        nonlocal filtered_composition_groups
+        considered_regions = {}
+
         # verify which checkboxes are pressed or not pressed
         checkboxes = {  "euw"       : ui.euwCheckBox.isChecked(),
                         "kr"        : ui.krCheckBox.isChecked(),
@@ -202,10 +214,6 @@ def run_main_gui():
 
         if not checkboxes["euw"] and not checkboxes["kr"]:
             return
-
-        nonlocal euw_composition_groups
-        nonlocal kr_composition_groups
-        considered_regions = {}
 
         # reset table view
         ui.tableWidget.setRowCount(0)
@@ -292,19 +300,25 @@ def run_main_gui():
                 keycounter = 1
 
                 for champion in element.champions:
-                    # add the elements into the table
-                    current = QTableWidgetItem(str(champion.name))
-                    ui.tableWidget.setItem(counter, keycounter, current)
 
-                    # background color depending on champion stars
+                    current_champion = QTableWidgetItem()
+                    label = QLabel()
+                    pixmap = QPixmap(champion.icon).scaled(30, 30)
+                    label.setPixmap(pixmap)
+                    ui.tableWidget.setCellWidget(counter, keycounter, label)
+
+                    # show amount of stars right to champion icon
                     if champion.tier == 1:
-                        ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
+                        current_champion.setText("   *")
                     elif champion.tier == 2:
-                        ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
+                        current_champion.setText("   **")
                     elif champion.tier == 3:
-                        ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
+                        current_champion.setText("   ***")
                     else:
-                        ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
+                        current_champion.setText("   ****")
+
+                    current_champion.setFont(QFont('Arial', 24))
+                    ui.tableWidget.setItem(counter, keycounter, current_champion)
 
                     keycounter = keycounter + 1
 
@@ -313,6 +327,102 @@ def run_main_gui():
     #############################################################################
     def items_button_pressed():
         print("Work in Progress")
+
+    #############################################################################
+    def item_double_clicked():
+
+        # prevents infinite loop of function calls
+        ui.tableWidget.itemDoubleClicked = False
+
+        popup.setupUi(popup_window)
+
+        # reset table view
+        popup.tableWidget.setRowCount(0)
+        popup.tableWidget.clearContents()
+        popup.tableWidget.setColumnCount(15)
+
+        # get selected composition group
+        selected_composition_group = filtered_composition_groups[ui.tableWidget.currentItem().row()]
+
+        row_counter = 0
+        for composition in selected_composition_group.compositions:
+
+            # make space for placement row
+            popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
+
+            # show placement of compositon
+            popup.tableWidget.setItem(row_counter, 0, QTableWidgetItem("Placement: " + str(composition.placement)))
+
+            # make space for trait row
+            popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
+            row_counter = row_counter + 1
+
+            # show traits
+            column_counter = 0
+            for trait in composition.traits:
+            
+                current_trait = QTableWidgetItem(str(composition.traits[trait]) + " " + trait)
+                popup.tableWidget.setItem(row_counter, column_counter, current_trait)
+
+                # background color depending on trait class
+                if composition.traits[trait] == 1:
+                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("brown"))
+                elif composition.traits[trait] == 2:
+                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("silver"))
+                elif composition.traits[trait] == 3:
+                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("gold"))
+                else:
+                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("cyan"))
+
+                column_counter = column_counter + 1
+
+            # make space for first champion
+            popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
+            row_counter = row_counter + 1
+
+            # show each champion
+            for champion in composition.champions:
+            
+                current_champion = QTableWidgetItem()
+
+                label = QLabel()
+                pixmap = QPixmap(champion.icon).scaled(30, 30)
+                label.setPixmap(pixmap)
+                popup.tableWidget.setCellWidget(row_counter, 0, label)
+
+                # show amount of stars right to champion icon
+                if champion.tier == 1:
+                    current_champion.setText("   *")
+                elif champion.tier == 2:
+                    current_champion.setText("   **")
+                elif champion.tier == 3:
+                    current_champion.setText("   ***")
+                else:
+                    current_champion.setText("   ****")
+
+                current_champion.setFont(QFont('Arial', 24))
+                popup.tableWidget.setItem(row_counter, 0, current_champion)
+
+                # add icons of the items on the side of champion
+                item_position = 1
+                for item in champion.item_icons:
+                    label = QLabel()
+                    pixmap = QPixmap(item).scaled(30, 30)
+                    label.setPixmap(pixmap)
+                    popup.tableWidget.setCellWidget(row_counter, item_position, label)
+                    item_position += 1
+
+                # make space for next champion
+                popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
+                row_counter = row_counter + 1
+
+            # create an empty row to divide compositions
+            popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
+            row_counter = row_counter + 1
+        
+        popup_window.show()
+        
+
 
     #############################################################################
     def load_data_button_pressed():
@@ -404,6 +514,7 @@ def run_main_gui():
     ui.championsButton.clicked.connect(champions_button_pressed)
     ui.itemsButton.clicked.connect(items_button_pressed)
     ui.loadDataButton.clicked.connect(load_data_button_pressed)
+    ui.tableWidget.itemDoubleClicked.connect(item_double_clicked)
 
     # add traits to dropdown filters
     ui.traitFilter1.addItems(CURRENT_SET_TRAITS)

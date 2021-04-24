@@ -14,3 +14,9 @@ class Champion:
         self.tier = tier
         assert isinstance(rarity, int)
         self.rarity = rarity
+
+        self.item_icons = []
+        for item in self.items:
+            self.item_icons.append("Set4_5_static_data/items/" + str(item) + ".png")
+
+        self.icon = "Set4_5_static_data/champions/" + str(name) + ".png"
