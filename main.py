@@ -169,7 +169,7 @@ def run_main_gui():
 
                 for key in element.traits:
                     # add the elements into the table
-                    current = QTableWidgetItem(str(element.traits[key]) + " " + str(key))
+                    current = QTableWidgetItem(str(key))
                     ui.tableWidget.setItem(counter, keycounter, current)
 
                     # background color depending on trait class
@@ -361,7 +361,7 @@ def run_main_gui():
             column_counter = 0
             for trait in composition.traits:
             
-                current_trait = QTableWidgetItem(str(composition.traits[trait]) + " " + trait)
+                current_trait = QTableWidgetItem(trait)
                 popup.tableWidget.setItem(row_counter, column_counter, current_trait)
 
                 # background color depending on trait class
