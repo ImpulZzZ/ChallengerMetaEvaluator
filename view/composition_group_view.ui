@@ -25,12 +25,15 @@
    <property name="editTriggers">
     <set>QAbstractItemView::NoEditTriggers</set>
    </property>
+<<<<<<< HEAD
    <property name="iconSize">
     <size>
      <width>0</width>
      <height>0</height>
     </size>
    </property>
+=======
+>>>>>>> 9e446bbc984304a5fd1ef677065702014cc3bb41
    <property name="showGrid">
     <bool>false</bool>
    </property>
