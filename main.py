@@ -1,5 +1,6 @@
 from model.functions.getCompositions            import get_compositions
 from model.functions.groupCompositions          import group_compositions_by_traits, group_compositions_by_champions
+from model.functions.filterCompositions         import filter_compositions_by_placement
 from model.functions.filterCompositionGroups    import filter_composition_groups
 from model.functions.dissolveCompositionGroups  import dissolve_composition_groups
 
@@ -60,6 +61,16 @@ def run_main_gui():
                             "Syphoner",
                             "Vanguard"]
 
+    # list of current champions possible to choose in filter dropdown menu
+    CURRENT_SET_CHAMPIONS = [   "Aatrox",
+                                "Shyvana",
+                                "Zilean"]
+
+    # list of current items possible to choose in filter dropdown menu
+    CURRENT_SET_ITEMS = [   "Bloodthirster",
+                            "Redemption",
+                            "Zephyr"]
+
     #############################################################################
     def traits_button_pressed():
 
@@ -79,7 +90,8 @@ def run_main_gui():
                         "champion1" : ui.championFilterCheckBox1.isChecked(),
                         "champion2" : ui.championFilterCheckBox2.isChecked(),
                         "champion3" : ui.championFilterCheckBox3.isChecked(),
-                        "champion4" : ui.championFilterCheckBox4.isChecked()    
+                        "champion4" : ui.championFilterCheckBox4.isChecked(),
+                        "item"      : ui.itemFilterCheckBox.isChecked()
                         }
 
         if not checkboxes["euw"] and not checkboxes["kr"]:
@@ -126,7 +138,7 @@ def run_main_gui():
             # initialize filter dictionary with following shape
             filters={"traits"   : {},
                     "champions" : {},
-                    "placements": [] 
+                    "placements": ui.placementFilter.value() 
                     }
         
             # build up filter dictionary by iterating over filter elements
@@ -515,6 +527,11 @@ def run_main_gui():
     ui.traitFilter2.addItems(CURRENT_SET_TRAITS)
     ui.traitFilter3.addItems(CURRENT_SET_TRAITS)
     ui.traitFilter4.addItems(CURRENT_SET_TRAITS)
+    ui.championFilter1.addItems(CURRENT_SET_CHAMPIONS)
+    ui.championFilter2.addItems(CURRENT_SET_CHAMPIONS)
+    ui.championFilter3.addItems(CURRENT_SET_CHAMPIONS)
+    ui.championFilter4.addItems(CURRENT_SET_CHAMPIONS)
+    ui.itemFilter.addItems(CURRENT_SET_ITEMS)
 
     # current patch
     ui.currentPatchFilter.setText(CURRENT_PATCH)
