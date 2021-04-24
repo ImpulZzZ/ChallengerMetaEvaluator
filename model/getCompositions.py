@@ -1,5 +1,5 @@
-from model.classes.Composition  import Composition
-from model.classes.Champion     import Champion
+from model.Composition  import Composition
+from model.Champion     import Champion
 
 import requests
 import re

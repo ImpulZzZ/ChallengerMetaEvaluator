@@ -1,4 +1,4 @@
-from model.classes.CompositionGroup import CompositionGroup
+from model.CompositionGroup import CompositionGroup
 
 def filter_compositions_by_traits(compositions, traits):
 

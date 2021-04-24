@@ -1,8 +1,7 @@
-from model.functions.getCompositions            import get_compositions
-from model.functions.groupCompositions          import group_compositions_by_traits, group_compositions_by_champions
-from model.functions.filterCompositions         import filter_compositions_by_placement
-from model.functions.filterCompositionGroups    import filter_composition_groups
-from model.functions.dissolveCompositionGroups  import dissolve_composition_groups
+from model.getCompositions            import get_compositions
+from model.groupCompositions          import group_compositions_by_traits, group_compositions_by_champions
+from model.filterCompositionGroups    import filter_composition_groups, filter_composition_groups_by_placement
+from model.dissolveCompositionGroups  import dissolve_composition_groups
 
 from view import main_gui               as main_gui
 from view import composition_group_view as composition_group_view
@@ -75,10 +74,12 @@ def run_main_gui():
     def traits_button_pressed():
 
         nonlocal filtered_composition_groups
+        nonlocal latest_placement_filter
 
         # reset table view
         ui.tableWidget.setRowCount(0)
         ui.tableWidget.clearContents()
+        considered_regions = {}
 
         # verify which checkboxes are pressed or not pressed
         checkboxes = {  "euw"       : ui.euwCheckBox.isChecked(),
@@ -96,8 +97,6 @@ def run_main_gui():
 
         if not checkboxes["euw"] and not checkboxes["kr"]:
             return
-
-        considered_regions = {}
 
         # show maximum of 10 traits per composition
         COLUMN_COUNT = 15
@@ -162,8 +161,16 @@ def run_main_gui():
             # apply possible filters on dataset
             filtered_composition_groups = filter_composition_groups(considered_regions[region], filters)
 
+            filtered_composition_groups_2 = filtered_composition_groups
+
+            # filter for placements if filter slider was changed
+            if latest_placement_filter != ui.placementFilter.value():
+                latest_placement_filter = ui.placementFilter.value()
+                filtered_composition_groups_2 = filter_composition_groups_by_placement(filtered_composition_groups, latest_placement_filter)
+
+
             # loop over compisitiongroups of each region
-            for composition_group in filtered_composition_groups:
+            for composition_group in filtered_composition_groups_2:
                 
                 # assert composition groups to be grouped by traits, so entries should be equal
                 #   => consider only first entry
@@ -204,6 +211,7 @@ def run_main_gui():
         nonlocal euw_composition_groups
         nonlocal kr_composition_groups
         nonlocal filtered_composition_groups
+        nonlocal latest_placement_filter
         considered_regions = {}
 
         # verify which checkboxes are pressed or not pressed
@@ -216,7 +224,8 @@ def run_main_gui():
                         "champion1" : ui.championFilterCheckBox1.isChecked(),
                         "champion2" : ui.championFilterCheckBox2.isChecked(),
                         "champion3" : ui.championFilterCheckBox3.isChecked(),
-                        "champion4" : ui.championFilterCheckBox4.isChecked()
+                        "champion4" : ui.championFilterCheckBox4.isChecked(),
+                        "item"      : ui.itemFilterCheckBox.isChecked()
                         }
 
         if not checkboxes["euw"] and not checkboxes["kr"]:
@@ -265,7 +274,7 @@ def run_main_gui():
             # initialize filter dictionary with following shape
             filters={"traits"   : {},
                     "champions" : {},
-                    "placements": [] 
+                    "placements": ui.placementFilter.value()
                     }
         
             # build up filter dictionary by iterating over filter elements
@@ -289,8 +298,15 @@ def run_main_gui():
             # apply possible filters on dataset
             filtered_composition_groups = filter_composition_groups(considered_regions[region], filters)
 
+            filtered_composition_groups_2 = filtered_composition_groups
+
+            # filter for placements if filter slider was changed
+            if latest_placement_filter != ui.placementFilter.value():
+                latest_placement_filter = ui.placementFilter.value()
+                filtered_composition_groups_2 = filter_composition_groups_by_placement(filtered_composition_groups, latest_placement_filter)
+
             # loop over compisitiongroups of each region
-            for composition_group in filtered_composition_groups:
+            for composition_group in filtered_composition_groups_2:
                 
                 # assert composition groups to be grouped by champions, so entries should be equal
                 #   => only consider first entry
@@ -514,6 +530,8 @@ def run_main_gui():
     main_window = QMainWindow()
     ui = main_gui.Ui_mainWindow()
     ui.setupUi(main_window)
+
+    latest_placement_filter = ui.placementFilter.value()
 
     # bind functions to the buttons
     ui.traitsButton.clicked.connect(traits_button_pressed)

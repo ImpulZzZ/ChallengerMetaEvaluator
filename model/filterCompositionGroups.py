@@ -1,3 +1,5 @@
+from model.CompositionGroup import CompositionGroup
+
 def filter_composition_groups(composition_groups, filters):
     # list of resulting composition groups
     result_composition_groups = []
@@ -41,20 +43,23 @@ def filter_composition_groups(composition_groups, filters):
 
 
 def filter_composition_groups_by_placement(composition_groups, max_placement):
+
     # list of resulting composition groups
     result_composition_groups = []
        
     # loop over every composition group
     for current_comp_group in composition_groups:
 
-        for composition in current_comp_group.compositions:
+        current_compositions = current_comp_group.compositions.copy()
+
+        for composition in current_compositions:
 
             # append the composition group to current filtered composition group if placement is better or equal than filter
             if composition.placement > max_placement:
-                current_comp_group.compositions.remove(composition)
+                current_compositions.remove(composition)
 
         # if the filtered composition group has more than 1 composition, append it to result
-        if len(current_comp_group.compositions) > 0:
-            result_composition_groups.append(current_comp_group)
+        if len(current_compositions) > 0:
+            result_composition_groups.append(CompositionGroup(current_compositions))
 
     return result_composition_groups

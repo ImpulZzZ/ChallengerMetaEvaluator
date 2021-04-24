@@ -1,5 +1,5 @@
-from model.classes.Composition      import Composition
-from model.classes.CompositionGroup import CompositionGroup
+from model.Composition      import Composition
+from model.CompositionGroup import CompositionGroup
 
 def group_compositions_by_traits(compositions):
     processed   = []
