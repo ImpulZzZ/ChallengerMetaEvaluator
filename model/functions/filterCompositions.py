@@ -25,21 +25,14 @@ def filter_compositions_by_traits(compositions, traits):
     return result_compositions
 
 
-def filter_compositions_by_placements(compositions, placements):
+def filter_compositions_by_placement(compositions, max_placement):
     result_compositions = []
 
     # loop over every composition
     for current in compositions:
 
-        # decides, whether composition is accepted by the filter or not
-        eligible = True
-
-        for champion in current.placements:
-            if champion.name not in placements:
-                eligible = False
-
-        # append the composition to result if filters are accepted
-        if eligible:
+        # append the composition to result if placement better or equal than filter
+        if current.placement <= max_placement:
             result_compositions.append(current)
     
     return result_compositions
