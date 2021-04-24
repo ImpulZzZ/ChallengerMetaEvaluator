@@ -185,11 +185,6 @@ def run_main_gui():
                     keycounter = keycounter + 1
 
                 counter = counter + 1
-        
-
-    #############################################################################
-    def compositions_button_pressed():
-        print("Work in Progress")
 
     #############################################################################
     def champions_button_pressed():
@@ -509,7 +504,6 @@ def run_main_gui():
     ui.setupUi(main_window)
 
     # bind functions to the buttons
-    ui.compositionsButton.clicked.connect(compositions_button_pressed)
     ui.traitsButton.clicked.connect(traits_button_pressed)
     ui.championsButton.clicked.connect(champions_button_pressed)
     ui.itemsButton.clicked.connect(items_button_pressed)
