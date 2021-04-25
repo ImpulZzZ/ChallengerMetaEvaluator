@@ -17,9 +17,11 @@ def run_main_gui():
 
         # initialize filter dictionary with following shape
         filters={
-            "traits"   : {},
-            "champions" : {},
-            "placements": ui.placementFilter.value() 
+            "traits"        : {},
+            "champions"     : {},
+            "placements"    : ui.placementFilter.value() ,
+            "traitTier"    : checkboxes["traitTier"],
+            "championStar" : checkboxes["championStar"]
             }
 
         if checkboxes["trait1"]:
@@ -31,13 +33,13 @@ def run_main_gui():
         if checkboxes["trait4"]:
             filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
         if checkboxes["champion1"]:
-            filters["champions"].update({ui.championFilter1.text() : ui.championFilterSlider1.value()})
+            filters["champions"].update({ui.championFilter1.currentText() : ui.championFilterSlider1.value()})
         if checkboxes["champion2"]:
-            filters["champions"].update({ui.championFilter2.text() : ui.championFilterSlider2.value()})
+            filters["champions"].update({ui.championFilter2.currentText() : ui.championFilterSlider2.value()})
         if checkboxes["champion3"]:
-            filters["champions"].update({ui.championFilter3.text() : ui.championFilterSlider3.value()})
+            filters["champions"].update({ui.championFilter3.currentText() : ui.championFilterSlider3.value()})
         if checkboxes["champion4"]:
-            filters["champions"].update({ui.championFilter4.text() : ui.championFilterSlider4.value()})
+            filters["champions"].update({ui.championFilter4.currentText() : ui.championFilterSlider4.value()})
 
         return filters
 
@@ -57,18 +59,20 @@ def run_main_gui():
     def get_checkboxes():
         
         return {
-                "trait1"    : ui.traitFilterCheckBox1.isChecked(),
-                "trait2"    : ui.traitFilterCheckBox2.isChecked(),
-                "trait3"    : ui.traitFilterCheckBox3.isChecked(),
-                "trait4"    : ui.traitFilterCheckBox4.isChecked(),
-                "champion1" : ui.championFilterCheckBox1.isChecked(),
-                "champion2" : ui.championFilterCheckBox2.isChecked(),
-                "champion3" : ui.championFilterCheckBox3.isChecked(),
-                "champion4" : ui.championFilterCheckBox4.isChecked(),
-                "item"      : ui.itemFilterCheckBox.isChecked(),
+                "trait1"        : ui.traitFilterCheckBox1.isChecked(),
+                "trait2"        : ui.traitFilterCheckBox2.isChecked(),
+                "trait3"        : ui.traitFilterCheckBox3.isChecked(),
+                "trait4"        : ui.traitFilterCheckBox4.isChecked(),
+                "traitTier"     : ui.traitFilterTierCheckBox.isChecked(),
+                "champion1"     : ui.championFilterCheckBox1.isChecked(),
+                "champion2"     : ui.championFilterCheckBox2.isChecked(),
+                "champion3"     : ui.championFilterCheckBox3.isChecked(),
+                "champion4"     : ui.championFilterCheckBox4.isChecked(),
+                "championStar"  : ui.championStarFilterCheckBox.isChecked(),
+                "item"          : ui.itemFilterCheckBox.isChecked(),
                 "regions" : {
-                    "euw"       : ui.euwCheckBox.isChecked(),
-                    "kr"        : ui.krCheckBox.isChecked()
+                    "euw"   : ui.euwCheckBox.isChecked(),
+                    "kr"    : ui.krCheckBox.isChecked()
                     }
                 }
 
@@ -215,7 +219,73 @@ def run_main_gui():
 
     #############################################################################
     def show_items():
-        print("Work in Progress")
+        nonlocal composition_group_database
+
+        # verify which checkboxes are pressed or not pressed
+        checkboxes = get_checkboxes()
+
+        if not checkboxes["regions"]["euw"] and not checkboxes["regions"]["kr"]:
+            return
+
+        reset_tableview(headers=["Occurences", "Champions"])
+
+        # validate which regions are selected and group them
+        (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
+                                                                                composition_groups  = composition_group_database, 
+                                                                                group_by            = "champions")
+
+        # validate which filters have to be applied
+        filters = build_filters(checkboxes)
+
+        # loop over every considered region
+        row_counter = 0
+        for region in considered_regions:
+
+            # always filter for given placements
+            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(  composition_groups  = considered_regions[region],
+                                                                                                    max_placement       = filters["placements"])
+
+            # apply other possible filters on dataset
+            composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
+                                                                                        filters             = filters)
+
+            # loop over compisitiongroups of each region
+            for composition_group in composition_group_database["shown_in_table"]:
+                
+                # assert composition groups to be grouped by champions, so entries should be equal
+                #   => only consider first entry
+                element = composition_group.compositions[0]
+
+                # change table size dynamically
+                ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
+
+                # add the counter to table
+                current_counter = QTableWidgetItem(str(composition_group.counter))
+                ui.tableWidget.setItem(row_counter, 0, current_counter)
+
+                for champion in element.champions:
+                    if len(champion.items) > 0:
+                        label = QLabel()
+                        pixmap = QPixmap(champion.icon).scaled(30, 30)
+                        label.setPixmap(pixmap)
+                        ui.tableWidget.setCellWidget(row_counter, 1, label)
+
+                        # add icons of the items on the side of champion
+                        item_position = 2
+                        for item in champion.item_icons:
+                            label = QLabel()
+                            pixmap = QPixmap(item).scaled(30, 30)
+                            label.setPixmap(pixmap)
+                            ui.tableWidget.setCellWidget(row_counter, item_position, label)
+                            item_position += 1
+
+                        # change table size dynamically
+                        ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
+                        row_counter = row_counter + 1
+
+                row_counter = row_counter + 1
+        
+        
 
     #############################################################################
     def show_composition_group():

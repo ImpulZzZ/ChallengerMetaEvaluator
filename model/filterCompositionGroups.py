@@ -1,5 +1,74 @@
 from model.CompositionGroup import CompositionGroup
 
+def filter_composition_groups_by_traits(composition_groups, traits, tier_relevant):
+
+    # list of resulting composition groups
+    result_composition_groups = []
+
+    # loop over every composition group
+    for current_comp_group in composition_groups:
+
+        # composition groups can have 1 or more equal composition-traits
+        #   => consider only first composition
+        current = current_comp_group.compositions[0]
+
+        # decides, whether composition is accepted by the filter or not
+        eligible = True
+
+        # iterate over filter dictionary
+        for key in traits:
+            # validate if trait is in traits
+            if key in current.traits:
+                # if tier is relevant, filter by that aswell
+                if tier_relevant and current.traits[key] != traits[key]:
+                    eligible = False
+            else:
+                eligible = False
+        
+        # append the composition group to result if filters are accepted
+        if eligible:
+            result_composition_groups.append(current_comp_group)
+
+    return result_composition_groups
+
+
+def filter_composition_groups_by_champions(composition_groups, champions, star_relevant):
+
+    # list of resulting composition groups
+    result_composition_groups = []
+
+    # loop over every composition group
+    for current_comp_group in composition_groups:
+
+        # composition groups can have 1 or more equal composition-champions
+        #   => consider only first composition
+        current = current_comp_group.compositions[0]
+
+        # decides, whether composition is accepted by the filter or not
+        eligible = True
+
+        # iterate over filter dictionary
+        for key in champions:
+            # validate if champion is in champions
+            if key in current.champion_names:
+                # if tier is relevant, filter by that aswell
+                if star_relevant:
+                    eligible = False
+                    # loop over champions and ..
+                    for champion in current.champions:
+                        # .. validate whether the champion has the preferred star
+                        if champion.name == key and champion.tier == champions[key]:
+                            eligible = True
+            else:
+                eligible = False
+
+        # append the composition group to result if filters are accepted
+        if eligible:
+            result_composition_groups.append(current_comp_group)
+
+    return result_composition_groups
+
+
 def filter_composition_groups_by_placement(composition_groups, max_placement):
 
     # list of resulting composition groups
@@ -35,29 +104,14 @@ def filter_composition_groups(composition_groups, filters):
 
     # filter for traits
     if trait_filter_active:
-       
-        # loop over every composition group
-        for current_comp_group in composition_groups:
+        result_composition_groups = filter_composition_groups_by_traits(composition_groups  = composition_groups, 
+                                                                        traits              = filters["traits"],
+                                                                        tier_relevant       = filters["traitTier"])
 
-            # composition groups can have 1 or more equal composition-traits
-            #   => consider only first composition
-            current = current_comp_group.compositions[0]
-
-            # decides, whether composition is accepted by the filter or not
-            eligible = True
-
-            # iterate over filter dictionary
-            for key in filters["traits"]:
-                try:
-                    # value not equal
-                    if current.traits[key] != filters["traits"][key]:
-                        eligible = False
-                # key does not exist
-                except KeyError:
-                    eligible = False
-            
-            # append the composition group to result if filters are accepted
-            if eligible:
-                result_composition_groups.append(current_comp_group)
-
+    # filter for champions
+    if champion_filter_active:
+        result_composition_groups = filter_composition_groups_by_champions( composition_groups  = composition_groups, 
+                                                                            champions           = filters["champions"],
+                                                                            star_relevant       = filters["championStar"])
+    
     return result_composition_groups
