@@ -43,13 +43,21 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
         regional_routing_value  = "unknown"
 
 
-    # request for current players and consider only the highest rankeds
-    response = request_api( region          = platform_routing_value,
-                            api_key         = api_key, 
-                            base_url        = base_url, 
-                            parameter_url   = "/tft/league/v1/" + ranked_league)
+    try:
+        # request for current players and consider only the highest rankeds
+        response = request_api( region          = platform_routing_value,
+                                api_key         = api_key, 
+                                base_url        = base_url, 
+                                parameter_url   = "/tft/league/v1/" + ranked_league)
+        
+        player_list = response["entries"]
+    
+    except KeyError:
+        print("KeyError: ", response)
+        print("Try again!")
+        return
 
-    player_list = response["entries"]
+    
     player_list = sorted(player_list, key=lambda k: k['leaguePoints'], reverse=True)
     best_players = player_list[0:players_per_region]
 
@@ -57,13 +65,18 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
     for player in best_players:
         summoner_name   = player["summonerName"]
 
-        # request puuid of each player
-        current_url     = "/tft/summoner/v1/summoners/by-name/" + summoner_name
-        puuid           = request_api(  region          = platform_routing_value,
-                                        api_key         = api_key,
-                                        base_url        = base_url,
-                                        parameter_url   = current_url)["puuid"]
+        try:
+            # request puuid of each player
+            current_url     = "/tft/summoner/v1/summoners/by-name/" + summoner_name
+            puuid           = request_api(  region          = platform_routing_value,
+                                            api_key         = api_key,
+                                            base_url        = base_url,
+                                            parameter_url   = current_url)["puuid"]
+        except KeyError:
+            print("KeyError: Api Request failed. Try again!")
+            return
 
+        
         # request last X games of each player
         current_url = "/tft/match/v1/matches/by-puuid/" + puuid + "/ids"
         matches     = (request_matches_by_puuid(region          = regional_routing_value,
@@ -79,13 +92,20 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
 
     # loop over each match
     for match in analyzed_games:
-        current_url = "/tft/match/v1/matches/" + match
-        api_result  = request_matches_by_match_id(  region          = regional_routing_value,
-                                                    api_key         = api_key,
-                                                    base_url        = base_url,
-                                                    parameter_url   = current_url)
+        try:
+            current_url = "/tft/match/v1/matches/" + match
+            api_result  = request_matches_by_match_id(  region          = regional_routing_value,
+                                                        api_key         = api_key,
+                                                        base_url        = base_url,
+                                                        parameter_url   = current_url)
 
-        participants    = api_result["info"]["participants"]
+            participants    = api_result["info"]["participants"]
+
+        except KeyError:
+            print("KeyError: Api Request failed. Try again!")
+            print(api_result)
+            return
+
         patch = re.search("<Releases/(.*)>", api_result["info"]["game_version"]).group(1)
 
         # only consider current patch
