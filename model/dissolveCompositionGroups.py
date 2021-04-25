@@ -4,8 +4,6 @@ def dissolve_composition_groups(composition_groups):
     # initialize empty result list
     compositions = []
 
-    # TODO: add placement filter
-
     # loop over each composition group
     for composition_group in composition_groups:
         # loop over each composition in each composition group

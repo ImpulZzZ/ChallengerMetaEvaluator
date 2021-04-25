@@ -67,7 +67,7 @@ def group_compositions(checkboxes, composition_groups, group_by):
 
     for region in checkboxes["regions"]:
         if checkboxes["regions"][region]:
-            if composition_groups_copy[region]["grouped_by"] != "traits":
+            if composition_groups_copy[region]["grouped_by"] != group_by:
                 compositions = dissolve_composition_groups(composition_groups_copy[region]["groups"])
 
                 if group_by == "traits":
