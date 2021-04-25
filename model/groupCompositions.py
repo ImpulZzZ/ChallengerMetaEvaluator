@@ -1,4 +1,3 @@
-from model.Composition                  import Composition
 from model.CompositionGroup             import CompositionGroup
 from model.dissolveCompositionGroups    import dissolve_composition_groups
 
@@ -68,19 +67,19 @@ def group_compositions(checkboxes, composition_groups, group_by):
     for region in checkboxes["regions"]:
         if checkboxes["regions"][region]:
             if composition_groups_copy[region]["grouped_by"] != group_by:
-                compositions = dissolve_composition_groups(composition_groups_copy[region]["groups"])
+                compositions = dissolve_composition_groups(composition_groups_copy[region]["database"])
 
                 if group_by == "traits":
-                    composition_groups_copy[region]["groups"]        = group_compositions_by_traits(compositions)
-                    composition_groups_copy[region]["grouped_by"]    = group_by
+                    composition_groups_copy[region]["database"]     = group_compositions_by_traits(compositions)
+                    composition_groups_copy[region]["grouped_by"]   = group_by
                 elif group_by == "champions":
-                    composition_groups_copy[region]["groups"]        = group_compositions_by_champions(compositions)
-                    composition_groups_copy[region]["grouped_by"]    = group_by
+                    composition_groups_copy[region]["database"]     = group_compositions_by_champions(compositions)
+                    composition_groups_copy[region]["grouped_by"]   = group_by
                 elif group_by == "items":
                     print("Work in Progress")
                 else:
                     return {}
 
-            considered_regions.update({region : composition_groups_copy[region]["groups"]})
+            considered_regions.update({region : composition_groups_copy[region]["database"]})
 
     return (considered_regions, composition_groups_copy)

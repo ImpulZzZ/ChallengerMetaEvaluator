@@ -1,6 +1,6 @@
-from model.getCompositions            import get_compositions
-from model.groupCompositions          import group_compositions_by_traits, group_compositions
-from model.filterCompositionGroups    import filter_composition_groups
+from model.getCompositions          import get_compositions
+from model.groupCompositions        import group_compositions_by_traits, group_compositions
+from model.filterCompositionGroups  import filter_composition_groups, filter_composition_groups_by_placement
 
 from view import main_gui               as main_gui
 from view import composition_group_view as composition_group_view
@@ -75,9 +75,7 @@ def run_main_gui():
     #############################################################################
     def show_traits():
 
-        nonlocal composition_groups_shown_in_table
-        nonlocal latest_placement_filter
-        nonlocal regional_composition_groups
+        nonlocal composition_group_database
 
         # verify which checkboxes are pressed or not pressed
         checkboxes = get_checkboxes()
@@ -85,7 +83,9 @@ def run_main_gui():
         reset_tableview(headers=["Occurences", "Traits"])
 
         # validate which regions are selected and group them
-        (considered_regions, regional_composition_groups) = group_compositions(checkboxes, regional_composition_groups, "traits")
+        (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
+                                                                                composition_groups  = composition_group_database, 
+                                                                                group_by            = "traits")
 
         # validate which filters have to be applied
         filters = build_filters(checkboxes)
@@ -93,12 +93,17 @@ def run_main_gui():
         # loop over every considered region
         counter = 0
         for region in considered_regions:
+
+            # always filter for given placements
+            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(  composition_groups  = considered_regions[region],
+                                                                                                    max_placement       = filters["placements"])
             
-            # apply possible filters on dataset
-            composition_groups_shown_in_table = filter_composition_groups(considered_regions[region], filters)
+            # apply other possible filters on dataset
+            composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
+                                                                                        filters             = filters)
 
             # loop over compisitiongroups of each region
-            for composition_group in composition_groups_shown_in_table:
+            for composition_group in composition_group_database["shown_in_table"]:
                 
                 # assert composition groups to be grouped by traits, so entries should be equal
                 #   => consider only first entry
@@ -136,9 +141,7 @@ def run_main_gui():
     #############################################################################
     def show_champions():
 
-        nonlocal regional_composition_groups
-        nonlocal composition_groups_shown_in_table
-        nonlocal latest_placement_filter
+        nonlocal composition_group_database
 
         # verify which checkboxes are pressed or not pressed
         checkboxes = get_checkboxes()
@@ -149,7 +152,9 @@ def run_main_gui():
         reset_tableview(headers=["Occurences", "Champions"])
 
         # validate which regions are selected and group them
-        (considered_regions, regional_composition_groups) = group_compositions(checkboxes, regional_composition_groups, "champions")
+        (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
+                                                                                composition_groups  = composition_group_database, 
+                                                                                group_by            = "champions")
 
         # validate which filters have to be applied
         filters = build_filters(checkboxes)
@@ -158,11 +163,16 @@ def run_main_gui():
         counter = 0
         for region in considered_regions:
 
-            # apply possible filters on dataset
-            composition_groups_shown_in_table = filter_composition_groups(considered_regions[region], filters)
+            # always filter for given placements
+            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(  composition_groups  = considered_regions[region],
+                                                                                                    max_placement       = filters["placements"])
+
+            # apply other possible filters on dataset
+            composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
+                                                                                        filters             = filters)
 
             # loop over compisitiongroups of each region
-            for composition_group in composition_groups_shown_in_table:
+            for composition_group in composition_group_database["shown_in_table"]:
                 
                 # assert composition groups to be grouped by champions, so entries should be equal
                 #   => only consider first entry
@@ -221,7 +231,7 @@ def run_main_gui():
         popup.tableWidget.setColumnCount(COLUMN_COUNT)
 
         # get selected composition group
-        selected_composition_group = composition_groups_shown_in_table[ui.tableWidget.currentItem().row()]
+        selected_composition_group = composition_group_database["shown_in_table"][ui.tableWidget.currentItem().row()]
 
         row_counter = 0
         for composition in selected_composition_group.compositions:
@@ -304,7 +314,7 @@ def run_main_gui():
     #############################################################################
     def load_data():
         # to modify outer variables in inner function
-        nonlocal regional_composition_groups
+        nonlocal composition_group_database
 
         # verify which loading checkboxes are pressed or not pressed
         checkboxes = {  "euw"           : ui.euwCheckBox.isChecked(),
@@ -331,7 +341,7 @@ def run_main_gui():
                     return
 
         # if euw is checked and not already loaded
-        if checkboxes["euw"] and not regional_composition_groups["euw"]["loaded"]:
+        if checkboxes["euw"] and not composition_group_database["euw"]["loaded"]:
             europe = get_compositions(  region              = "europe",
                                         games_per_player    = int(ui.gamesPerPlayer.text()),
                                         players_per_region  = int(ui.playersPerRegion.text()),
@@ -343,15 +353,15 @@ def run_main_gui():
             euw_comps_unsorted.sort(key=lambda x: x.counter, reverse=True)
 
             # fill the composition_group dictionary
-            regional_composition_groups["euw"]["groups"]        = sorted(euw_comps_unsorted, key=lambda x: x.counter, reverse=True)
-            regional_composition_groups["euw"]["grouped_by"]    = "traits"
-            regional_composition_groups["euw"]["loaded"]        = True
+            composition_group_database["euw"]["database"]   = sorted(euw_comps_unsorted, key=lambda x: x.counter, reverse=True)
+            composition_group_database["euw"]["grouped_by"] = "traits"
+            composition_group_database["euw"]["loaded"]     = True
 
             # green checkbox to signalize loading is done
             ui.euwCheckBox.setStyleSheet("color: green;")
 
         # if kr is checked and not already loaded
-        if checkboxes["kr"] and not regional_composition_groups["kr"]["loaded"]:
+        if checkboxes["kr"] and not composition_group_database["kr"]["loaded"]:
             korea = get_compositions(   region              = "korea",
                                         games_per_player    = int(ui.gamesPerPlayer.text()),
                                         players_per_region  = int(ui.playersPerRegion.text()),
@@ -363,9 +373,9 @@ def run_main_gui():
             kr_comps_unsorted.sort(key=lambda x: x.counter, reverse=True)
 
             # fill the composition_group dictionary
-            regional_composition_groups["kr"]["groups"]         = sorted(kr_comps_unsorted, key=lambda x: x.counter, reverse=True)
-            regional_composition_groups["euw"]["grouped_by"]    = "traits"
-            regional_composition_groups["kr"]["loaded"]         = True
+            composition_group_database["kr"]["database"]    = sorted(kr_comps_unsorted, key=lambda x: x.counter, reverse=True)
+            composition_group_database["euw"]["grouped_by"] = "traits"
+            composition_group_database["kr"]["loaded"]      = True
 
             # green checkbox to signalize loading is done
             ui.krCheckBox.setStyleSheet("color: green;")
@@ -379,6 +389,7 @@ def run_main_gui():
     ui.setupUi(main_window)
 
     # setup global variables
+    COLUMN_COUNT = 15
     CURRENT_PATCH = "11.8"
     CURRENT_SET_TRAITS = [  "Cultist",
                             "Daredevil",
@@ -413,21 +424,19 @@ def run_main_gui():
     CURRENT_SET_ITEMS = [   "Bloodthirster",
                             "Redemption",
                             "Zephyr"]
-    regional_composition_groups = {
+    composition_group_database = {
         "euw" : {
-            "groups"    : [],
-            "grouped_by": "none",
-            "loaded"    : False
+            "database"      : [],
+            "grouped_by"    : "none",
+            "loaded"        : False
         },
         "kr" : {
-            "groups"    : [],
-            "grouped_by": "none",
-            "loaded"    : False
-        }
+            "database"      : [],
+            "grouped_by"    : "none",
+            "loaded"        : False
+        },
+        "shown_in_table"    : []  
     }
-    latest_placement_filter = ui.placementFilter.value()
-    composition_groups_shown_in_table = []
-    COLUMN_COUNT = 15
 
     # bind functions to the buttons
     ui.traitsButton.clicked.connect(show_traits)
