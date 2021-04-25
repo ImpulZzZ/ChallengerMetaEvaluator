@@ -1,7 +1,6 @@
 from model.getCompositions            import get_compositions
-from model.groupCompositions          import group_compositions_by_traits, group_compositions_by_champions
-from model.filterCompositionGroups    import filter_composition_groups, filter_composition_groups_by_placement
-from model.dissolveCompositionGroups  import dissolve_composition_groups
+from model.groupCompositions          import group_compositions_by_traits, group_compositions
+from model.filterCompositionGroups    import filter_composition_groups
 
 from view import main_gui               as main_gui
 from view import composition_group_view as composition_group_view
@@ -78,28 +77,17 @@ def run_main_gui():
 
         nonlocal composition_groups_shown_in_table
         nonlocal latest_placement_filter
+        nonlocal regional_composition_groups
 
-        considered_regions = {}
-
+        # verify which checkboxes are pressed or not pressed
         checkboxes = get_checkboxes()
 
         reset_tableview(headers=["Occurences", "Traits"])
 
-        no_regions_selected = True
-        for region in checkboxes["regions"]:
-            if checkboxes["regions"][region]:
-                if regional_composition_groups[region]["grouped_by"] != "traits":
-                    compositions = dissolve_composition_groups(regional_composition_groups[region]["groups"])
-                    regional_composition_groups[region]["groups"]        = group_compositions_by_traits(compositions)
-                    regional_composition_groups[region]["grouped_by"]    = "traits"
+        # validate which regions are selected and group them
+        (considered_regions, regional_composition_groups) = group_compositions(checkboxes, regional_composition_groups, "traits")
 
-                considered_regions.update({region : regional_composition_groups[region]["groups"]})
-                no_regions_selected = False
-
-        # do nothing if no region was selected to load
-        if no_regions_selected:
-            return
-
+        # validate which filters have to be applied
         filters = build_filters(checkboxes)
 
         # loop over every considered region
@@ -151,7 +139,6 @@ def run_main_gui():
         nonlocal regional_composition_groups
         nonlocal composition_groups_shown_in_table
         nonlocal latest_placement_filter
-        considered_regions = {}
 
         # verify which checkboxes are pressed or not pressed
         checkboxes = get_checkboxes()
@@ -161,21 +148,10 @@ def run_main_gui():
 
         reset_tableview(headers=["Occurences", "Champions"])
 
-        no_regions_selected = True
-        for region in checkboxes["regions"]:
-            if checkboxes["regions"][region]:
-                if regional_composition_groups[region]["grouped_by"] != "champions":
-                    compositions = dissolve_composition_groups(regional_composition_groups[region]["groups"])
-                    regional_composition_groups[region]["groups"]        = group_compositions_by_champions(compositions)
-                    regional_composition_groups[region]["grouped_by"]    = "champions"
+        # validate which regions are selected and group them
+        (considered_regions, regional_composition_groups) = group_compositions(checkboxes, regional_composition_groups, "champions")
 
-                considered_regions.update({region : regional_composition_groups[region]["groups"]})
-                no_regions_selected = False
-
-        # do nothing if no region was selected to load
-        if no_regions_selected:
-            return
-
+        # validate which filters have to be applied
         filters = build_filters(checkboxes)
 
         # loop over every considered region
