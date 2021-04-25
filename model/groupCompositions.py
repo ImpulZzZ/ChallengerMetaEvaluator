@@ -26,7 +26,7 @@ def group_compositions_by_traits(compositions):
     
     return result
 
-# TODO does not work correctly
+
 def group_compositions_by_champions(compositions):
     processed   = []
     num_comps   = len(compositions)
@@ -44,13 +44,7 @@ def group_compositions_by_champions(compositions):
 
         # compare each element x with y > x
         for y in range(x+1, num_comps):
-
-            # lists of champion ids
-            x_champions = (champion.name for champion in compositions[x].champions)
-            y_champions = (champion.name for champion in compositions[y].champions)
-
-            # compare lists
-            if x_champions == y_champions:
+            if compositions[x].champion_names == compositions[y].champion_names:
                 current_comp_group.append(compositions[y])
                 processed.append(y)
         

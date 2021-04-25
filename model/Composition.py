@@ -10,3 +10,10 @@ class Composition:
         self.traits = traits
         assert isinstance(patch, str)
         self.patch = patch
+
+        self.champion_names = []
+        for champion in self.champions:
+            self.champion_names.append(champion.name)
+        self.champion_names = sorted(self.champion_names)
+
+        
