@@ -20,9 +20,17 @@ def extract_names_from_json(json_file):
         for current_stats in data:
             result.append(current_stats["name"])
 
-
-    
     return sorted(result)
+
+def create_name_to_id_map(jsonfile):
+    result = {}
+    with open(json_file) as jsonfile:
+        data = json.load(jsonfile)
+
+        for current_stats in data:
+            result.update(current_stats["name"] : current_stats["id"])
+
+    return result
 
 
 # starts the main gui
@@ -380,8 +388,8 @@ def run_main_gui():
                 # add icons of the items on the side of champion
                 item_position = 1
                 for item in champion.item_icons:
-                    label = QLabel()
-                    pixmap = QPixmap(item).scaled(30, 30)
+                    label   = QLabel()
+                    pixmap  = QPixmap(item).scaled(30, 30)
                     label.setPixmap(pixmap)
                     popup.tableWidget.setCellWidget(row_counter, item_position, label)
                     item_position += 1
@@ -468,19 +476,20 @@ def run_main_gui():
     ##############################################################################
 
     # setup the gui
-    app = QApplication([])
+    app         = QApplication([])
     main_window = QMainWindow()
-    ui = main_gui.Ui_mainWindow()
+    ui          = main_gui.Ui_mainWindow()
     ui.setupUi(main_window)
 
     # setup global variables
-    COLUMN_COUNT = 15
-    CURRENT_PATCH = "11.9"
-    STATIC_DATA_DIR = "Set5_static_data/"
-    CURRENT_SET_TRAITS = extract_names_from_json(STATIC_DATA_DIR + "traits.json")
-    CURRENT_SET_CHAMPIONS = extract_names_from_json(STATIC_DATA_DIR + "champions.json")
-    CURRENT_SET_ITEMS = extract_names_from_json(STATIC_DATA_DIR + "items.json")
-    composition_group_database = {
+    COLUMN_COUNT                = 15
+    CURRENT_PATCH               = "11.9"
+    STATIC_DATA_DIR             = "Set5_static_data/"
+    CURRENT_SET_TRAITS          = extract_names_from_json(STATIC_DATA_DIR + "traits.json")
+    CURRENT_SET_CHAMPIONS       = extract_names_from_json(STATIC_DATA_DIR + "champions.json")
+    CURRENT_SET_ITEMS           = extract_names_from_json(STATIC_DATA_DIR + "items.json")
+    ITEM_NAME_TO_ID_MAP         = create_name_to_id_map(STATIC_DATA_DIR + "items.json")
+    composition_group_database  = {
         "euw" : {
             "database"      : [],
             "grouped_by"    : "none",
