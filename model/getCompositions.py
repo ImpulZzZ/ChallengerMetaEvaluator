@@ -101,8 +101,6 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
 
             participants    = api_result["info"]["participants"]
 
-            print(participants)
-
         except KeyError:
             print("KeyError: Api Request failed. Try again!")
             print(api_result)
