@@ -3,6 +3,7 @@ from model.Champion     import Champion
 
 import requests
 import re
+import time
 
 
 # requests Api
@@ -24,6 +25,12 @@ def request_matches_by_puuid(region, api_key, base_url, parameter_url, count):
     
 def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league):
 
+    # API key limits
+    requests_per_minute = 100
+    total_requests = 2 * players_per_region * games_per_player + 1
+    required_sleeps = int(total_requests / requests_per_minute)
+    current_requests = 0
+
     # initialize API Request variables
     api_key     = open("apikey.txt", "r").read()
     base_url    = "api.riotgames.com"
@@ -42,13 +49,14 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
         platform_routing_value  = "unknown"
         regional_routing_value  = "unknown"
 
-
     try:
         # request for current players and consider only the highest rankeds
         response = request_api( region          = platform_routing_value,
                                 api_key         = api_key, 
                                 base_url        = base_url, 
                                 parameter_url   = "/tft/league/v1/" + ranked_league)
+
+        current_requests += 1
         
         player_list = response["entries"]
     
@@ -65,6 +73,10 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
     for player in best_players:
         summoner_name   = player["summonerName"]
 
+        if current_requests == requests_per_minute:
+                time.sleep(60)
+                current_requests = 0
+
         try:
             # request puuid of each player
             current_url     = "/tft/summoner/v1/summoners/by-name/" + summoner_name
@@ -72,11 +84,17 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                             api_key         = api_key,
                                             base_url        = base_url,
                                             parameter_url   = current_url)["puuid"]
+
+            current_requests += 1
+
         except KeyError:
             print("KeyError: Api Request failed. Try again!")
             return
 
-        
+        if current_requests == requests_per_minute:
+                time.sleep(60)
+                current_requests = 0
+
         # request last X games of each player
         current_url = "/tft/match/v1/matches/by-puuid/" + puuid + "/ids"
         matches     = (request_matches_by_puuid(region          = regional_routing_value,
@@ -85,6 +103,8 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                                 parameter_url   = current_url,
                                                 count           = games_per_player))
 
+        current_requests += 1
+
         # do not consider matches multiple times
         for match in matches:
             analyzed_games.append(match) if match not in analyzed_games else analyzed_games
@@ -92,7 +112,11 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
 
     # loop over each match
     for match in analyzed_games:
+        if current_requests == requests_per_minute:
+                time.sleep(60)
+                current_requests = 0
         try:
+
             current_url = "/tft/match/v1/matches/" + match
             api_result  = request_matches_by_match_id(  region          = regional_routing_value,
                                                         api_key         = api_key,
@@ -100,6 +124,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                                         parameter_url   = current_url)
 
             participants    = api_result["info"]["participants"]
+            current_requests += 1
 
         except KeyError:
             print("KeyError: Api Request failed. Try again!")

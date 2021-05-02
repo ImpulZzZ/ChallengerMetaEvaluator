@@ -22,13 +22,13 @@ def extract_names_from_json(json_file):
 
     return sorted(result)
 
-def create_name_to_id_map(jsonfile):
+def create_name_to_id_map(json_file):
     result = {}
     with open(json_file) as jsonfile:
         data = json.load(jsonfile)
 
         for current_stats in data:
-            result.update(current_stats["name"] : current_stats["id"])
+            result.update({current_stats["name"] : current_stats["id"]})
 
     return result
 
@@ -42,9 +42,10 @@ def run_main_gui():
         filters={
             "traits"        : {},
             "champions"     : {},
-            "placements"    : ui.placementFilter.value() ,
-            "traitTier"    : checkboxes["traitTier"],
-            "championStar" : checkboxes["championStar"]
+            "items"         : [],
+            "placements"    : ui.placementFilter.value(),
+            "traitTier"     : checkboxes["traitTier"],
+            "championStar"  : checkboxes["championStar"]
             }
 
         if checkboxes["trait1"]:
@@ -63,6 +64,8 @@ def run_main_gui():
             filters["champions"].update({ui.championFilter3.currentText() : ui.championFilterSlider3.value()})
         if checkboxes["champion4"]:
             filters["champions"].update({ui.championFilter4.currentText() : ui.championFilterSlider4.value()})
+        if checkboxes["item"]:
+            filters["items"].append(ui.itemFilter.currentText())
 
         return filters
 
@@ -127,7 +130,8 @@ def run_main_gui():
             
             # apply other possible filters on dataset
             composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
-                                                                                        filters             = filters)
+                                                                                        filters             = filters,
+                                                                                        item_name_to_id_map = ITEM_NAME_TO_ID_MAP)
 
             # loop over compisitiongroups of each region
             for composition_group in composition_group_database["shown_in_table"]:
@@ -196,7 +200,8 @@ def run_main_gui():
 
             # apply other possible filters on dataset
             composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
-                                                                                        filters             = filters)
+                                                                                        filters             = filters,
+                                                                                        item_name_to_id_map = ITEM_NAME_TO_ID_MAP)
 
             # loop over compisitiongroups of each region
             for composition_group in composition_group_database["shown_in_table"]:
@@ -270,7 +275,8 @@ def run_main_gui():
 
             # apply other possible filters on dataset
             composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
-                                                                                        filters             = filters)
+                                                                                        filters             = filters,
+                                                                                        item_name_to_id_map = ITEM_NAME_TO_ID_MAP)
 
             # loop over compisitiongroups of each region
             for composition_group in composition_group_database["shown_in_table"]:
