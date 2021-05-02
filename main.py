@@ -10,6 +10,21 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtGui import QFont
 from PyQt5.QtGui import QPixmap
 
+import json
+
+def extract_names_from_json(json_file):
+    result = []
+    with open(json_file) as jsonfile:
+        data = json.load(jsonfile)
+
+        for current_stats in data:
+            result.append(current_stats["name"])
+
+
+    
+    return sorted(result)
+
+
 # starts the main gui
 def run_main_gui():
 
@@ -232,7 +247,7 @@ def run_main_gui():
         # validate which regions are selected and group them
         (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
                                                                                 composition_groups  = composition_group_database, 
-                                                                                group_by            = "champions")
+                                                                                group_by            = "items")
 
         # validate which filters have to be applied
         filters = build_filters(checkboxes)
@@ -460,40 +475,11 @@ def run_main_gui():
 
     # setup global variables
     COLUMN_COUNT = 15
-    CURRENT_PATCH = "11.8"
-    CURRENT_SET_TRAITS = [  "Cultist",
-                            "Daredevil",
-                            "Divine",
-                            "Dragonsoul",
-                            "Elderwood",
-                            "Enlightened",
-                            "Exile",
-                            "Fabled",
-                            "Fortune",
-                            "Ninja",
-                            "Spirit",
-                            "Boss",
-                            "Warlord",
-                            "Adept",
-                            "Assassin",
-                            "Blacksmith",
-                            "Brawler",
-                            "Duelist",
-                            "Emperor",
-                            "Executioner",
-                            "Keeper",
-                            "Mage",
-                            "Mystic",
-                            "Sharpshooter",
-                            "Slayer",
-                            "Syphoner",
-                            "Vanguard"]
-    CURRENT_SET_CHAMPIONS = [   "Aatrox",
-                                "Shyvana",
-                                "Zilean"]
-    CURRENT_SET_ITEMS = [   "Bloodthirster",
-                            "Redemption",
-                            "Zephyr"]
+    CURRENT_PATCH = "11.9"
+    STATIC_DATA_DIR = "Set5_static_data/"
+    CURRENT_SET_TRAITS = extract_names_from_json(STATIC_DATA_DIR + "traits.json")
+    CURRENT_SET_CHAMPIONS = extract_names_from_json(STATIC_DATA_DIR + "champions.json")
+    CURRENT_SET_ITEMS = extract_names_from_json(STATIC_DATA_DIR + "items.json")
     composition_group_database = {
         "euw" : {
             "database"      : [],

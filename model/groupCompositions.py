@@ -1,6 +1,40 @@
 from model.CompositionGroup             import CompositionGroup
 from model.dissolveCompositionGroups    import dissolve_composition_groups
 
+def group_compositions_by_items(compositions):
+    processed   = []
+    num_comps   = len(compositions)
+    result = []
+    
+    # loop over every composition
+    for x in range(0, num_comps):
+
+        # skip processed compositions
+        if x in processed:
+            continue
+
+        # initialize new composition group with current composition
+        current_comp_group = [compositions[x]]
+
+        # compare each element x with y > x
+        for y in range(x+1, num_comps):
+            for champion_x in compositions[x].champions:
+                for champion_y in compositions[y].champions:
+                    # compare each champion
+                    if champion_x.name == champion_y.name:
+
+                        for item in champion_x.items:
+                            if item not in champion_y.items:
+                                eligible = False
+
+                    if eligible:    
+                        current_comp_group.append(compositions[y])
+                        processed.append(y)
+        
+        result.append(CompositionGroup(current_comp_group))
+    
+    return result
+
 def group_compositions_by_traits(compositions):
     processed   = []
     num_comps   = len(compositions)
@@ -70,7 +104,8 @@ def group_compositions(checkboxes, composition_groups, group_by):
                     composition_groups_copy[region]["database"]     = group_compositions_by_champions(compositions)
                     composition_groups_copy[region]["grouped_by"]   = group_by
                 elif group_by == "items":
-                    print("Work in Progress")
+                    composition_groups_copy[region]["database"]     = group_compositions_by_items(compositions)
+                    composition_groups_copy[region]["grouped_by"]   = group_by
                 else:
                     return {}
 

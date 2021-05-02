@@ -17,6 +17,6 @@ class Champion:
 
         self.item_icons = []
         for item in self.items:
-            self.item_icons.append("Set4_5_static_data/items/" + str(item) + ".png")
+            self.item_icons.append("Set5_static_data/items/" + str(item) + ".png")
 
-        self.icon = "Set4_5_static_data/champions/" + str(name) + ".png"
+        self.icon = "Set5_static_data/champions/" + str(name) + ".png"
