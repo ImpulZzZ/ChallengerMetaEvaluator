@@ -67,10 +67,10 @@
    <widget class="QPushButton" name="traitsButton">
     <property name="geometry">
      <rect>
-      <x>1090</x>
-      <y>700</y>
+      <x>1320</x>
+      <y>690</y>
       <width>111</width>
-      <height>41</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -80,10 +80,10 @@
    <widget class="QPushButton" name="championsButton">
     <property name="geometry">
      <rect>
-      <x>1090</x>
-      <y>750</y>
+      <x>1320</x>
+      <y>730</y>
       <width>111</width>
-      <height>41</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -93,10 +93,10 @@
    <widget class="QPushButton" name="itemsButton">
     <property name="geometry">
      <rect>
-      <x>1090</x>
-      <y>800</y>
+      <x>1320</x>
+      <y>770</y>
       <width>111</width>
-      <height>41</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -304,7 +304,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>1110</x>
+      <x>1340</x>
       <y>660</y>
       <width>81</width>
       <height>31</height>
@@ -707,8 +707,8 @@
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>870</x>
-      <y>760</y>
+      <x>880</x>
+      <y>660</y>
       <width>161</width>
       <height>31</height>
      </rect>
@@ -729,7 +729,7 @@
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>870</x>
+      <x>1080</x>
       <y>660</y>
       <width>161</width>
       <height>31</height>
@@ -751,7 +751,7 @@
    <widget class="QSlider" name="placementFilter">
     <property name="geometry">
      <rect>
-      <x>870</x>
+      <x>1080</x>
       <y>730</y>
       <width>160</width>
       <height>21</height>
@@ -782,7 +782,7 @@
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>1010</x>
+      <x>1220</x>
       <y>700</y>
       <width>54</width>
       <height>17</height>
@@ -795,7 +795,7 @@
    <widget class="QLabel" name="label_11">
     <property name="geometry">
      <rect>
-      <x>860</x>
+      <x>1070</x>
       <y>700</y>
       <width>54</width>
       <height>17</height>
@@ -808,7 +808,7 @@
    <widget class="QLabel" name="label_12">
     <property name="geometry">
      <rect>
-      <x>960</x>
+      <x>1170</x>
       <y>700</y>
       <width>54</width>
       <height>17</height>
@@ -821,7 +821,7 @@
    <widget class="QLabel" name="label_13">
     <property name="geometry">
      <rect>
-      <x>910</x>
+      <x>1120</x>
       <y>700</y>
       <width>54</width>
       <height>17</height>
@@ -922,11 +922,11 @@
      <string>2</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="itemFilter">
+   <widget class="QComboBox" name="itemFilter1">
     <property name="geometry">
      <rect>
-      <x>870</x>
-      <y>790</y>
+      <x>880</x>
+      <y>690</y>
       <width>131</width>
       <height>31</height>
      </rect>
@@ -972,11 +972,11 @@
      </rect>
     </property>
    </widget>
-   <widget class="QCheckBox" name="itemFilterCheckBox">
+   <widget class="QCheckBox" name="itemFilterCheckBox1">
     <property name="geometry">
      <rect>
-      <x>850</x>
-      <y>790</y>
+      <x>860</x>
+      <y>690</y>
       <width>21</width>
       <height>23</height>
      </rect>
@@ -1009,6 +1009,101 @@
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="itemFilter2">
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>730</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="itemFilterCheckBox2">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>730</y>
+      <width>21</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="itemFilter3">
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>770</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="itemFilterCheckBox3">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>770</y>
+      <width>21</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="itemFilter4">
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>810</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="itemFilterCheckBox4">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>810</y>
+      <width>21</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="resetDataButton">
+    <property name="geometry">
+     <rect>
+      <x>1380</x>
+      <y>10</y>
+      <width>80</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Reset Data</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bestInSlotButton">
+    <property name="geometry">
+     <rect>
+      <x>1320</x>
+      <y>810</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Best in Slot Items</string>
     </property>
    </widget>
   </widget>
