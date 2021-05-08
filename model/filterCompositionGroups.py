@@ -46,7 +46,7 @@ def filter_composition_groups_by_traits(composition_groups, traits, tier_relevan
             # validate if trait is in traits
             if key in current.traits:
                 # if tier is relevant, filter by that aswell
-                if tier_relevant and current.traits[key] != traits[key]:
+                if tier_relevant and current.traits[key] < traits[key]:
                     eligible = False
             else:
                 eligible = False
@@ -82,8 +82,8 @@ def filter_composition_groups_by_champions(composition_groups, champions, star_r
                     eligible = False
                     # loop over champions and ..
                     for champion in current.champions:
-                        # .. validate whether the champion has the preferred star
-                        if champion.name == key and champion.tier == champions[key]:
+                        # .. validate whether the champion has at least the preferred star
+                        if champion.name == key and champion.tier >= champions[key]:
                             eligible = True
             else:
                 eligible = False
