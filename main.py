@@ -303,22 +303,26 @@ def run_main_gui():
                 current_counter = QTableWidgetItem(str(composition_group.counter))
                 ui.tableWidget.setItem(row_counter, 0, current_counter)
 
+                # iterate over ech champion
                 for champion in element.champions:
+                    # only show champions with at least 1 item
                     if len(champion.items) > 0:
-                        label = QLabel()
-                        pixmap = QPixmap(champion.icon).scaled(30, 30)
-                        label.setPixmap(pixmap)
-                        ui.tableWidget.setCellWidget(row_counter, 1, label)
+                        # do not show a champ that only wears 1 item component
+                        if champion.items[0].not_component:
+                            label = QLabel()
+                            pixmap = QPixmap(champion.icon).scaled(30, 30)
+                            label.setPixmap(pixmap)
+                            ui.tableWidget.setCellWidget(row_counter, 1, label)
 
-                        # add icons of the items on the side of champion
-                        item_position = 2
-                        for item in champion.items:
-                            if item.not_component:
-                                label = QLabel()
-                                pixmap = QPixmap(item.icon).scaled(30, 30)
-                                label.setPixmap(pixmap)
-                                ui.tableWidget.setCellWidget(row_counter, item_position, label)
-                                item_position += 1
+                            # add icons of the items on the side of champion
+                            item_position = 2
+                            for item in champion.items:
+                                if item.not_component:
+                                    label = QLabel()
+                                    pixmap = QPixmap(item.icon).scaled(30, 30)
+                                    label.setPixmap(pixmap)
+                                    ui.tableWidget.setCellWidget(row_counter, item_position, label)
+                                    item_position += 1
 
                         # change table size dynamically
                         ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
@@ -341,7 +345,7 @@ def run_main_gui():
         popup.tableWidget.clearContents()
         popup.tableWidget.setColumnCount(COLUMN_COUNT)
 
-        # get selected composition group
+        # get selected composition group # TODO: Different handling for grouped by items
         selected_composition_group = composition_group_database["shown_in_table"][ui.tableWidget.currentItem().row()]
 
         row_counter = 0
