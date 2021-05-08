@@ -196,6 +196,8 @@ def run_main_gui():
                                                                                 composition_groups  = composition_group_database, 
                                                                                 group_by            = "champions")
 
+        # TODO: at the moment regions are just grouped within theirselves and not with other regions
+
         # validate which filters have to be applied
         filters = build_filters(checkboxes)
 
@@ -310,12 +312,13 @@ def run_main_gui():
 
                         # add icons of the items on the side of champion
                         item_position = 2
-                        for item in champion.item_icons:
-                            label = QLabel()
-                            pixmap = QPixmap(item).scaled(30, 30)
-                            label.setPixmap(pixmap)
-                            ui.tableWidget.setCellWidget(row_counter, item_position, label)
-                            item_position += 1
+                        for item in champion.items:
+                            if item.not_component:
+                                label = QLabel()
+                                pixmap = QPixmap(item.icon).scaled(30, 30)
+                                label.setPixmap(pixmap)
+                                ui.tableWidget.setCellWidget(row_counter, item_position, label)
+                                item_position += 1
 
                         # change table size dynamically
                         ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
@@ -402,12 +405,13 @@ def run_main_gui():
 
                 # add icons of the items on the side of champion
                 item_position = 1
-                for item in champion.item_icons:
-                    label   = QLabel()
-                    pixmap  = QPixmap(item).scaled(30, 30)
-                    label.setPixmap(pixmap)
-                    popup.tableWidget.setCellWidget(row_counter, item_position, label)
-                    item_position += 1
+                for item in champion.items:
+                    if item.not_component:
+                        label   = QLabel()
+                        pixmap  = QPixmap(item.icon).scaled(30, 30)
+                        label.setPixmap(pixmap)
+                        popup.tableWidget.setCellWidget(row_counter, item_position, label)
+                        item_position += 1
 
                 # make space for next champion
                 popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
