@@ -1,5 +1,6 @@
 from model.Composition  import Composition
 from model.Champion     import Champion
+from model.Item         import Item
 
 import requests
 import re
@@ -144,8 +145,13 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
             # create list of champions
             champions_unsorted   = []
             for unit in participant["units"]:
+                item_list = []
+
+                for item in unit["items"]:
+                    item_list.append(Item(item))
+                    
                 champions_unsorted.append(Champion( name   = unit["character_id"],
-                                                    items  = unit["items"],
+                                                    items  = item_list,
                                                     tier   = unit["tier"],
                                                     rarity = unit["rarity"]))
 
