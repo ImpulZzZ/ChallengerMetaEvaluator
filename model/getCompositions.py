@@ -26,9 +26,8 @@ def request_matches_by_puuid(region, api_key, base_url, parameter_url, count):
 def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league):
 
     # API key limits
-    requests_per_minute = 100
+    requests_per_minute = 99
     total_requests = 2 * players_per_region * games_per_player + 1
-    required_sleeps = int(total_requests / requests_per_minute)
     current_requests = 0
 
     # initialize API Request variables
