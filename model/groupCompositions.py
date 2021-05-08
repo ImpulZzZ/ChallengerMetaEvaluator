@@ -18,19 +18,10 @@ def group_compositions_by_items(compositions):
 
         # compare each element x with y > x
         for y in range(x+1, num_comps):
-            for champion_x in compositions[x].champions:
-                for champion_y in compositions[y].champions:
-                    # compare each champion
-                    if champion_x.name == champion_y.name:
-
-                        for item in champion_x.items:
-                            if item not in champion_y.items:
-                                eligible = False
-
-                    if eligible:    
-                        current_comp_group.append(compositions[y])
-                        processed.append(y)
-        
+            if compositions[x].champion_item_dict == compositions[y].champion_item_dict:
+                current_comp_group.append(compositions[y])
+                processed.append(y)
+                        
         result.append(CompositionGroup(current_comp_group))
     
     return result
