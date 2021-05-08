@@ -68,9 +68,9 @@
     <property name="geometry">
      <rect>
       <x>1320</x>
-      <y>690</y>
+      <y>700</y>
       <width>111</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -81,9 +81,9 @@
     <property name="geometry">
      <rect>
       <x>1320</x>
-      <y>730</y>
+      <y>750</y>
       <width>111</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -94,9 +94,9 @@
     <property name="geometry">
      <rect>
       <x>1320</x>
-      <y>770</y>
+      <y>800</y>
       <width>111</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -752,7 +752,7 @@
     <property name="geometry">
      <rect>
       <x>1080</x>
-      <y>730</y>
+      <y>720</y>
       <width>160</width>
       <height>21</height>
      </rect>
@@ -783,7 +783,7 @@
     <property name="geometry">
      <rect>
       <x>1220</x>
-      <y>700</y>
+      <y>690</y>
       <width>54</width>
       <height>17</height>
      </rect>
@@ -796,7 +796,7 @@
     <property name="geometry">
      <rect>
       <x>1070</x>
-      <y>700</y>
+      <y>690</y>
       <width>54</width>
       <height>17</height>
      </rect>
@@ -809,7 +809,7 @@
     <property name="geometry">
      <rect>
       <x>1170</x>
-      <y>700</y>
+      <y>690</y>
       <width>54</width>
       <height>17</height>
      </rect>
@@ -822,7 +822,7 @@
     <property name="geometry">
      <rect>
       <x>1120</x>
-      <y>700</y>
+      <y>690</y>
       <width>54</width>
       <height>17</height>
      </rect>
@@ -1096,14 +1096,91 @@
    <widget class="QPushButton" name="bestInSlotButton">
     <property name="geometry">
      <rect>
-      <x>1320</x>
+      <x>1110</x>
       <y>810</y>
       <width>111</width>
-      <height>31</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
      <string>Best in Slot Items</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_21">
+    <property name="geometry">
+     <rect>
+      <x>1080</x>
+      <y>770</y>
+      <width>16</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>1</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="bestInSlotSlider">
+    <property name="geometry">
+     <rect>
+      <x>1080</x>
+      <y>790</y>
+      <width>160</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>3</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <property name="tickPosition">
+     <enum>QSlider::TicksBelow</enum>
+    </property>
+    <property name="tickInterval">
+     <number>1</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_22">
+    <property name="geometry">
+     <rect>
+      <x>1230</x>
+      <y>770</y>
+      <width>16</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>3</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_23">
+    <property name="geometry">
+     <rect>
+      <x>1150</x>
+      <y>750</y>
+      <width>54</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Items</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_24">
+    <property name="geometry">
+     <rect>
+      <x>1160</x>
+      <y>770</y>
+      <width>16</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>2</string>
     </property>
    </widget>
   </widget>

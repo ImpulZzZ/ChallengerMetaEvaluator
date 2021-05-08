@@ -426,7 +426,27 @@ def run_main_gui():
             row_counter = row_counter + 1
         
         popup_window.show()
-        
+    #############################################################################
+    def reset_data():
+        nonlocal composition_group_database
+
+        composition_group_database  = {
+            "euw" : {
+                "database"      : [],
+                "grouped_by"    : "none",
+                "loaded"        : False
+            },
+            "kr" : {
+                "database"      : [],
+                "grouped_by"    : "none",
+                "loaded"        : False
+            },
+            "shown_in_table"    : []  
+        }
+
+        ui.euwCheckBox.setStyleSheet("color: black;")
+        ui.krCheckBox.setStyleSheet("color: black;")
+
     #############################################################################
     def load_data():
         # to modify outer variables in inner function
@@ -512,19 +532,8 @@ def run_main_gui():
     CURRENT_SET_CHAMPIONS       = extract_names_from_json(STATIC_DATA_DIR + "champions.json")
     CURRENT_SET_ITEMS           = extract_names_from_json(STATIC_DATA_DIR + "items.json")
     ITEM_NAME_TO_ID_MAP         = create_name_to_id_map(STATIC_DATA_DIR + "items.json")
-    composition_group_database  = {
-        "euw" : {
-            "database"      : [],
-            "grouped_by"    : "none",
-            "loaded"        : False
-        },
-        "kr" : {
-            "database"      : [],
-            "grouped_by"    : "none",
-            "loaded"        : False
-        },
-        "shown_in_table"    : []  
-    }
+    composition_group_database = {}
+    reset_data()
 
     # bind functions to the buttons
     ui.traitsButton.clicked.connect(show_traits)
@@ -532,6 +541,7 @@ def run_main_gui():
     ui.itemsButton.clicked.connect(show_items)
     ui.tableWidget.itemDoubleClicked.connect(show_composition_group)
     ui.loadDataButton.clicked.connect(load_data)
+    ui.resetDataButton.clicked.connect(reset_data)
 
     # add traits to dropdown filters
     ui.traitFilter1.addItems(CURRENT_SET_TRAITS)
