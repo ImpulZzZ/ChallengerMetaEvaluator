@@ -329,9 +329,42 @@ def run_main_gui():
                         row_counter = row_counter + 1
 
                 row_counter = row_counter + 1
-        
-        
+    
+    #############################################################################
+    def show_best_in_slot():
+        nonlocal composition_group_database
+        composition_groups = []
+        item_amount = ui.bestInSlotSlider.value()
 
+        # merge all data from regions together
+        for region in composition_group_database:
+            try:
+                composition_groups.append(composition_group_database[region]["database"])
+            except TypeError:
+                continue
+
+        # count each champion-item pair and compute their average placement
+        if item_amount == 1:
+            counter_dict = {}
+            for regional_composition_groups in composition_groups:
+                for composition_group in regional_composition_groups:
+                    for composition in composition_group.compositions:
+                        for champion in composition.champions:
+                            # validate if the champion is not in dict yet, if not add it
+                            try:
+                                test = counter_dict[champion.name]
+                            except KeyError:
+                                counter_dict.update({champion.name : {}})
+                            
+                            for item in champion.items:
+                                # validate if the item is not in dict yet, if not add it
+                                try:
+                                    counter_dict[champion.name][item.id]["counter"] += 1
+                                    counter_dict[champion.name][item.id]["placements"] += composition.placement
+                                except KeyError:
+                                    counter_dict[champion.name].update({item.id : {"counter" : 1, "placements" : composition.placement}})    
+
+ 
     #############################################################################
     def show_composition_group():
 
@@ -446,7 +479,6 @@ def run_main_gui():
 
         ui.euwCheckBox.setStyleSheet("color: black;")
         ui.krCheckBox.setStyleSheet("color: black;")
-
     #############################################################################
     def load_data():
         # to modify outer variables in inner function
@@ -542,6 +574,7 @@ def run_main_gui():
     ui.tableWidget.itemDoubleClicked.connect(show_composition_group)
     ui.loadDataButton.clicked.connect(load_data)
     ui.resetDataButton.clicked.connect(reset_data)
+    ui.bestInSlotButton.clicked.connect(show_best_in_slot)
 
     # add traits to dropdown filters
     ui.traitFilter1.addItems(CURRENT_SET_TRAITS)
