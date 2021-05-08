@@ -64,8 +64,14 @@ def run_main_gui():
             filters["champions"].update({ui.championFilter3.currentText() : ui.championFilterSlider3.value()})
         if checkboxes["champion4"]:
             filters["champions"].update({ui.championFilter4.currentText() : ui.championFilterSlider4.value()})
-        if checkboxes["item"]:
-            filters["items"].append(ui.itemFilter.currentText())
+        if checkboxes["item1"]:
+            filters["items"].append(ui.itemFilter1.currentText())
+        if checkboxes["item2"]:
+            filters["items"].append(ui.itemFilter2.currentText())
+        if checkboxes["item3"]:
+            filters["items"].append(ui.itemFilter3.currentText())
+        if checkboxes["item4"]:
+            filters["items"].append(ui.itemFilter4.currentText())
 
         return filters
 
@@ -95,7 +101,10 @@ def run_main_gui():
                 "champion3"     : ui.championFilterCheckBox3.isChecked(),
                 "champion4"     : ui.championFilterCheckBox4.isChecked(),
                 "championStar"  : ui.championStarFilterCheckBox.isChecked(),
-                "item"          : ui.itemFilterCheckBox.isChecked(),
+                "item1"         : ui.itemFilterCheckBox1.isChecked(),
+                "item2"         : ui.itemFilterCheckBox2.isChecked(),
+                "item3"         : ui.itemFilterCheckBox3.isChecked(),
+                "item4"         : ui.itemFilterCheckBox4.isChecked(),
                 "regions" : {
                     "euw"   : ui.euwCheckBox.isChecked(),
                     "kr"    : ui.krCheckBox.isChecked()
@@ -525,7 +534,10 @@ def run_main_gui():
     ui.championFilter2.addItems(CURRENT_SET_CHAMPIONS)
     ui.championFilter3.addItems(CURRENT_SET_CHAMPIONS)
     ui.championFilter4.addItems(CURRENT_SET_CHAMPIONS)
-    ui.itemFilter.addItems(CURRENT_SET_ITEMS)
+    ui.itemFilter1.addItems(CURRENT_SET_ITEMS)
+    ui.itemFilter2.addItems(CURRENT_SET_ITEMS)
+    ui.itemFilter3.addItems(CURRENT_SET_ITEMS)
+    ui.itemFilter4.addItems(CURRENT_SET_ITEMS)
 
     # current patch
     ui.currentPatchFilter.setText(CURRENT_PATCH)
