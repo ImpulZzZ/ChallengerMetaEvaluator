@@ -1,6 +1,7 @@
 from model.getCompositions          import get_compositions
 from model.groupCompositions        import group_compositions_by_traits, group_compositions
 from model.filterCompositionGroups  import filter_composition_groups, filter_composition_groups_by_placement
+from model.jsonUtilities            import extract_names_from_json, create_name_to_id_map
 
 from view import main_gui               as main_gui
 from view import composition_group_view as composition_group_view
@@ -9,29 +10,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QColor
 from PyQt5.QtGui import QFont
 from PyQt5.QtGui import QPixmap
-
-import json
-
-def extract_names_from_json(json_file):
-    result = []
-    with open(json_file) as jsonfile:
-        data = json.load(jsonfile)
-
-        for current_stats in data:
-            result.append(current_stats["name"])
-
-    return sorted(result)
-
-def create_name_to_id_map(json_file):
-    result = {}
-    with open(json_file) as jsonfile:
-        data = json.load(jsonfile)
-
-        for current_stats in data:
-            result.update({current_stats["name"] : current_stats["id"]})
-
-    return result
-
 
 # starts the main gui
 def run_main_gui():
@@ -558,7 +536,7 @@ def run_main_gui():
 
     # setup global variables
     COLUMN_COUNT                = 15
-    CURRENT_PATCH               = "11.9"
+    CURRENT_PATCH               = "11.10"
     STATIC_DATA_DIR             = "Set5_static_data/"
     CURRENT_SET_TRAITS          = extract_names_from_json(STATIC_DATA_DIR + "traits.json")
     CURRENT_SET_CHAMPIONS       = extract_names_from_json(STATIC_DATA_DIR + "champions.json")
