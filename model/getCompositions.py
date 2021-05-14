@@ -49,6 +49,8 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
         platform_routing_value  = "unknown"
         regional_routing_value  = "unknown"
 
+    response = ""
+
     try:
         # request for current players and consider only the highest rankeds
         response = request_api( region          = platform_routing_value,
