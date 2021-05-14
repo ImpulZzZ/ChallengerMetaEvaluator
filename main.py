@@ -389,7 +389,7 @@ def run_main_gui():
             popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
 
             # show placement of compositon
-            popup.tableWidget.setItem(row_counter, 0, QTableWidgetItem("Placement: " + str(composition.placement)))
+            popup.tableWidget.setItem(row_counter, 0, QTableWidgetItem(f"Placement: {str(composition.placement)}"))
 
             # make space for trait row
             popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)

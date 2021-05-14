@@ -9,19 +9,19 @@ import time
 
 # requests Api
 def request_api(region, api_key, base_url, parameter_url):
-    url = "https://" + region + "." + base_url + parameter_url + "?api_key=" + api_key
+    url = f"https://{region}.{base_url}{parameter_url}?api_key={api_key}"
     return requests.get(url).json()
 
 
 # requests TFT-Matches Api
 def request_matches_by_match_id(region, api_key, base_url, parameter_url):
-    url = "https://" + region + "." + base_url + parameter_url + "?api_key=" + api_key
+    url = f"https://{region}.{base_url}{parameter_url}?api_key={api_key}"
     return requests.get(url).json()
 
 
 # requests TFT-Matches Api
 def request_matches_by_puuid(region, api_key, base_url, parameter_url, count):
-    url = "https://" + region + "." + base_url + parameter_url + "?count=" + str(count) + "&api_key=" + api_key
+    url = f"https://{region}.{base_url}{parameter_url}?count={str(count)}&api_key={api_key}"
     return requests.get(url).json()
     
 def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league):
@@ -54,7 +54,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
         response = request_api( region          = platform_routing_value,
                                 api_key         = api_key, 
                                 base_url        = base_url, 
-                                parameter_url   = "/tft/league/v1/" + ranked_league)
+                                parameter_url   = f"/tft/league/v1/{ranked_league}")
 
         current_requests += 1
         
@@ -79,7 +79,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
 
         try:
             # request puuid of each player
-            current_url     = "/tft/summoner/v1/summoners/by-name/" + summoner_name
+            current_url     = f"/tft/summoner/v1/summoners/by-name/{summoner_name}"
             puuid           = request_api(  region          = platform_routing_value,
                                             api_key         = api_key,
                                             base_url        = base_url,
@@ -96,7 +96,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                 current_requests = 0
 
         # request last X games of each player
-        current_url = "/tft/match/v1/matches/by-puuid/" + puuid + "/ids"
+        current_url = f"/tft/match/v1/matches/by-puuid/{puuid}/ids"
         matches     = (request_matches_by_puuid(region          = regional_routing_value,
                                                 api_key         = api_key,
                                                 base_url        = base_url ,
@@ -117,7 +117,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                 current_requests = 0
         try:
 
-            current_url = "/tft/match/v1/matches/" + match
+            current_url = f"/tft/match/v1/matches/{match}"
             api_result  = request_matches_by_match_id(  region          = regional_routing_value,
                                                         api_key         = api_key,
                                                         base_url        = base_url,

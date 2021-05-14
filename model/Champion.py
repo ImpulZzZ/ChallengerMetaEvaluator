@@ -13,4 +13,4 @@ class Champion:
         assert isinstance(rarity, int)
         self.rarity = rarity
 
-        self.icon = "Set5_static_data/champions/" + str(name) + ".png"
+        self.icon = f"Set5_static_data/champions/{name}.png"
