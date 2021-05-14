@@ -1,7 +1,9 @@
+from model.bestInSlot import compute_best_in_slot
 from model.getCompositions          import get_compositions
 from model.groupCompositions        import group_compositions_by_traits, group_compositions
 from model.filterCompositionGroups  import filter_composition_groups, filter_composition_groups_by_placement
 from model.jsonUtilities            import extract_names_from_json, create_name_to_id_map
+from model.bestInSlot               import compute_best_in_slot
 
 from view import main_gui               as main_gui
 from view import composition_group_view as composition_group_view
@@ -152,9 +154,9 @@ def run_main_gui():
                     else:
                         ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
 
-                    keycounter = keycounter + 1
+                    keycounter += 1
 
-                counter = counter + 1
+                counter += 1
 
     #############################################################################
     def show_champions():
@@ -230,9 +232,9 @@ def run_main_gui():
                     current_champion.setFont(QFont('Arial', 24))
                     ui.tableWidget.setItem(counter, keycounter, current_champion)
 
-                    keycounter = keycounter + 1
+                    keycounter += 1
 
-                counter = counter + 1
+                counter += 1
 
     #############################################################################
     def show_items():
@@ -304,15 +306,23 @@ def run_main_gui():
 
                         # change table size dynamically
                         ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
-                        row_counter = row_counter + 1
+                        row_counter += 1
 
-                row_counter = row_counter + 1
+                row_counter += 1
     
     #############################################################################
     def show_best_in_slot():
         nonlocal composition_group_database
         composition_groups = []
         item_amount = ui.bestInSlotSlider.value()
+
+        reset_tableview(headers=["Champion", "Items", "", "", "Occurences", "Avg Placement"])
+
+        # verify which checkboxes are pressed or not pressed
+        checkboxes = get_checkboxes()
+
+        filters = build_filters(checkboxes)
+        champions = filters["champions"]
 
         # merge all data from regions together
         for region in composition_group_database:
@@ -321,26 +331,39 @@ def run_main_gui():
             except TypeError:
                 continue
 
-        # count each champion-item pair and compute their average placement
-        if item_amount == 1:
-            counter_dict = {}
-            for regional_composition_groups in composition_groups:
-                for composition_group in regional_composition_groups:
-                    for composition in composition_group.compositions:
-                        for champion in composition.champions:
-                            # validate if the champion is not in dict yet, if not add it
-                            try:
-                                test = counter_dict[champion.name]
-                            except KeyError:
-                                counter_dict.update({champion.name : {}})
-                            
-                            for item in champion.items:
-                                # validate if the item is not in dict yet, if not add it
-                                try:
-                                    counter_dict[champion.name][item.id]["counter"] += 1
-                                    counter_dict[champion.name][item.id]["placements"] += composition.placement
-                                except KeyError:
-                                    counter_dict[champion.name].update({item.id : {"counter" : 1, "placements" : composition.placement}})    
+        bis_dict = compute_best_in_slot(composition_groups, item_amount)
+
+        row_counter = 0
+        # change table size dynamically
+        ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
+
+        for champion in champions:
+            label = QLabel()
+            pixmap = QPixmap(f"Set5_static_data/champions/TFT5_{champion}.png").scaled(30, 30)
+            label.setPixmap(pixmap)
+            ui.tableWidget.setCellWidget(row_counter, 0, label)
+
+            for item in bis_dict[champion]:
+                current_counter = QTableWidgetItem()
+                current_counter.setText(str(bis_dict[champion][item]["counter"]))
+                current_avg_placement = QTableWidgetItem()
+                current_avg_placement.setText(str(bis_dict[champion][item]["avg_placement"]))
+                label = QLabel()
+                pixmap = QPixmap(f"Set5_static_data/items/{item}.png").scaled(30, 30)
+                label.setPixmap(pixmap)
+                ui.tableWidget.setCellWidget(row_counter, 1, label)
+
+                ui.tableWidget.setItem(row_counter, 4, current_counter)
+                ui.tableWidget.setItem(row_counter, 5, current_avg_placement)
+
+                ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
+                row_counter += 1
+
+            ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
+            row_counter += 1
+
+
+           
 
  
     #############################################################################
@@ -370,7 +393,7 @@ def run_main_gui():
 
             # make space for trait row
             popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
-            row_counter = row_counter + 1
+            row_counter += 1
 
             # show traits
             column_counter = 0
@@ -389,11 +412,11 @@ def run_main_gui():
                 else:
                     popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("cyan"))
 
-                column_counter = column_counter + 1
+                column_counter += 1
 
             # make space for first champion
             popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
-            row_counter = row_counter + 1
+            row_counter += 1
 
             # show each champion
             for champion in composition.champions:
@@ -430,11 +453,11 @@ def run_main_gui():
 
                 # make space for next champion
                 popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
-                row_counter = row_counter + 1
+                row_counter += 1
 
             # create an empty row to divide compositions
             popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
-            row_counter = row_counter + 1
+            row_counter += 1
         
         popup_window.show()
     #############################################################################
