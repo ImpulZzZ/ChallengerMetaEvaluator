@@ -343,15 +343,22 @@ def run_main_gui():
             label.setPixmap(pixmap)
             ui.tableWidget.setCellWidget(row_counter, 0, label)
 
-            for item in bis_dict[champion]:
+            for item_combination in bis_dict[champion]:
                 current_counter = QTableWidgetItem()
-                current_counter.setText(str(bis_dict[champion][item]["counter"]))
+                current_counter.setText(str(bis_dict[champion][item_combination]["counter"]))
                 current_avg_placement = QTableWidgetItem()
-                current_avg_placement.setText(str(bis_dict[champion][item]["avg_placement"]))
-                label = QLabel()
-                pixmap = QPixmap(f"Set5_static_data/items/{item}.png").scaled(30, 30)
-                label.setPixmap(pixmap)
-                ui.tableWidget.setCellWidget(row_counter, 1, label)
+                current_avg_placement.setText(str(bis_dict[champion][item_combination]["avg_placement"]))
+
+                items = item_combination.split("+")
+
+                item_position = 1
+                for item in items:
+                    label = QLabel()
+                    pixmap = QPixmap(f"Set5_static_data/items/{item}.png").scaled(30, 30)
+                    label.setPixmap(pixmap)
+                    ui.tableWidget.setCellWidget(row_counter, item_position, label)
+                    item_position += 1
+
 
                 ui.tableWidget.setItem(row_counter, 4, current_counter)
                 ui.tableWidget.setItem(row_counter, 5, current_avg_placement)
