@@ -195,12 +195,6 @@ def run_main_gui():
                     label.setPixmap(pixmap)
                     ui.tableWidget.setCellWidget(counter, keycounter, label)
 
-                    # show amount of stars right to champion icon
-                    if      champion.tier == 1: current_champion.setText("   *")
-                    elif    champion.tier == 2: current_champion.setText("   **")
-                    elif    champion.tier == 3: current_champion.setText("   ***")
-                    else:                       current_champion.setText("   ****")
-
                     current_champion.setFont(QFont('Arial', 24))
                     ui.tableWidget.setItem(counter, keycounter, current_champion)
 
