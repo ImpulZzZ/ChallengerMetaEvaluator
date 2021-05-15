@@ -94,4 +94,8 @@ def compute_best_in_slot(composition_groups, item_amount):
                 result_dict[champion][items].update({"counter" : counter_dict[champion][items]["counter"]})
                 result_dict[champion][items].update({"avg_placement" : counter_dict[champion][items]["avg_placement"]})
 
+        # sort dict by 1. occurences and when they are equal, sort for better avg_placement
+        sorted_dict = dict(sorted(result_dict[champion].items(), key=lambda item: (item[1]["counter"], (-1 * item[1]["avg_placement"])), reverse=True))
+        result_dict[champion] = sorted_dict
+
     return result_dict
