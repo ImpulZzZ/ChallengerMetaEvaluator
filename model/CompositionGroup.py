@@ -9,3 +9,4 @@ class CompositionGroup:
         for composition in compositions:
             self.avg_placement += composition.placement
         self.avg_placement /= self.counter
+        self.avg_placement = round(self.avg_placement, 2)
