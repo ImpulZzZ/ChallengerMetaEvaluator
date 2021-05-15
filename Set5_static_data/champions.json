@@ -1,11 +1,5 @@
 [
   {
-    "name": "Target Dummy",
-    "championId": "TFT_TrainingDummy",
-    "cost": 2,
-    "traits": []
-  },
-  {
     "name": "Aatrox",
     "championId": "TFT5_Aatrox",
     "cost": 1,
@@ -175,7 +169,7 @@
     ]
   },
   {
-    "name": "Kha'Zix",
+    "name": "Khazix",
     "championId": "TFT5_Khazix",
     "cost": 1,
     "traits": [
@@ -215,7 +209,7 @@
     ]
   },
   {
-    "name": "Lee Sin",
+    "name": "LeeSin",
     "championId": "TFT5_LeeSin",
     "cost": 3,
     "traits": [
@@ -461,7 +455,7 @@
     ]
   },
   {
-    "name": "Vel'Koz",
+    "name": "Velkoz",
     "championId": "TFT5_Velkoz",
     "cost": 4,
     "traits": [
