@@ -1,4 +1,5 @@
-from model.bestInSlot import compute_best_in_slot
+from model.sortUtilities            import sort_composition_groups_by_occurence_and_placement
+from model.bestInSlot               import compute_best_in_slot
 from model.getCompositions          import get_compositions
 from model.groupCompositions        import group_compositions_by_traits, group_compositions
 from model.filterCompositionGroups  import filter_composition_groups, filter_composition_groups_by_placement
@@ -28,30 +29,18 @@ def run_main_gui():
             "championStar"  : checkboxes["championStar"]
             }
 
-        if checkboxes["trait1"]:
-            filters["traits"].update({ui.traitFilter1.currentText() : ui.traitFilterSlider1.value()})
-        if checkboxes["trait2"]:
-            filters["traits"].update({ui.traitFilter2.currentText() : ui.traitFilterSlider2.value()})
-        if checkboxes["trait3"]:
-            filters["traits"].update({ui.traitFilter3.currentText() : ui.traitFilterSlider3.value()})
-        if checkboxes["trait4"]:
-            filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
-        if checkboxes["champion1"]:
-            filters["champions"].update({ui.championFilter1.currentText() : ui.championFilterSlider1.value()})
-        if checkboxes["champion2"]:
-            filters["champions"].update({ui.championFilter2.currentText() : ui.championFilterSlider2.value()})
-        if checkboxes["champion3"]:
-            filters["champions"].update({ui.championFilter3.currentText() : ui.championFilterSlider3.value()})
-        if checkboxes["champion4"]:
-            filters["champions"].update({ui.championFilter4.currentText() : ui.championFilterSlider4.value()})
-        if checkboxes["item1"]:
-            filters["items"].append(ui.itemFilter1.currentText())
-        if checkboxes["item2"]:
-            filters["items"].append(ui.itemFilter2.currentText())
-        if checkboxes["item3"]:
-            filters["items"].append(ui.itemFilter3.currentText())
-        if checkboxes["item4"]:
-            filters["items"].append(ui.itemFilter4.currentText())
+        if checkboxes["trait1"]:    filters["traits"].update({ui.traitFilter1.currentText() : ui.traitFilterSlider1.value()})
+        if checkboxes["trait2"]:    filters["traits"].update({ui.traitFilter2.currentText() : ui.traitFilterSlider2.value()})
+        if checkboxes["trait3"]:    filters["traits"].update({ui.traitFilter3.currentText() : ui.traitFilterSlider3.value()})
+        if checkboxes["trait4"]:    filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
+        if checkboxes["champion1"]: filters["champions"].update({ui.championFilter1.currentText() : ui.championFilterSlider1.value()})
+        if checkboxes["champion2"]: filters["champions"].update({ui.championFilter2.currentText() : ui.championFilterSlider2.value()})
+        if checkboxes["champion3"]: filters["champions"].update({ui.championFilter3.currentText() : ui.championFilterSlider3.value()})
+        if checkboxes["champion4"]: filters["champions"].update({ui.championFilter4.currentText() : ui.championFilterSlider4.value()})
+        if checkboxes["item1"]:     filters["items"].append(ui.itemFilter1.currentText())
+        if checkboxes["item2"]:     filters["items"].append(ui.itemFilter2.currentText())
+        if checkboxes["item3"]:     filters["items"].append(ui.itemFilter3.currentText())
+        if checkboxes["item4"]:     filters["items"].append(ui.itemFilter4.currentText())
 
         return filters
 
@@ -61,13 +50,11 @@ def run_main_gui():
 
         ui.tableWidget.setColumnCount(COLUMN_COUNT)
 
-        for i in range(len(headers), COLUMN_COUNT):
+        for i in range(len(headers), COLUMN_COUNT): 
             headers.append("")
             
         ui.tableWidget.setHorizontalHeaderLabels(headers)
 
-
-    # verify which checkboxes are pressed or not pressed
     def get_checkboxes():
         
         return {
@@ -116,12 +103,10 @@ def run_main_gui():
             # always filter for given placements
             composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(  composition_groups  = considered_regions[region],
                                                                                                     max_placement       = filters["placements"])
-            
             # apply other possible filters on dataset
             composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
                                                                                         filters             = filters,
                                                                                         item_name_to_id_map = ITEM_NAME_TO_ID_MAP)
-
             # loop over compisitiongroups of each region
             for composition_group in composition_group_database["shown_in_table"]:
                 
@@ -129,7 +114,6 @@ def run_main_gui():
                 #   => consider only first entry
                 element = composition_group.compositions[0]
 
-                # change table size dynamically
                 ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
 
                 # add the counter to table
@@ -142,24 +126,18 @@ def run_main_gui():
 
                 # fill row starting at second index (counter is at first index)
                 keycounter = 2
-
                 for key in element.traits:
                     # add the elements into the table
                     current = QTableWidgetItem(str(key))
                     ui.tableWidget.setItem(counter, keycounter, current)
 
                     # background color depending on trait class
-                    if element.traits[key] == 1:
-                        ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
-                    elif element.traits[key] == 2:
-                        ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
-                    elif element.traits[key] == 3:
-                        ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
-                    else:
-                        ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
+                    if      element.traits[key] == 1:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
+                    elif    element.traits[key] == 2:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
+                    elif    element.traits[key] == 3:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
+                    else:                               ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
 
                     keycounter += 1
-
                 counter += 1
 
     #############################################################################
@@ -170,8 +148,7 @@ def run_main_gui():
         # verify which checkboxes are pressed or not pressed
         checkboxes = get_checkboxes()
 
-        if not checkboxes["regions"]["euw"] and not checkboxes["regions"]["kr"]:
-            return
+        if not checkboxes["regions"]["euw"] and not checkboxes["regions"]["kr"]: return
 
         reset_tableview(headers=["Occurences", "Champions"])
 
@@ -192,12 +169,10 @@ def run_main_gui():
             # always filter for given placements
             composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(  composition_groups  = considered_regions[region],
                                                                                                     max_placement       = filters["placements"])
-
             # apply other possible filters on dataset
             composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
                                                                                         filters             = filters,
                                                                                         item_name_to_id_map = ITEM_NAME_TO_ID_MAP)
-
             # loop over compisitiongroups of each region
             for composition_group in composition_group_database["shown_in_table"]:
                 
@@ -205,39 +180,31 @@ def run_main_gui():
                 #   => only consider first entry
                 element = composition_group.compositions[0]
 
-                # change table size dynamically
-                ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
-
                 # add the counter to table
+                ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
                 current_counter = QTableWidgetItem(str(composition_group.counter))
                 ui.tableWidget.setItem(counter, 0, current_counter)
 
                 # fill row starting at second index (counter is at first index)
                 keycounter = 1
-
                 for champion in element.champions:
 
-                    current_champion = QTableWidgetItem()
-                    label = QLabel()
-                    pixmap = QPixmap(champion.icon).scaled(30, 30)
+                    current_champion    = QTableWidgetItem()
+                    label               = QLabel()
+                    pixmap              = QPixmap(champion.icon).scaled(30, 30)
                     label.setPixmap(pixmap)
                     ui.tableWidget.setCellWidget(counter, keycounter, label)
 
                     # show amount of stars right to champion icon
-                    if champion.tier == 1:
-                        current_champion.setText("   *")
-                    elif champion.tier == 2:
-                        current_champion.setText("   **")
-                    elif champion.tier == 3:
-                        current_champion.setText("   ***")
-                    else:
-                        current_champion.setText("   ****")
+                    if      champion.tier == 1: current_champion.setText("   *")
+                    elif    champion.tier == 2: current_champion.setText("   **")
+                    elif    champion.tier == 3: current_champion.setText("   ***")
+                    else:                       current_champion.setText("   ****")
 
                     current_champion.setFont(QFont('Arial', 24))
                     ui.tableWidget.setItem(counter, keycounter, current_champion)
 
                     keycounter += 1
-
                 counter += 1
 
     #############################################################################
@@ -247,8 +214,7 @@ def run_main_gui():
         # verify which checkboxes are pressed or not pressed
         checkboxes = get_checkboxes()
 
-        if not checkboxes["regions"]["euw"] and not checkboxes["regions"]["kr"]:
-            return
+        if not checkboxes["regions"]["euw"] and not checkboxes["regions"]["kr"]: return
 
         reset_tableview(headers=["Occurences", "Champions"])
 
@@ -267,12 +233,10 @@ def run_main_gui():
             # always filter for given placements
             composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(  composition_groups  = considered_regions[region],
                                                                                                     max_placement       = filters["placements"])
-
             # apply other possible filters on dataset
             composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
                                                                                         filters             = filters,
                                                                                         item_name_to_id_map = ITEM_NAME_TO_ID_MAP)
-
             # loop over compisitiongroups of each region
             for composition_group in composition_group_database["shown_in_table"]:
                 
@@ -280,21 +244,16 @@ def run_main_gui():
                 #   => only consider first entry
                 element = composition_group.compositions[0]
 
-                # change table size dynamically
-                ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
-
                 # add the counter to table
+                ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
                 current_counter = QTableWidgetItem(str(composition_group.counter))
                 ui.tableWidget.setItem(row_counter, 0, current_counter)
 
-                # iterate over ech champion
                 for champion in element.champions:
-                    # only show champions with at least 1 item
                     if len(champion.items) > 0:
-                        # do not show a champ that only wears 1 item component
                         if champion.items[0].not_component:
-                            label = QLabel()
-                            pixmap = QPixmap(champion.icon).scaled(30, 30)
+                            label   = QLabel()
+                            pixmap  = QPixmap(champion.icon).scaled(30, 30)
                             label.setPixmap(pixmap)
                             ui.tableWidget.setCellWidget(row_counter, 1, label)
 
@@ -302,16 +261,14 @@ def run_main_gui():
                             item_position = 2
                             for item in champion.items:
                                 if item.not_component:
-                                    label = QLabel()
-                                    pixmap = QPixmap(item.icon).scaled(30, 30)
+                                    label   = QLabel()
+                                    pixmap  = QPixmap(item.icon).scaled(30, 30)
                                     label.setPixmap(pixmap)
                                     ui.tableWidget.setCellWidget(row_counter, item_position, label)
                                     item_position += 1
 
-                        # change table size dynamically
                         ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
                         row_counter += 1
-
                 row_counter += 1
     
     #############################################################################
@@ -322,11 +279,9 @@ def run_main_gui():
 
         reset_tableview(headers=["Champion", "Items", "", "", "Occurences", "Avg Placement"])
 
-        # verify which checkboxes are pressed or not pressed
         checkboxes = get_checkboxes()
-
-        filters = build_filters(checkboxes)
-        champions = filters["champions"]
+        filters     = build_filters(checkboxes)
+        champions   = filters["champions"]
 
         if len(champions) == 0: champions = CURRENT_SET_CHAMPIONS
 
@@ -337,15 +292,15 @@ def run_main_gui():
 
         bis_dict = compute_best_in_slot(composition_groups, item_amount)
 
-        row_counter = 0
-        # change table size dynamically
         ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
 
+        row_counter = 0
         for champion in champions:
-            label = QLabel()
-            pixmap = QPixmap(f"Set5_static_data/champions/TFT5_{champion}.png").scaled(30, 30)
+            label   = QLabel()
+            pixmap  = QPixmap(f"Set5_static_data/champions/TFT5_{champion}.png").scaled(30, 30)
             label.setPixmap(pixmap)
             ui.tableWidget.setCellWidget(row_counter, 0, label)
+
             # exception handling, when bis was not found for a champion 
             try:
                 if len(bis_dict[champion]) == 0:
@@ -354,21 +309,20 @@ def run_main_gui():
                         ui.tableWidget.setItem(row_counter, 1, error_text)
 
                 for item_combination in bis_dict[champion]:
-                    current_counter = QTableWidgetItem()
-                    current_counter.setText(str(bis_dict[champion][item_combination]["counter"]))
-                    current_avg_placement = QTableWidgetItem()
-                    current_avg_placement.setText(str(bis_dict[champion][item_combination]["avg_placement"]))
-
                     items = item_combination.split("+")
+
+                    current_counter         = QTableWidgetItem()
+                    current_avg_placement   = QTableWidgetItem()
+                    current_counter.setText(str(bis_dict[champion][item_combination]["counter"]))
+                    current_avg_placement.setText(str(bis_dict[champion][item_combination]["avg_placement"]))
 
                     item_position = 1
                     for item in items:
-                        label = QLabel()
-                        pixmap = QPixmap(f"Set5_static_data/items/{item}.png").scaled(30, 30)
+                        label   = QLabel()
+                        pixmap  = QPixmap(f"Set5_static_data/items/{item}.png").scaled(30, 30)
                         label.setPixmap(pixmap)
                         ui.tableWidget.setCellWidget(row_counter, item_position, label)
                         item_position += 1
-
 
                     ui.tableWidget.setItem(row_counter, 4, current_counter)
                     ui.tableWidget.setItem(row_counter, 5, current_avg_placement)
@@ -403,17 +357,14 @@ def run_main_gui():
         row_counter = 0
         for composition in selected_composition_group.compositions:
 
-            # make space for placement row
             popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
 
             # show placement of compositon
             popup.tableWidget.setItem(row_counter, 0, QTableWidgetItem(f"Placement: {str(composition.placement)}"))
 
-            # make space for trait row
             popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
             row_counter += 1
 
-            # show traits
             column_counter = 0
             for trait in composition.traits:
             
@@ -421,40 +372,29 @@ def run_main_gui():
                 popup.tableWidget.setItem(row_counter, column_counter, current_trait)
 
                 # background color depending on trait class
-                if composition.traits[trait] == 1:
-                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("brown"))
-                elif composition.traits[trait] == 2:
-                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("silver"))
-                elif composition.traits[trait] == 3:
-                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("gold"))
-                else:
-                    popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("cyan"))
+                if      composition.traits[trait] == 1: popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("brown"))
+                elif    composition.traits[trait] == 2: popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("silver"))
+                elif    composition.traits[trait] == 3: popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("gold"))
+                else:                                   popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("cyan"))
 
                 column_counter += 1
 
-            # make space for first champion
             popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
             row_counter += 1
 
-            # show each champion
             for champion in composition.champions:
             
-                current_champion = QTableWidgetItem()
-
-                label = QLabel()
-                pixmap = QPixmap(champion.icon).scaled(30, 30)
+                current_champion    = QTableWidgetItem()
+                label               = QLabel()
+                pixmap              = QPixmap(champion.icon).scaled(30, 30)
                 label.setPixmap(pixmap)
                 popup.tableWidget.setCellWidget(row_counter, 0, label)
 
                 # show amount of stars right to champion icon
-                if champion.tier == 1:
-                    current_champion.setText("   *")
-                elif champion.tier == 2:
-                    current_champion.setText("   **")
-                elif champion.tier == 3:
-                    current_champion.setText("   ***")
-                else:
-                    current_champion.setText("   ****")
+                if      champion.tier == 1: current_champion.setText("   *")
+                elif    champion.tier == 2: current_champion.setText("   **")
+                elif    champion.tier == 3: current_champion.setText("   ***")
+                else:                       current_champion.setText("   ****")
 
                 current_champion.setFont(QFont('Arial', 24))
                 popup.tableWidget.setItem(row_counter, 0, current_champion)
@@ -469,7 +409,6 @@ def run_main_gui():
                         popup.tableWidget.setCellWidget(row_counter, item_position, label)
                         item_position += 1
 
-                # make space for next champion
                 popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
                 row_counter += 1
 
@@ -511,23 +450,16 @@ def run_main_gui():
                         "master"        : ui.masterCheckBox.isChecked()}
 
         # if no regions are chosen, do nothing
-        if not checkboxes["euw"] and not checkboxes["kr"]:
-            return
+        if not checkboxes["euw"] and not checkboxes["kr"]: return
 
         # choose highest league of checked ones
-        if checkboxes["challenger"]:
-            considered_league = "master"
+        if checkboxes["challenger"]: considered_league = "master"
         else:
-            if checkboxes["grandmaster"]:
-                considered_league = "grandmaster"
+            if checkboxes["grandmaster"]: considered_league = "grandmaster"
             else:
-                if checkboxes["master"]:
-                    considered_league = "master"
-                else:
-                    # do nothing if no league checked
-                    return
+                if checkboxes["master"]: considered_league = "master"
+                else: return
 
-        # if euw is checked and not already loaded
         if checkboxes["euw"] and not composition_group_database["euw"]["loaded"]:
             europe = get_compositions(  region              = "europe",
                                         games_per_player    = int(ui.gamesPerPlayer.text()),
@@ -535,19 +467,14 @@ def run_main_gui():
                                         current_patch       = ui.currentPatchFilter.text(),
                                         ranked_league       = considered_league)     
 
-            # sort composition group by traits
             euw_comps_unsorted = group_compositions_by_traits(europe)
-            euw_comps_unsorted.sort(key=lambda x: x.counter, reverse=True)
 
-            # fill the composition_group dictionary
-            composition_group_database["euw"]["database"]   = sorted(euw_comps_unsorted, key=lambda x: x.counter, reverse=True)
+            composition_group_database["euw"]["database"]   = sort_composition_groups_by_occurence_and_placement(euw_comps_unsorted)
             composition_group_database["euw"]["grouped_by"] = "traits"
             composition_group_database["euw"]["loaded"]     = True
 
-            # green checkbox to signalize loading is done
             ui.euwCheckBox.setStyleSheet("color: green;")
 
-        # if kr is checked and not already loaded
         if checkboxes["kr"] and not composition_group_database["kr"]["loaded"]:
             korea = get_compositions(   region              = "korea",
                                         games_per_player    = int(ui.gamesPerPlayer.text()),
@@ -555,16 +482,12 @@ def run_main_gui():
                                         current_patch       = ui.currentPatchFilter.text(),
                                         ranked_league       = considered_league)
             
-            # sort composition group on occurences
             kr_comps_unsorted = group_compositions_by_traits(korea)
-            kr_comps_unsorted.sort(key=lambda x: x.counter, reverse=True)
 
-            # fill the composition_group dictionary
-            composition_group_database["kr"]["database"]    = sorted(kr_comps_unsorted, key=lambda x: x.counter, reverse=True)
+            composition_group_database["kr"]["database"]    = sort_composition_groups_by_occurence_and_placement(kr_comps_unsorted)
             composition_group_database["euw"]["grouped_by"] = "traits"
             composition_group_database["kr"]["loaded"]      = True
 
-            # green checkbox to signalize loading is done
             ui.krCheckBox.setStyleSheet("color: green;")
 
     ##############################################################################
