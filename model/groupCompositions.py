@@ -3,15 +3,14 @@ from model.dissolveCompositionGroups    import dissolve_composition_groups
 
 def group_compositions_by_items(compositions):
     processed   = []
+    result      = []
     num_comps   = len(compositions)
-    result = []
     
     # loop over every composition
     for x in range(0, num_comps):
 
         # skip processed compositions
-        if x in processed:
-            continue
+        if x in processed: continue
 
         # initialize new composition group with current composition
         current_comp_group = [compositions[x]]
@@ -28,15 +27,14 @@ def group_compositions_by_items(compositions):
 
 def group_compositions_by_traits(compositions):
     processed   = []
+    result      = []
     num_comps   = len(compositions)
-    result = []
     
     # loop over every composition
     for x in range(0, num_comps):
 
         # skip processed compositions
-        if x in processed:
-            continue
+        if x in processed: continue
 
         # initialize new composition group with current composition
         current_comp_group = [compositions[x]]
@@ -51,18 +49,16 @@ def group_compositions_by_traits(compositions):
     
     return result
 
-
 def group_compositions_by_champions(compositions):
     processed   = []
+    result      = []
     num_comps   = len(compositions)
-    result = []
     
     # loop over every composition
     for x in range(0, num_comps):
 
         # skip processed compositions
-        if x in processed:
-            continue
+        if x in processed: continue
 
         # initialize new composition group with current composition
         current_comp_group = [compositions[x]]
@@ -80,7 +76,6 @@ def group_compositions_by_champions(compositions):
 def group_compositions(checkboxes, composition_groups, group_by):
 
     considered_regions = {}
-
     composition_groups_copy = composition_groups.copy()
 
     for region in checkboxes["regions"]:
@@ -97,8 +92,7 @@ def group_compositions(checkboxes, composition_groups, group_by):
                 elif group_by == "items":
                     composition_groups_copy[region]["database"]     = group_compositions_by_items(compositions)
                     composition_groups_copy[region]["grouped_by"]   = group_by
-                else:
-                    return {}
+                else: return {}
 
             considered_regions.update({region : composition_groups_copy[region]["database"]})
 
