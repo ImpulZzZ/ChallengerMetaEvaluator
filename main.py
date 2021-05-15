@@ -99,7 +99,7 @@ def run_main_gui():
         # verify which checkboxes are pressed or not pressed
         checkboxes = get_checkboxes()
 
-        reset_tableview(headers=["Occurences", "Traits"])
+        reset_tableview(headers=["Occurences", "Avg Placement", "Traits"])
 
         # validate which regions are selected and group them
         (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
@@ -136,8 +136,12 @@ def run_main_gui():
                 current_counter = QTableWidgetItem(str(composition_group.counter))
                 ui.tableWidget.setItem(counter, 0, current_counter)
 
+                # add the average placement to table
+                current_avg_placement = QTableWidgetItem(str(composition_group.avg_placement))
+                ui.tableWidget.setItem(counter, 1, current_avg_placement)
+
                 # fill row starting at second index (counter is at first index)
-                keycounter = 1
+                keycounter = 2
 
                 for key in element.traits:
                     # add the elements into the table

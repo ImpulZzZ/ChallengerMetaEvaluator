@@ -4,3 +4,8 @@ class CompositionGroup:
         self.compositions = compositions
 
         self.counter = len(compositions)
+
+        self.avg_placement = 0
+        for composition in compositions:
+            self.avg_placement += composition.placement
+        self.avg_placement /= self.counter
