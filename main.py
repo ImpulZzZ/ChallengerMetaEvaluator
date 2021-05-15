@@ -78,7 +78,6 @@ def run_main_gui():
                     }
                 }
 
-    #############################################################################
     def show_traits():
 
         nonlocal composition_group_database
@@ -140,7 +139,6 @@ def run_main_gui():
                     keycounter += 1
                 counter += 1
 
-    #############################################################################
     def show_champions():
 
         nonlocal composition_group_database
@@ -201,7 +199,6 @@ def run_main_gui():
                     keycounter += 1
                 counter += 1
 
-    #############################################################################
     def show_items():
         nonlocal composition_group_database
 
@@ -265,7 +262,6 @@ def run_main_gui():
                         row_counter += 1
                 row_counter += 1
     
-    #############################################################################
     def show_best_in_slot():
         nonlocal composition_group_database
         composition_groups = []
@@ -332,7 +328,6 @@ def run_main_gui():
             ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
             row_counter += 1
 
-    #############################################################################
     def show_composition_group():
 
         # prevents infinite loop of function calls
@@ -411,7 +406,7 @@ def run_main_gui():
             row_counter += 1
         
         popup_window.show()
-    #############################################################################
+
     def reset_data():
         nonlocal composition_group_database
 
@@ -431,7 +426,7 @@ def run_main_gui():
 
         ui.euwCheckBox.setStyleSheet("color: black;")
         ui.krCheckBox.setStyleSheet("color: black;")
-    #############################################################################
+
     def load_data():
         # to modify outer variables in inner function
         nonlocal composition_group_database
@@ -483,8 +478,6 @@ def run_main_gui():
             composition_group_database["kr"]["loaded"]      = True
 
             ui.krCheckBox.setStyleSheet("color: green;")
-
-    ##############################################################################
 
     # setup the gui
     app         = QApplication([])
