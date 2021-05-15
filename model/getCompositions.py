@@ -76,7 +76,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
         summoner_name   = player["summonerName"]
 
         if current_requests == requests_per_minute:
-                time.sleep(60)
+                time.sleep(120)
                 current_requests = 0
 
         try:
@@ -94,7 +94,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
             return
 
         if current_requests == requests_per_minute:
-                time.sleep(60)
+                time.sleep(120)
                 current_requests = 0
 
         # request last X games of each player
@@ -115,7 +115,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
     # loop over each match
     for match in analyzed_games:
         if current_requests == requests_per_minute:
-                time.sleep(60)
+                time.sleep(120)
                 current_requests = 0
         try:
 
