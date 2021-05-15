@@ -324,12 +324,12 @@ def run_main_gui():
         filters = build_filters(checkboxes)
         champions = filters["champions"]
 
+        if len(champions) == 0: champions = CURRENT_SET_CHAMPIONS
+
         # merge all data from regions together
         for region in composition_group_database:
-            try:
-                composition_groups.append(composition_group_database[region]["database"])
-            except TypeError:
-                continue
+            try: composition_groups.append(composition_group_database[region]["database"])
+            except TypeError: continue
 
         bis_dict = compute_best_in_slot(composition_groups, item_amount)
 
@@ -342,37 +342,44 @@ def run_main_gui():
             pixmap = QPixmap(f"Set5_static_data/champions/TFT5_{champion}.png").scaled(30, 30)
             label.setPixmap(pixmap)
             ui.tableWidget.setCellWidget(row_counter, 0, label)
+            # exception handling, when bis was not found for a champion 
+            try:
+                if len(bis_dict[champion]) == 0:
+                        error_text = QTableWidgetItem()
+                        error_text.setText("NaN")
+                        ui.tableWidget.setItem(row_counter, 1, error_text)
 
-            for item_combination in bis_dict[champion]:
-                current_counter = QTableWidgetItem()
-                current_counter.setText(str(bis_dict[champion][item_combination]["counter"]))
-                current_avg_placement = QTableWidgetItem()
-                current_avg_placement.setText(str(bis_dict[champion][item_combination]["avg_placement"]))
+                for item_combination in bis_dict[champion]:
+                    current_counter = QTableWidgetItem()
+                    current_counter.setText(str(bis_dict[champion][item_combination]["counter"]))
+                    current_avg_placement = QTableWidgetItem()
+                    current_avg_placement.setText(str(bis_dict[champion][item_combination]["avg_placement"]))
 
-                items = item_combination.split("+")
+                    items = item_combination.split("+")
 
-                item_position = 1
-                for item in items:
-                    label = QLabel()
-                    pixmap = QPixmap(f"Set5_static_data/items/{item}.png").scaled(30, 30)
-                    label.setPixmap(pixmap)
-                    ui.tableWidget.setCellWidget(row_counter, item_position, label)
-                    item_position += 1
+                    item_position = 1
+                    for item in items:
+                        label = QLabel()
+                        pixmap = QPixmap(f"Set5_static_data/items/{item}.png").scaled(30, 30)
+                        label.setPixmap(pixmap)
+                        ui.tableWidget.setCellWidget(row_counter, item_position, label)
+                        item_position += 1
 
 
-                ui.tableWidget.setItem(row_counter, 4, current_counter)
-                ui.tableWidget.setItem(row_counter, 5, current_avg_placement)
+                    ui.tableWidget.setItem(row_counter, 4, current_counter)
+                    ui.tableWidget.setItem(row_counter, 5, current_avg_placement)
 
-                ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
-                row_counter += 1
+                    ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
+                    row_counter += 1
+            
+            except KeyError:
+                error_text = QTableWidgetItem()
+                error_text.setText("NaN")
+                ui.tableWidget.setItem(row_counter, 1, error_text)
 
             ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
             row_counter += 1
 
-
-           
-
- 
     #############################################################################
     def show_composition_group():
 
