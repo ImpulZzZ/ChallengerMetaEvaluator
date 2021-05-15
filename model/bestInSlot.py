@@ -17,12 +17,13 @@ def compute_best_in_slot(composition_groups, item_amount):
                             counter_dict.update({champion.name : {}})
                         
                         for item in champion.items:
-                            # validate if the item is not in dict yet, if not add it
-                            try:
-                                counter_dict[champion.name][item.id]["counter"] += 1
-                                counter_dict[champion.name][item.id]["avg_placement"] += composition.placement
-                            except KeyError:
-                                counter_dict[champion.name].update({item.id : {"counter" : 1, "avg_placement" : composition.placement}})
+                            if item.not_component:
+                                # validate if the item is not in dict yet, if not add it
+                                try:
+                                    counter_dict[champion.name][item.id]["counter"] += 1
+                                    counter_dict[champion.name][item.id]["avg_placement"] += composition.placement
+                                except KeyError:
+                                    counter_dict[champion.name].update({item.id : {"counter" : 1, "avg_placement" : composition.placement}})
 
     # handling for 2-item combinations
     elif item_amount == 2:
