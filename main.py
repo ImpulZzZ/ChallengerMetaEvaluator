@@ -82,20 +82,74 @@ def run_main_gui():
 
         nonlocal composition_group_database
 
-        # verify which checkboxes are pressed or not pressed
         checkboxes = get_checkboxes()
+        filters = build_filters(checkboxes)
 
         reset_tableview(headers=["Occurences", "Avg Placement", "Traits"])
 
-        # validate which regions are selected and group them
+        
         (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
                                                                                 composition_groups  = composition_group_database, 
-                                                                                group_by            = "traits")
+                                                                                group_by            = "traits",
+                                                                                all_traits          = None,
+                                                                                n                   = None)
+        counter = 0
+        for region in considered_regions:
 
-        # validate which filters have to be applied
+            # always filter for given placements
+            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(  composition_groups  = considered_regions[region],
+                                                                                                    max_placement       = filters["placements"])
+            # apply other possible filters on dataset
+            composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
+                                                                                        filters             = filters,
+                                                                                        item_name_to_id_map = ITEM_NAME_TO_ID_MAP)
+            # loop over compisitiongroups of each region
+            for composition_group in composition_group_database["shown_in_table"]:
+                
+                # assert composition groups to be grouped by traits, so entries should be equal
+                #   => consider only first entry
+                element = composition_group.compositions[0]
+
+                ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
+
+                # add the counter to table
+                current_counter = QTableWidgetItem(str(composition_group.counter))
+                ui.tableWidget.setItem(counter, 0, current_counter)
+
+                # add the average placement to table
+                current_avg_placement = QTableWidgetItem(str(composition_group.avg_placement))
+                ui.tableWidget.setItem(counter, 1, current_avg_placement)
+
+                # fill row starting at second index (counter is at first index)
+                keycounter = 2
+                for key in element.traits:
+                    # add the elements into the table
+                    current = QTableWidgetItem(str(key))
+                    ui.tableWidget.setItem(counter, keycounter, current)
+
+                    # background color depending on trait class
+                    if      element.traits[key] == 1:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
+                    elif    element.traits[key] == 2:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
+                    elif    element.traits[key] == 3:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
+                    else:                               ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
+
+                    keycounter += 1
+                counter += 1
+
+    def show_n_traits():
+
+        nonlocal composition_group_database
+
+        checkboxes = get_checkboxes()
         filters = build_filters(checkboxes)
 
-        # loop over every considered region
+        reset_tableview(headers=["Occurences", "Avg Placement", "Traits"])
+
+        (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
+                                                                                composition_groups  = composition_group_database, 
+                                                                                group_by            = "n_traits",
+                                                                                all_traits          = CURRENT_SET_TRAITS,
+                                                                                n                   = ui.nTraitFilterSlider.value())
         counter = 0
         for region in considered_regions:
 
@@ -153,7 +207,9 @@ def run_main_gui():
         # validate which regions are selected and group them
         (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
                                                                                 composition_groups  = composition_group_database, 
-                                                                                group_by            = "champions")
+                                                                                group_by            = "champions",
+                                                                                all_traits          = None,
+                                                                                n                   = None)
 
         # TODO: at the moment regions are just grouped within theirselves and not with other regions
 
@@ -212,7 +268,9 @@ def run_main_gui():
         # validate which regions are selected and group them
         (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
                                                                                 composition_groups  = composition_group_database, 
-                                                                                group_by            = "items")
+                                                                                group_by            = "items",
+                                                                                all_traits          = None,
+                                                                                n                   = None)
 
         # validate which filters have to be applied
         filters = build_filters(checkboxes)
@@ -287,7 +345,7 @@ def run_main_gui():
         row_counter = 0
         for champion in champions:
             label   = QLabel()
-            pixmap  = QPixmap(f"Set5_static_data/champions/TFT5_{champion}.png").scaled(30, 30)
+            pixmap  = QPixmap(f"{STATIC_DATA_DIR}champions/TFT5_{champion}.png").scaled(30, 30)
             label.setPixmap(pixmap)
             ui.tableWidget.setCellWidget(row_counter, 0, label)
 
@@ -309,7 +367,7 @@ def run_main_gui():
                     item_position = 1
                     for item in items:
                         label   = QLabel()
-                        pixmap  = QPixmap(f"Set5_static_data/items/{item}.png").scaled(30, 30)
+                        pixmap  = QPixmap(f"{STATIC_DATA_DIR}items/{item}.png").scaled(30, 30)
                         label.setPixmap(pixmap)
                         ui.tableWidget.setCellWidget(row_counter, item_position, label)
                         item_position += 1
@@ -498,6 +556,7 @@ def run_main_gui():
 
     # bind functions to the buttons
     ui.traitsButton.clicked.connect(show_traits)
+    ui.groupNTraitsButton.clicked.connect(show_n_traits)
     ui.championsButton.clicked.connect(show_champions)
     ui.itemsButton.clicked.connect(show_items)
     ui.tableWidget.itemDoubleClicked.connect(show_composition_group)
