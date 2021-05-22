@@ -1,3 +1,9 @@
+from view import main_gui               as main_gui
+from view import composition_group_view as composition_group_view
+from PyQt5.QtWidgets                import *
+from PyQt5.QtGui                    import QColor
+from PyQt5.QtGui                    import QFont
+from PyQt5.QtGui                    import QPixmap
 from model.CompositionGroup         import CompositionGroup
 from model.Data                     import Data
 from model.sortUtilities            import sort_composition_groups_by_occurence_and_placement
@@ -7,14 +13,6 @@ from model.groupCompositions        import group_compositions_by_traits, group_c
 from model.groupCompositionGroups   import group_composition_groups_by_n_traits
 from model.filterCompositionGroups  import filter_composition_groups, filter_composition_groups_by_placement
 from model.bestInSlot               import compute_best_in_slot
-
-from view import main_gui               as main_gui
-from view import composition_group_view as composition_group_view
-
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QColor
-from PyQt5.QtGui import QFont
-from PyQt5.QtGui import QPixmap
 
 # starts the main gui
 def run_main_gui():
