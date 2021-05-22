@@ -1,7 +1,9 @@
 from model.CompositionGroup import CompositionGroup
+from model.Data             import Data
 
-def filter_composition_groups_by_items(composition_groups, items, item_map):
-    result_composition_groups = []
+def filter_composition_groups_by_items(composition_groups, items):
+    item_map                    = Data().item_name_to_id_map
+    result_composition_groups   = []
 
     for current_comp_group in composition_groups:
 
@@ -72,7 +74,7 @@ def filter_composition_groups_by_placement(composition_groups, max_placement):
 
     return result_composition_groups
 
-def filter_composition_groups(composition_groups, filters, item_name_to_id_map):
+def filter_composition_groups(composition_groups, filters):
     result_composition_groups = []
 
     trait_filter_active     = len(filters["traits"])    > 0
@@ -90,7 +92,6 @@ def filter_composition_groups(composition_groups, filters, item_name_to_id_map):
                                                                                                     star_relevant       = filters["championStar"])
 
     if item_filter_active: result_composition_groups = filter_composition_groups_by_items(  composition_groups  = composition_groups, 
-                                                                                            items               = filters["items"],
-                                                                                            item_map            = item_name_to_id_map)
+                                                                                            items               = filters["items"])
     
     return result_composition_groups

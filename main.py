@@ -1,11 +1,11 @@
 from model.CompositionGroup         import CompositionGroup
+from model.Data                     import Data
 from model.sortUtilities            import sort_composition_groups_by_occurence_and_placement
 from model.bestInSlot               import compute_best_in_slot
 from model.getCompositions          import get_compositions
 from model.groupCompositions        import group_compositions_by_traits, group_compositions
 from model.groupCompositionGroups   import group_composition_groups_by_n_traits
 from model.filterCompositionGroups  import filter_composition_groups, filter_composition_groups_by_placement
-from model.jsonUtilities            import extract_names_from_json, create_name_to_id_map
 from model.bestInSlot               import compute_best_in_slot
 
 from view import main_gui               as main_gui
@@ -101,8 +101,7 @@ def run_main_gui():
                                                                                                     max_placement       = filters["placements"])
             # apply other possible filters on dataset
             composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
-                                                                                        filters             = filters,
-                                                                                        item_name_to_id_map = ITEM_NAME_TO_ID_MAP)
+                                                                                        filters             = filters)
             # loop over compisitiongroups of each region
             for composition_group in composition_group_database["shown_in_table"]:
                 
@@ -157,11 +156,9 @@ def run_main_gui():
                                                                                                     max_placement       = filters["placements"])
             # apply other possible filters on dataset
             composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
-                                                                                        filters             = filters,
-                                                                                        item_name_to_id_map = ITEM_NAME_TO_ID_MAP)
+                                                                                        filters             = filters)
 
-            combination_dict = group_composition_groups_by_n_traits(composition_groups  = composition_group_database["shown_in_table"], 
-                                                                    all_traits          = CURRENT_SET_TRAITS,
+            combination_dict = group_composition_groups_by_n_traits(composition_groups  = composition_group_database["shown_in_table"],
                                                                     n                   = ui.nTraitFilterSlider.value())
             composition_groups = []
             for combination in combination_dict:
@@ -234,8 +231,7 @@ def run_main_gui():
                                                                                                     max_placement       = filters["placements"])
             # apply other possible filters on dataset
             composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
-                                                                                        filters             = filters,
-                                                                                        item_name_to_id_map = ITEM_NAME_TO_ID_MAP)
+                                                                                        filters             = filters)
             # loop over compisitiongroups of each region
             for composition_group in composition_group_database["shown_in_table"]:
                 
@@ -291,8 +287,7 @@ def run_main_gui():
                                                                                                     max_placement       = filters["placements"])
             # apply other possible filters on dataset
             composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
-                                                                                        filters             = filters,
-                                                                                        item_name_to_id_map = ITEM_NAME_TO_ID_MAP)
+                                                                                        filters             = filters)
             # loop over compisitiongroups of each region
             for composition_group in composition_group_database["shown_in_table"]:
                 
@@ -338,7 +333,7 @@ def run_main_gui():
         filters     = build_filters(checkboxes)
         champions   = filters["champions"]
 
-        if len(champions) == 0: champions = CURRENT_SET_CHAMPIONS
+        if len(champions) == 0: champions = data.champions
 
         # merge all data from regions together
         for region in composition_group_database:
@@ -352,7 +347,7 @@ def run_main_gui():
         row_counter = 0
         for champion in champions:
             label   = QLabel()
-            pixmap  = QPixmap(f"{STATIC_DATA_DIR}champions/TFT5_{champion}.png").scaled(30, 30)
+            pixmap  = QPixmap(f"{data.data_dir}/champions/TFT5_{champion}.png").scaled(30, 30)
             label.setPixmap(pixmap)
             ui.tableWidget.setCellWidget(row_counter, 0, label)
 
@@ -374,7 +369,7 @@ def run_main_gui():
                     item_position = 1
                     for item in items:
                         label   = QLabel()
-                        pixmap  = QPixmap(f"{STATIC_DATA_DIR}items/{item}.png").scaled(30, 30)
+                        pixmap  = QPixmap(f"{data.data_dir}/items/{item}.png").scaled(30, 30)
                         label.setPixmap(pixmap)
                         ui.tableWidget.setCellWidget(row_counter, item_position, label)
                         item_position += 1
@@ -555,14 +550,9 @@ def run_main_gui():
     ui.setupUi(main_window)
 
     # setup global variables
+    data                        = Data()
     COLUMN_COUNT                = 15
-    CURRENT_PATCH               = "11.10"
-    STATIC_DATA_DIR             = "Set5_static_data/"
-    CURRENT_SET_TRAITS          = extract_names_from_json(STATIC_DATA_DIR + "traits.json")
-    CURRENT_SET_CHAMPIONS       = extract_names_from_json(STATIC_DATA_DIR + "champions.json")
-    CURRENT_SET_ITEMS           = extract_names_from_json(STATIC_DATA_DIR + "items.json")
-    ITEM_NAME_TO_ID_MAP         = create_name_to_id_map(STATIC_DATA_DIR + "items.json")
-    composition_group_database = {}
+    composition_group_database  = {}
     reset_data()
 
     # bind functions to the buttons
@@ -576,21 +566,21 @@ def run_main_gui():
     ui.bestInSlotButton.clicked.connect(show_best_in_slot)
 
     # add traits to dropdown filters
-    ui.traitFilter1.addItems(CURRENT_SET_TRAITS)
-    ui.traitFilter2.addItems(CURRENT_SET_TRAITS)
-    ui.traitFilter3.addItems(CURRENT_SET_TRAITS)
-    ui.traitFilter4.addItems(CURRENT_SET_TRAITS)
-    ui.championFilter1.addItems(CURRENT_SET_CHAMPIONS)
-    ui.championFilter2.addItems(CURRENT_SET_CHAMPIONS)
-    ui.championFilter3.addItems(CURRENT_SET_CHAMPIONS)
-    ui.championFilter4.addItems(CURRENT_SET_CHAMPIONS)
-    ui.itemFilter1.addItems(CURRENT_SET_ITEMS)
-    ui.itemFilter2.addItems(CURRENT_SET_ITEMS)
-    ui.itemFilter3.addItems(CURRENT_SET_ITEMS)
-    ui.itemFilter4.addItems(CURRENT_SET_ITEMS)
+    ui.traitFilter1.addItems(data.traits)
+    ui.traitFilter2.addItems(data.traits)
+    ui.traitFilter3.addItems(data.traits)
+    ui.traitFilter4.addItems(data.traits)
+    ui.championFilter1.addItems(data.champions)
+    ui.championFilter2.addItems(data.champions)
+    ui.championFilter3.addItems(data.champions)
+    ui.championFilter4.addItems(data.champions)
+    ui.itemFilter1.addItems(data.items)
+    ui.itemFilter2.addItems(data.items)
+    ui.itemFilter3.addItems(data.items)
+    ui.itemFilter4.addItems(data.items)
 
     # current patch
-    ui.currentPatchFilter.setText(CURRENT_PATCH)
+    ui.currentPatchFilter.setText(data.current_patch)
 
     # setup the other guis
     popup_window = QMainWindow()

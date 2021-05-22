@@ -1,6 +1,7 @@
-from model.sortUtilities                import sort_dict_by_occurence_and_placement
+from model.Data             import Data
+from model.sortUtilities    import sort_dict_by_occurence_and_placement
 
-def group_composition_groups_by_n_traits(composition_groups, all_traits, n):
+def group_composition_groups_by_n_traits(composition_groups, n):
     if n < 1: return
 
     compositions        = []
@@ -9,6 +10,7 @@ def group_composition_groups_by_n_traits(composition_groups, all_traits, n):
     result_one          = {}
     result_two          = {}
     tmp_result          = {}
+    all_traits          = Data().traits
     
     for composition_group in composition_groups:
         for composition in composition_group.compositions:
