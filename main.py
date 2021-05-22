@@ -1,7 +1,9 @@
+from model.CompositionGroup         import CompositionGroup
 from model.sortUtilities            import sort_composition_groups_by_occurence_and_placement
 from model.bestInSlot               import compute_best_in_slot
 from model.getCompositions          import get_compositions
 from model.groupCompositions        import group_compositions_by_traits, group_compositions
+from model.groupCompositionGroups   import group_composition_groups_by_n_traits
 from model.filterCompositionGroups  import filter_composition_groups, filter_composition_groups_by_placement
 from model.jsonUtilities            import extract_names_from_json, create_name_to_id_map
 from model.bestInSlot               import compute_best_in_slot
@@ -90,9 +92,7 @@ def run_main_gui():
         
         (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
                                                                                 composition_groups  = composition_group_database, 
-                                                                                group_by            = "traits",
-                                                                                all_traits          = None,
-                                                                                n                   = None)
+                                                                                group_by            = "traits")
         counter = 0
         for region in considered_regions:
 
@@ -145,11 +145,10 @@ def run_main_gui():
 
         reset_tableview(headers=["Occurences", "Avg Placement", "Traits"])
 
+        
         (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
                                                                                 composition_groups  = composition_group_database, 
-                                                                                group_by            = "n_traits",
-                                                                                all_traits          = CURRENT_SET_TRAITS,
-                                                                                n                   = ui.nTraitFilterSlider.value())
+                                                                                group_by            = "traits")      
         counter = 0
         for region in considered_regions:
 
@@ -160,35 +159,47 @@ def run_main_gui():
             composition_group_database["shown_in_table"] = filter_composition_groups(   composition_groups  = composition_group_database["shown_in_table"], 
                                                                                         filters             = filters,
                                                                                         item_name_to_id_map = ITEM_NAME_TO_ID_MAP)
-            # loop over compisitiongroups of each region
-            for composition_group in composition_group_database["shown_in_table"]:
-                
-                # assert composition groups to be grouped by traits, so entries should be equal
-                #   => consider only first entry
-                element = composition_group.compositions[0]
 
+            combination_dict = group_composition_groups_by_n_traits(composition_groups  = composition_group_database["shown_in_table"], 
+                                                                    all_traits          = CURRENT_SET_TRAITS,
+                                                                    n                   = ui.nTraitFilterSlider.value())
+            composition_groups = []
+            for combination in combination_dict:
+                composition_groups.append(CompositionGroup(combination_dict[combination]["compositions"]))
+
+            composition_group_database["shown_in_table"] = composition_groups
+            composition_group_database[region]["grouped_by"] = "n_traits"
+
+            # loop over combination of each region
+            for combination in combination_dict:
+
+                trait_combinations = combination.split('+')
+                
                 ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
 
                 # add the counter to table
-                current_counter = QTableWidgetItem(str(composition_group.counter))
+                current_counter = QTableWidgetItem(str(combination_dict[combination]["counter"]))
                 ui.tableWidget.setItem(counter, 0, current_counter)
 
                 # add the average placement to table
-                current_avg_placement = QTableWidgetItem(str(composition_group.avg_placement))
+                current_avg_placement = QTableWidgetItem(str(combination_dict[combination]["avg_placement"]))
                 ui.tableWidget.setItem(counter, 1, current_avg_placement)
 
                 # fill row starting at second index (counter is at first index)
                 keycounter = 2
-                for key in element.traits:
+                for trait_combination in trait_combinations:
+                    (tier, trait) = trait_combination.split('--')
+                    tier = int(tier)
+
                     # add the elements into the table
-                    current = QTableWidgetItem(str(key))
+                    current = QTableWidgetItem(trait)
                     ui.tableWidget.setItem(counter, keycounter, current)
 
                     # background color depending on trait class
-                    if      element.traits[key] == 1:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
-                    elif    element.traits[key] == 2:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
-                    elif    element.traits[key] == 3:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
-                    else:                               ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
+                    if      tier == 1:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
+                    elif    tier == 2:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
+                    elif    tier == 3:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
+                    else:                ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
 
                     keycounter += 1
                 counter += 1
@@ -207,9 +218,7 @@ def run_main_gui():
         # validate which regions are selected and group them
         (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
                                                                                 composition_groups  = composition_group_database, 
-                                                                                group_by            = "champions",
-                                                                                all_traits          = None,
-                                                                                n                   = None)
+                                                                                group_by            = "champions")
 
         # TODO: at the moment regions are just grouped within theirselves and not with other regions
 
@@ -268,9 +277,7 @@ def run_main_gui():
         # validate which regions are selected and group them
         (considered_regions, composition_group_database) = group_compositions(  checkboxes          = checkboxes, 
                                                                                 composition_groups  = composition_group_database, 
-                                                                                group_by            = "items",
-                                                                                all_traits          = None,
-                                                                                n                   = None)
+                                                                                group_by            = "items")
 
         # validate which filters have to be applied
         filters = build_filters(checkboxes)
@@ -391,6 +398,10 @@ def run_main_gui():
         # prevents infinite loop of function calls
         ui.tableWidget.itemDoubleClicked = False
 
+        #show_composition_group doesnt work properly for other cases => TODO 
+        if composition_group_database["euw"]["grouped_by"] not in ["traits", "champions", "n_traits"]:
+            return
+
         popup.setupUi(popup_window)
 
         # reset table view
@@ -398,7 +409,7 @@ def run_main_gui():
         popup.tableWidget.clearContents()
         popup.tableWidget.setColumnCount(COLUMN_COUNT)
 
-        # get selected composition group # TODO: Different handling for grouped by items
+        # get selected composition group
         selected_composition_group = composition_group_database["shown_in_table"][ui.tableWidget.currentItem().row()]
 
         row_counter = 0
