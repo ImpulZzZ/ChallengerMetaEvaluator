@@ -231,56 +231,6 @@ def run_main_gui():
 
                     keycounter += 1
                 counter += 1
-
-    def show_items():
-        nonlocal composition_group_database
-
-        checkboxes = get_checkboxes()
-        if not checkboxes["regions"]["euw"] and not checkboxes["regions"]["kr"]: return
-
-        filters = build_filters(checkboxes)
-
-        reset_tableview(headers=["Occurences", "Champions"])
-
-        (considered_regions, composition_group_database) = group_compositions(checkboxes          = checkboxes, 
-                                                                              composition_groups  = composition_group_database, 
-                                                                              group_by            = "items")
-        row_counter = 0
-        for region in considered_regions:
-
-            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(composition_groups  = considered_regions[region],
-                                                                                                  max_placement       = filters["placements"])
-
-            composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups  = composition_group_database["shown_in_table"], 
-                                                                                     filters             = filters)
-            
-            for composition_group in composition_group_database["shown_in_table"]:
-                element = composition_group.compositions[0]
-
-                ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
-                current_counter = QTableWidgetItem(str(composition_group.counter))
-                ui.tableWidget.setItem(row_counter, 0, current_counter)
-
-                for champion in element.champions:
-                    if len(champion.items) > 0:
-                        if champion.items[0].not_component:
-                            label   = QLabel()
-                            pixmap  = QPixmap(champion.icon).scaled(30, 30)
-                            label.setPixmap(pixmap)
-                            ui.tableWidget.setCellWidget(row_counter, 1, label)
-
-                            item_position = 2
-                            for item in champion.items:
-                                if item.not_component:
-                                    label   = QLabel()
-                                    pixmap  = QPixmap(item.icon).scaled(30, 30)
-                                    label.setPixmap(pixmap)
-                                    ui.tableWidget.setCellWidget(row_counter, item_position, label)
-                                    item_position += 1
-
-                        ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
-                        row_counter += 1
-                row_counter += 1
     
     def show_best_in_slot():
         nonlocal composition_group_database
@@ -508,7 +458,6 @@ def run_main_gui():
     ui.traitsButton.clicked.connect(show_traits)
     ui.groupNTraitsButton.clicked.connect(show_n_traits)
     ui.championsButton.clicked.connect(show_champions)
-    ui.itemsButton.clicked.connect(show_items)
     ui.tableWidget.itemDoubleClicked.connect(show_composition_group)
     ui.loadDataButton.clicked.connect(load_data)
     ui.resetDataButton.clicked.connect(reset_data)
