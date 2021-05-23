@@ -1,9 +1,7 @@
 from view import main_gui               as main_gui
 from view import composition_group_view as composition_group_view
 from PyQt5.QtWidgets                import *
-from PyQt5.QtGui                    import QColor
-from PyQt5.QtGui                    import QFont
-from PyQt5.QtGui                    import QPixmap
+from PyQt5.QtGui                    import QColor, QFont, QPixmap
 from model.CompositionGroup         import CompositionGroup
 from model.Data                     import Data
 from model.sortUtilities            import sort_composition_groups_by_occurence_and_placement
