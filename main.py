@@ -73,18 +73,21 @@ def run_main_gui():
                     }
                 }
 
-    def show_traits():
+    def initialize_variables(headers, group_by):
         nonlocal composition_group_database
 
         checkboxes = get_checkboxes()
         filters = build_filters(checkboxes)
+        reset_tableview(headers)
+        (considered_regions, composition_group_database) = group_compositions(checkboxes, composition_group_database, group_by)
 
-        reset_tableview(headers=["Occurences", "Avg Placement", "Traits"])
+        return (considered_regions, filters)
+    
+    def show_traits():
+        nonlocal composition_group_database
 
-        
-        (considered_regions, composition_group_database) = group_compositions(checkboxes          = checkboxes, 
-                                                                              composition_groups  = composition_group_database, 
-                                                                              group_by            = "traits")
+        (considered_regions, filters) = initialize_variables(headers  = ["Occurences", "Avg Placement", "Traits"],
+                                                             group_by = "traits")
         counter = 0
         for region in considered_regions:
 
@@ -130,15 +133,8 @@ def run_main_gui():
     def show_n_traits():
         nonlocal composition_group_database
 
-        checkboxes = get_checkboxes()
-        filters = build_filters(checkboxes)
-
-        reset_tableview(headers=["Occurences", "Avg Placement", "Traits"])
-
-        
-        (considered_regions, composition_group_database) = group_compositions(checkboxes          = checkboxes, 
-                                                                              composition_groups  = composition_group_database, 
-                                                                              group_by            = "traits")      
+        (considered_regions, filters) = initialize_variables(headers  = ["Occurences", "Avg Placement", "Traits"],
+                                                             group_by = "traits")
         counter = 0
         for region in considered_regions:
 
@@ -190,16 +186,8 @@ def run_main_gui():
     def show_champions():
         nonlocal composition_group_database
 
-        checkboxes = get_checkboxes()
-        if not checkboxes["regions"]["euw"] and not checkboxes["regions"]["kr"]: return
-
-        reset_tableview(headers=["Occurences", "Champions"])
-
-        filters = build_filters(checkboxes)
-
-        (considered_regions, composition_group_database) = group_compositions(checkboxes          = checkboxes, 
-                                                                              composition_groups  = composition_group_database, 
-                                                                              group_by            = "champions")
+        (considered_regions, filters) = initialize_variables(headers  = ["Occurences", "Champions"],
+                                                             group_by = "champions")
 
         # TODO: at the moment regions are just grouped within theirselves and not with other regions
         counter = 0
