@@ -73,12 +73,12 @@ def run_main_gui():
                     }
                 }
 
-    def initialize_variables(headers, group_by):
+    def initialize_variables(group_by):
         nonlocal composition_group_database
 
         checkboxes = get_checkboxes()
         filters = build_filters(checkboxes)
-        reset_tableview(headers)
+        reset_tableview(["Occurences", "Avg Placement", "Traits"])
         (considered_regions, composition_group_database) = group_compositions(checkboxes, composition_group_database, group_by)
 
         return (considered_regions, filters)
@@ -86,8 +86,7 @@ def run_main_gui():
     def show_traits():
         nonlocal composition_group_database
 
-        (considered_regions, filters) = initialize_variables(headers  = ["Occurences", "Avg Placement", "Traits"],
-                                                             group_by = "traits")
+        (considered_regions, filters) = initialize_variables(group_by = "traits")
         counter = 0
         for region in considered_regions:
 
@@ -133,8 +132,7 @@ def run_main_gui():
     def show_n_traits():
         nonlocal composition_group_database
 
-        (considered_regions, filters) = initialize_variables(headers  = ["Occurences", "Avg Placement", "Traits"],
-                                                             group_by = "traits")
+        (considered_regions, filters) = initialize_variables(group_by = "traits")
         counter = 0
         for region in considered_regions:
 
@@ -186,8 +184,7 @@ def run_main_gui():
     def show_champions():
         nonlocal composition_group_database
 
-        (considered_regions, filters) = initialize_variables(headers  = ["Occurences", "Champions"],
-                                                             group_by = "champions")
+        (considered_regions, filters) = initialize_variables(group_by = "champions")
 
         # TODO: at the moment regions are just grouped within theirselves and not with other regions
         counter = 0
@@ -202,10 +199,16 @@ def run_main_gui():
                 element = composition_group.compositions[0]
 
                 ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
+
+                # add the counter to table
                 current_counter = QTableWidgetItem(str(composition_group.counter))
                 ui.tableWidget.setItem(counter, 0, current_counter)
 
-                keycounter = 1
+                # add the average placement to table
+                current_avg_placement = QTableWidgetItem(str(composition_group.avg_placement))
+                ui.tableWidget.setItem(counter, 1, current_avg_placement)
+
+                keycounter = 2
                 for champion in element.champions:
 
                     current_champion = QTableWidgetItem()
