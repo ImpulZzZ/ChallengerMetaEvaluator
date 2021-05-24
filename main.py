@@ -393,7 +393,7 @@ def run_main_gui():
         if not checkboxes["euw"] and not checkboxes["kr"]: return
 
         # choose highest league of checked ones
-        if checkboxes["challenger"]: considered_league = "master"
+        if checkboxes["challenger"]: considered_league = "challenger"
         else:
             if checkboxes["grandmaster"]: considered_league = "grandmaster"
             else:
