@@ -217,7 +217,7 @@
   },
   {
     "key": "Set5_GodKing",
-    "name": "God-Kings",
+    "name": "GodKing",
     "description": "God-Kings deal bonus damage to enemies who have at least one of their Rival Traits. This effect is only active when you have exactly 1 unique God-King. Garen's Rivals: Forgotten, Nightbringer, Coven, Hellion, Dragonslayer, Abomination, Revenant. Darius' Rivals: Redeemed, Dawnbringer, Verdant, Draconic, Ironclad.",
     "type": "class",
     "sets": [
