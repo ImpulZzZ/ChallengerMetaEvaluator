@@ -1234,6 +1234,19 @@
      <string>Group n Traits</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="one_unit_trait_ignore_checkbox">
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>750</y>
+      <width>171</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ignore 1-unit traits</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

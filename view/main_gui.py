@@ -379,6 +379,9 @@ class Ui_mainWindow(object):
         self.groupNTraitsButton = QtWidgets.QPushButton(self.centralwidget)
         self.groupNTraitsButton.setGeometry(QtCore.QRect(1140, 780, 111, 21))
         self.groupNTraitsButton.setObjectName("groupNTraitsButton")
+        self.one_unit_trait_ignore_checkbox = QtWidgets.QCheckBox(self.centralwidget)
+        self.one_unit_trait_ignore_checkbox.setGeometry(QtCore.QRect(880, 750, 171, 23))
+        self.one_unit_trait_ignore_checkbox.setObjectName("one_unit_trait_ignore_checkbox")
         mainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(mainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1475, 22))
@@ -436,6 +439,7 @@ class Ui_mainWindow(object):
         self.label_27.setText(_translate("mainWindow", "2"))
         self.label_28.setText(_translate("mainWindow", "1"))
         self.groupNTraitsButton.setText(_translate("mainWindow", "Group n Traits"))
+        self.one_unit_trait_ignore_checkbox.setText(_translate("mainWindow", "Ignore 1-unit traits"))
 
 
 if __name__ == "__main__":
