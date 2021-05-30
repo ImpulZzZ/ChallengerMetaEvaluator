@@ -18,7 +18,6 @@ def run_main_gui():
     def build_filters(checkboxes):
         filters={
             "traits"        : {},
-            "ignoredTraits" : [],
             "champions"     : {},
             "items"         : [],
             "placements"    : ui.placementFilter.value(),
@@ -26,19 +25,18 @@ def run_main_gui():
             "championStar"  : checkboxes["championStar"]
             }
 
-        if checkboxes["trait1"]:              filters["traits"].update({ui.traitFilter1.currentText() : ui.traitFilterSlider1.value()})
-        if checkboxes["trait2"]:              filters["traits"].update({ui.traitFilter2.currentText() : ui.traitFilterSlider2.value()})
-        if checkboxes["trait3"]:              filters["traits"].update({ui.traitFilter3.currentText() : ui.traitFilterSlider3.value()})
-        if checkboxes["trait4"]:              filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
-        if checkboxes["champion1"]:           filters["champions"].update({ui.championFilter1.currentText() : ui.championFilterSlider1.value()})
-        if checkboxes["champion2"]:           filters["champions"].update({ui.championFilter2.currentText() : ui.championFilterSlider2.value()})
-        if checkboxes["champion3"]:           filters["champions"].update({ui.championFilter3.currentText() : ui.championFilterSlider3.value()})
-        if checkboxes["champion4"]:           filters["champions"].update({ui.championFilter4.currentText() : ui.championFilterSlider4.value()})
-        if checkboxes["item1"]:               filters["items"].append(ui.itemFilter1.currentText())
-        if checkboxes["item2"]:               filters["items"].append(ui.itemFilter2.currentText())
-        if checkboxes["item3"]:               filters["items"].append(ui.itemFilter3.currentText())
-        if checkboxes["item4"]:               filters["items"].append(ui.itemFilter4.currentText())
-        if checkboxes["ignoreOneUnitTraits"]: filters["ignoredTraits"] = data.one_unit_traits
+        if checkboxes["trait1"]:    filters["traits"].update({ui.traitFilter1.currentText() : ui.traitFilterSlider1.value()})
+        if checkboxes["trait2"]:    filters["traits"].update({ui.traitFilter2.currentText() : ui.traitFilterSlider2.value()})
+        if checkboxes["trait3"]:    filters["traits"].update({ui.traitFilter3.currentText() : ui.traitFilterSlider3.value()})
+        if checkboxes["trait4"]:    filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
+        if checkboxes["champion1"]: filters["champions"].update({ui.championFilter1.currentText() : ui.championFilterSlider1.value()})
+        if checkboxes["champion2"]: filters["champions"].update({ui.championFilter2.currentText() : ui.championFilterSlider2.value()})
+        if checkboxes["champion3"]: filters["champions"].update({ui.championFilter3.currentText() : ui.championFilterSlider3.value()})
+        if checkboxes["champion4"]: filters["champions"].update({ui.championFilter4.currentText() : ui.championFilterSlider4.value()})
+        if checkboxes["item1"]:     filters["items"].append(ui.itemFilter1.currentText())
+        if checkboxes["item2"]:     filters["items"].append(ui.itemFilter2.currentText())
+        if checkboxes["item3"]:     filters["items"].append(ui.itemFilter3.currentText())
+        if checkboxes["item4"]:     filters["items"].append(ui.itemFilter4.currentText())
 
         return filters
 
@@ -146,8 +144,9 @@ def run_main_gui():
             composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups  = composition_group_database["shown_in_table"], 
                                                                                      filters             = filters)
 
-            combination_dict = group_composition_groups_by_n_traits(composition_groups  = composition_group_database["shown_in_table"],
-                                                                    n                   = ui.nTraitFilterSlider.value())
+            combination_dict = group_composition_groups_by_n_traits(composition_groups     = composition_group_database["shown_in_table"],
+                                                                    n                      = ui.nTraitFilterSlider.value(),
+                                                                    ignore_one_unit_traits = ui.one_unit_trait_ignore_checkbox.isChecked())
             composition_groups = []
             for combination in combination_dict:
                 composition_groups.append(CompositionGroup(combination_dict[combination]["compositions"]))
