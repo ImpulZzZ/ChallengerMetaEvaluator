@@ -6,11 +6,13 @@ from model.CompositionGroup         import CompositionGroup
 from model.Data                     import Data
 from model.sortUtilities            import sort_composition_groups_by_occurence_and_placement
 from model.bestInSlot               import compute_best_in_slot
-from model.getCompositions          import get_compositions
+from model.getCompositions          import get_compositions, request_api
 from model.groupCompositions        import group_compositions_by_traits, group_compositions
 from model.groupCompositionGroups   import group_composition_groups_by_n_traits
 from model.filterCompositionGroups  import filter_composition_groups, filter_composition_groups_by_placement
 from model.bestInSlot               import compute_best_in_slot
+
+import requests
 
 # starts the main gui
 def run_main_gui():
@@ -106,6 +108,8 @@ def run_main_gui():
 
                 ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
 
+                if composition_group.counter < 2: continue
+
                 # add the counter to table
                 current_counter = QTableWidgetItem(str(composition_group.counter))
                 ui.tableWidget.setItem(counter, 0, current_counter)
@@ -159,6 +163,8 @@ def run_main_gui():
                 
                 ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
 
+                if combination_dict[combination]["counter"] < 2: continue
+
                 current_counter = QTableWidgetItem(str(combination_dict[combination]["counter"]))
                 ui.tableWidget.setItem(counter, 0, current_counter)
 
@@ -201,6 +207,8 @@ def run_main_gui():
                 element = composition_group.compositions[0]
 
                 ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
+
+                if composition_group.counter < 2: continue
 
                 # add the counter to table
                 current_counter = QTableWidgetItem(str(composition_group.counter))
@@ -435,16 +443,24 @@ def run_main_gui():
 
             ui.krCheckBox.setStyleSheet("color: green;")
 
+    # setup global variables
+    data                       = Data()
+    COLUMN_COUNT               = 15
+    composition_group_database = {}
+    
+    # check api key and get limits
+    api_key       = open("apikey.txt", "r").read()
+    test_response = requests.get(f"https://euw1.api.riotgames.com/tft/summoner/v1/summoners/by-name/ImpulZzZ?api_key={api_key}")
+
+    if test_response.status_code != 200: 
+        print("API could not be called")
+        return
+    
     # setup the gui
     app         = QApplication([])
     main_window = QMainWindow()
     ui          = main_gui.Ui_mainWindow()
     ui.setupUi(main_window)
-
-    # setup global variables
-    data                        = Data()
-    COLUMN_COUNT                = 15
-    composition_group_database  = {}
     reset_data()
 
     # bind functions to the buttons
