@@ -27,18 +27,20 @@ def run_main_gui():
             "championStar"  : checkboxes["championStar"]
             }
 
-        if checkboxes["trait1"]:    filters["traits"].update({ui.traitFilter1.currentText() : ui.traitFilterSlider1.value()})
-        if checkboxes["trait2"]:    filters["traits"].update({ui.traitFilter2.currentText() : ui.traitFilterSlider2.value()})
-        if checkboxes["trait3"]:    filters["traits"].update({ui.traitFilter3.currentText() : ui.traitFilterSlider3.value()})
-        if checkboxes["trait4"]:    filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
-        if checkboxes["champion1"]: filters["champions"].update({ui.championFilter1.currentText() : ui.championFilterSlider1.value()})
-        if checkboxes["champion2"]: filters["champions"].update({ui.championFilter2.currentText() : ui.championFilterSlider2.value()})
-        if checkboxes["champion3"]: filters["champions"].update({ui.championFilter3.currentText() : ui.championFilterSlider3.value()})
-        if checkboxes["champion4"]: filters["champions"].update({ui.championFilter4.currentText() : ui.championFilterSlider4.value()})
         if checkboxes["item1"]:     filters["items"].append(ui.itemFilter1.currentText())
         if checkboxes["item2"]:     filters["items"].append(ui.itemFilter2.currentText())
         if checkboxes["item3"]:     filters["items"].append(ui.itemFilter3.currentText())
         if checkboxes["item4"]:     filters["items"].append(ui.itemFilter4.currentText())
+
+        if checkboxes["trait1"]:    filters["traits"].update({ui.traitFilter1.currentText() : ui.traitFilterSlider1.value()})
+        if checkboxes["trait2"]:    filters["traits"].update({ui.traitFilter2.currentText() : ui.traitFilterSlider2.value()})
+        if checkboxes["trait3"]:    filters["traits"].update({ui.traitFilter3.currentText() : ui.traitFilterSlider3.value()})
+        if checkboxes["trait4"]:    filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
+
+        if checkboxes["champion1"]: filters["champions"].update({ui.championFilter1.currentText() : ui.championFilterSlider1.value()})
+        if checkboxes["champion2"]: filters["champions"].update({ui.championFilter2.currentText() : ui.championFilterSlider2.value()})
+        if checkboxes["champion3"]: filters["champions"].update({ui.championFilter3.currentText() : ui.championFilterSlider3.value()})
+        if checkboxes["champion4"]: filters["champions"].update({ui.championFilter4.currentText() : ui.championFilterSlider4.value()})
 
         return filters
 
@@ -80,7 +82,7 @@ def run_main_gui():
         nonlocal composition_group_database
 
         checkboxes = get_checkboxes()
-        filters = build_filters(checkboxes)
+        filters    = build_filters(checkboxes)
         reset_tableview(["Occurences", "Avg Placement", "Traits"])
         (considered_regions, composition_group_database) = group_compositions(checkboxes, composition_group_database, group_by)
 
@@ -126,10 +128,10 @@ def run_main_gui():
                     ui.tableWidget.setItem(counter, keycounter, current)
 
                     # background color depending on trait class
-                    if      element.traits[key] == 1: ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
-                    elif    element.traits[key] == 2: ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
-                    elif    element.traits[key] == 3: ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
-                    else:                             ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
+                    if    element.traits[key] == 1: ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
+                    elif  element.traits[key] == 2: ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
+                    elif  element.traits[key] == 3: ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
+                    else:                           ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
 
                     keycounter += 1
                 counter += 1
@@ -241,8 +243,8 @@ def run_main_gui():
         reset_tableview(headers=["Champion", "Items", "", "", "Occurences", "Avg Placement"])
 
         checkboxes = get_checkboxes()
-        filters     = build_filters(checkboxes)
-        champions   = filters["champions"]
+        filters    = build_filters(checkboxes)
+        champions  = filters["champions"]
 
         if len(champions) == 0: champions = data.champions
 
@@ -257,8 +259,8 @@ def run_main_gui():
         
         row_counter = 0
         for champion in champions:
-            label   = QLabel()
-            pixmap  = QPixmap(f"{data.data_dir}/champions/TFT5_{champion}.png").scaled(30, 30)
+            label  = QLabel()
+            pixmap = QPixmap(f"{data.data_dir}/champions/TFT5_{champion}.png").scaled(30, 30)
             label.setPixmap(pixmap)
             ui.tableWidget.setCellWidget(row_counter, 0, label)
 
@@ -272,15 +274,15 @@ def run_main_gui():
                 for item_combination in bis_dict[champion]:
                     items = item_combination.split("+")
 
-                    current_counter         = QTableWidgetItem()
-                    current_avg_placement   = QTableWidgetItem()
+                    current_counter       = QTableWidgetItem()
+                    current_avg_placement = QTableWidgetItem()
                     current_counter.setText(str(bis_dict[champion][item_combination]["counter"]))
                     current_avg_placement.setText(str(bis_dict[champion][item_combination]["avg_placement"]))
 
                     item_position = 1
                     for item in items:
-                        label   = QLabel()
-                        pixmap  = QPixmap(f"{data.data_dir}/items/{item}.png").scaled(30, 30)
+                        label  = QLabel()
+                        pixmap = QPixmap(f"{data.data_dir}/items/{item}.png").scaled(30, 30)
                         label.setPixmap(pixmap)
                         ui.tableWidget.setCellWidget(row_counter, item_position, label)
                         item_position += 1
@@ -397,11 +399,11 @@ def run_main_gui():
     def load_data():
         nonlocal composition_group_database
 
-        checkboxes = {"euw"           : ui.euwCheckBox.isChecked(),
-                      "kr"            : ui.krCheckBox.isChecked(),
-                      "challenger"    : ui.challengerCheckBox.isChecked(),
-                      "grandmaster"   : ui.grandmasterCheckBox.isChecked(),
-                      "master"        : ui.masterCheckBox.isChecked()}
+        checkboxes = {"euw"         : ui.euwCheckBox.isChecked(),
+                      "kr"          : ui.krCheckBox.isChecked(),
+                      "challenger"  : ui.challengerCheckBox.isChecked(),
+                      "grandmaster" : ui.grandmasterCheckBox.isChecked(),
+                      "master"      : ui.masterCheckBox.isChecked()}
 
         if not checkboxes["euw"] and not checkboxes["kr"]: return
 
