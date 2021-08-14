@@ -7,31 +7,49 @@ import requests
 import re
 import time
 
+# checks if request limit is near and if so, sleep
+def keep_request_limits(response):
+    request_limits  = response.headers["X-App-Rate-Limit"].split(",")
+    request_counter = response.headers["X-App-Rate-Limit-Count"].split(",")
+    requests_per_seconds             = int(request_limits[0].split(":")[0])
+    requests_per_two_minutes         = int(request_limits[1].split(":")[0])
+    current_requests_per_seconds     = int(request_counter[0].split(":")[0])
+    current_requests_per_two_minutes = int(request_counter[1].split(":")[0])
+
+    if (requests_per_seconds - current_requests_per_seconds == 1):
+        time.sleep(1)
+    
+    if (requests_per_two_minutes - current_requests_per_two_minutes == 1):
+        time.sleep(120)
 
 # requests Api
 def request_api(region, api_key, base_url, parameter_url):
     url = f"https://{region}.{base_url}{parameter_url}?api_key={api_key}"
-    return requests.get(url).json()
+    response = requests.get(url)
+    keep_request_limits(response)
+    return response.json()
 
 # requests TFT-Matches Api
 def request_matches_by_match_id(region, api_key, base_url, parameter_url):
     url = f"https://{region}.{base_url}{parameter_url}?api_key={api_key}"
-    return requests.get(url).json()
+    response = requests.get(url)
+    keep_request_limits(response)
+    return response.json()
 
 # requests TFT-Matches Api
 def request_matches_by_puuid(region, api_key, base_url, parameter_url, count):
     url = f"https://{region}.{base_url}{parameter_url}?count={str(count)}&api_key={api_key}"
-    return requests.get(url).json()
+    response = requests.get(url)
+    keep_request_limits(response)
+    return response.json()
     
 def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league):
 
-    api_key     = open("apikey.txt", "r").read()
-    base_url    = "api.riotgames.com"
-    analyzed_games  = []
-    compositions    = []
-    response = ""
-    requests_per_minute = 99
-    current_requests = 0
+    api_key             = open("apikey.txt", "r").read()
+    base_url            = "api.riotgames.com"
+    analyzed_games      = []
+    compositions        = []
+    response            = ""
 
     if region == "europe":
         platform_routing_value  = "euw1"
@@ -50,7 +68,6 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                 base_url        = base_url, 
                                 parameter_url   = f"/tft/league/v1/{ranked_league}")
 
-        current_requests += 1
         player_list = response["entries"]
     
     except KeyError:
@@ -64,9 +81,6 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
     for player in best_players:
         summoner_name   = player["summonerName"]
 
-        if current_requests == requests_per_minute:
-                time.sleep(120)
-                current_requests = 0
         try:
             # request puuid of each player
             current_url     = f"/tft/summoner/v1/summoners/by-name/{summoner_name}"
@@ -74,16 +88,9 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                             api_key         = api_key,
                                             base_url        = base_url,
                                             parameter_url   = current_url)["puuid"]
-
-            current_requests += 1
-
         except KeyError:
             print("KeyError: Api Request failed. Try again!")
             return
-
-        if current_requests == requests_per_minute:
-                time.sleep(120)
-                current_requests = 0
 
         # request last X games of each player
         current_url = f"/tft/match/v1/matches/by-puuid/{puuid}/ids"
@@ -93,16 +100,11 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                                 parameter_url   = current_url,
                                                 count           = games_per_player))
 
-        current_requests += 1
-
         # do not consider matches multiple times
         for match in matches:
             analyzed_games.append(match) if match not in analyzed_games else analyzed_games
 
     for match in analyzed_games:
-        if current_requests == requests_per_minute:
-                time.sleep(120)
-                current_requests = 0
         try:
             current_url = f"/tft/match/v1/matches/{match}"
             api_result  = request_matches_by_match_id(  region          = regional_routing_value,
@@ -110,8 +112,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                                         base_url        = base_url,
                                                         parameter_url   = current_url)
 
-            participants        = api_result["info"]["participants"]
-            current_requests    += 1
+            participants = api_result["info"]["participants"]
 
         except KeyError:
             print(api_result)
