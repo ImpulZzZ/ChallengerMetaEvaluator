@@ -9,3 +9,6 @@ def sort_players_by_rank(players):
 
 def sort_champions_by_stars(champions):
     return sorted(champions, key=lambda x: x.tier, reverse=True)
+
+def sort_dict_by_value(dictionary, descending):
+    return sorted(dictionary.items(), key=lambda x: x[1], reverse=descending)

@@ -66,7 +66,7 @@ def request_players_by_league(region, api_key, ranked_league):
     keep_request_limits(response)
     return response.json()["entries"]
 
-# requests TFT-Matches Api
+# requests participant list by match id
 def request_participants_by_match_id(region, api_key, match):
     url = f"https://{region}.api.riotgames.com/tft/match/v1/matches/{match}?api_key={api_key}"
     response = requests.get(url)
@@ -75,3 +75,13 @@ def request_participants_by_match_id(region, api_key, match):
         return None
     keep_request_limits(response)
     return response.json()["info"]["participants"]
+
+# requests summonername by puuid
+def request_summonername_by_puuid(region, api_key, puuid):
+    url = f"https://{region}.api.riotgames.com/tft/summoner/v1/summoners/by-puuid/{puuid}?api_key={api_key}"
+    response = requests.get(url)
+    if response.status_code != 200: 
+        print(response.content)
+        return None
+    keep_request_limits(response)
+    return response.json()["name"]
