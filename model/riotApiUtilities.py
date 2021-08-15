@@ -14,7 +14,14 @@ def keep_request_limits(response):
         time.sleep(1)
     
     if (requests_per_two_minutes - current_requests_per_two_minutes == 1):
-        time.sleep(120)
+        sleep_counter = 120
+        while sleep_counter > 0:
+            print(f"Sleeping {sleep_counter} seconds...")
+            time.sleep(15)
+            sleep_counter -= 15
+        print("Continue processing data...")
+        
+    return
 
 # requests Api
 def request_api(region, api_key, parameter_url):
