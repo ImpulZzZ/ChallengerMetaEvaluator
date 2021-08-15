@@ -395,6 +395,8 @@ def run_main_gui():
 
         ui.euwCheckBox.setStyleSheet("color: black;")
         ui.krCheckBox.setStyleSheet("color: black;")
+        ui.analyzedMatchesCounter.setText("0")
+        ui.analyzedCompsCounter.setText("0")
 
     def load_data():
         nonlocal composition_group_database
@@ -420,15 +422,23 @@ def run_main_gui():
                                       games_per_player   = int(ui.gamesPerPlayer.text()),
                                       players_per_region = int(ui.playersPerRegion.text()),
                                       current_patch      = ui.currentPatchFilter.text(),
-                                      ranked_league      = considered_league)     
+                                      ranked_league      = considered_league)
 
-            euw_comps_unsorted = group_compositions_by_traits(europe)
+            euw_comps_unsorted = group_compositions_by_traits(europe["compositions"])
 
             composition_group_database["euw"]["database"]   = sort_composition_groups_by_occurence_and_placement(euw_comps_unsorted)
             composition_group_database["euw"]["grouped_by"] = "traits"
             composition_group_database["euw"]["loaded"]     = True
 
+            comps_counter = 0
+            for x in composition_group_database["euw"]["database"]:
+                comps_counter += x.counter
+
+            print(comps_counter)
+
             ui.euwCheckBox.setStyleSheet("color: green;")
+            ui.analyzedMatchesCounter.setText(str(europe["analyzed_games"]))
+            ui.analyzedCompsCounter.setText(str(len(europe["compositions"])))
 
         if checkboxes["kr"] and not composition_group_database["kr"]["loaded"]:
             korea = get_compositions(region             = "korea",
@@ -437,13 +447,15 @@ def run_main_gui():
                                      current_patch      = ui.currentPatchFilter.text(),
                                      ranked_league      = considered_league)
             
-            kr_comps_unsorted = group_compositions_by_traits(korea)
+            kr_comps_unsorted = group_compositions_by_traits(korea["compositions"])
 
             composition_group_database["kr"]["database"]    = sort_composition_groups_by_occurence_and_placement(kr_comps_unsorted)
             composition_group_database["euw"]["grouped_by"] = "traits"
             composition_group_database["kr"]["loaded"]      = True
 
             ui.krCheckBox.setStyleSheet("color: green;")
+            ui.analyzedMatchesCounter.setText(str(korea["analyzed_games"]))
+            ui.analyzedCompsCounter.setText(str(len(korea["compositions"])))
 
     # setup global variables
     data                       = Data()
