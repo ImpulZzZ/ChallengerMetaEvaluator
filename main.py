@@ -430,12 +430,6 @@ def run_main_gui():
             composition_group_database["euw"]["grouped_by"] = "traits"
             composition_group_database["euw"]["loaded"]     = True
 
-            comps_counter = 0
-            for x in composition_group_database["euw"]["database"]:
-                comps_counter += x.counter
-
-            print(comps_counter)
-
             ui.euwCheckBox.setStyleSheet("color: green;")
             ui.analyzedMatchesCounter.setText(str(europe["analyzed_games"]))
             ui.analyzedCompsCounter.setText(str(len(europe["compositions"])))
