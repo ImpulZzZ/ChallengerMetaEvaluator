@@ -19,23 +19,23 @@ def run_main_gui():
 
     def build_filters(checkboxes):
         filters={
-            "traits"        : {},
-            "champions"     : {},
-            "items"         : [],
-            "placements"    : ui.placementFilter.value(),
-            "traitTier"     : checkboxes["traitTier"],
-            "championStar"  : checkboxes["championStar"]
+            "traits"       : {},
+            "champions"    : {},
+            "items"        : [],
+            "placements"   : ui.placementFilter.value(),
+            "traitTier"    : checkboxes["traitTier"],
+            "championStar" : checkboxes["championStar"]
             }
 
-        if checkboxes["item1"]:     filters["items"].append(ui.itemFilter1.currentText())
-        if checkboxes["item2"]:     filters["items"].append(ui.itemFilter2.currentText())
-        if checkboxes["item3"]:     filters["items"].append(ui.itemFilter3.currentText())
-        if checkboxes["item4"]:     filters["items"].append(ui.itemFilter4.currentText())
+        if checkboxes["item1"]: filters["items"].append(ui.itemFilter1.currentText())
+        if checkboxes["item2"]: filters["items"].append(ui.itemFilter2.currentText())
+        if checkboxes["item3"]: filters["items"].append(ui.itemFilter3.currentText())
+        if checkboxes["item4"]: filters["items"].append(ui.itemFilter4.currentText())
 
-        if checkboxes["trait1"]:    filters["traits"].update({ui.traitFilter1.currentText() : ui.traitFilterSlider1.value()})
-        if checkboxes["trait2"]:    filters["traits"].update({ui.traitFilter2.currentText() : ui.traitFilterSlider2.value()})
-        if checkboxes["trait3"]:    filters["traits"].update({ui.traitFilter3.currentText() : ui.traitFilterSlider3.value()})
-        if checkboxes["trait4"]:    filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
+        if checkboxes["trait1"]: filters["traits"].update({ui.traitFilter1.currentText() : ui.traitFilterSlider1.value()})
+        if checkboxes["trait2"]: filters["traits"].update({ui.traitFilter2.currentText() : ui.traitFilterSlider2.value()})
+        if checkboxes["trait3"]: filters["traits"].update({ui.traitFilter3.currentText() : ui.traitFilterSlider3.value()})
+        if checkboxes["trait4"]: filters["traits"].update({ui.traitFilter4.currentText() : ui.traitFilterSlider4.value()})
 
         if checkboxes["champion1"]: filters["champions"].update({ui.championFilter1.currentText() : ui.championFilterSlider1.value()})
         if checkboxes["champion2"]: filters["champions"].update({ui.championFilter2.currentText() : ui.championFilterSlider2.value()})
@@ -96,11 +96,11 @@ def run_main_gui():
         for region in considered_regions:
 
             # always filter for given placements
-            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(composition_groups  = considered_regions[region],
-                                                                                                  max_placement       = filters["placements"])
+            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(composition_groups = considered_regions[region],
+                                                                                                  max_placement      = filters["placements"])
             # apply other possible filters on dataset
-            composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups  = composition_group_database["shown_in_table"], 
-                                                                                     filters             = filters)
+            composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups = composition_group_database["shown_in_table"], 
+                                                                                     filters            = filters)
             # loop over compisitiongroups of each region
             for composition_group in composition_group_database["shown_in_table"]:
                 
@@ -144,11 +144,11 @@ def run_main_gui():
         for region in considered_regions:
 
             # always filter for given placements
-            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(composition_groups  = considered_regions[region],
-                                                                                                  max_placement       = filters["placements"])
+            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(composition_groups = considered_regions[region],
+                                                                                                  max_placement      = filters["placements"])
             # apply other possible filters on dataset
-            composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups  = composition_group_database["shown_in_table"], 
-                                                                                     filters             = filters)
+            composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups = composition_group_database["shown_in_table"], 
+                                                                                     filters            = filters)
 
             combination_dict = group_composition_groups_by_n_traits(composition_groups     = composition_group_database["shown_in_table"],
                                                                     n                      = ui.nTraitFilterSlider.value(),
@@ -200,11 +200,11 @@ def run_main_gui():
         counter = 0
         for region in considered_regions:
 
-            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(composition_groups  = considered_regions[region],
-                                                                                                  max_placement       = filters["placements"])
+            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(composition_groups = considered_regions[region],
+                                                                                                  max_placement      = filters["placements"])
 
-            composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups  = composition_group_database["shown_in_table"], 
-                                                                                     filters             = filters)
+            composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups = composition_group_database["shown_in_table"], 
+                                                                                     filters            = filters)
             for composition_group in composition_group_database["shown_in_table"]:
                 element = composition_group.compositions[0]
 
@@ -382,16 +382,16 @@ def run_main_gui():
 
         composition_group_database  = {
             "euw" : {
-                "database"      : [],
-                "grouped_by"    : "none",
-                "loaded"        : False
+                "database"   : [],
+                "grouped_by" : "none",
+                "loaded"     : False
             },
             "kr" : {
-                "database"      : [],
-                "grouped_by"    : "none",
-                "loaded"        : False
+                "database"   : [],
+                "grouped_by" : "none",
+                "loaded"     : False
             },
-            "shown_in_table"    : []}
+            "shown_in_table" : []}
 
         ui.euwCheckBox.setStyleSheet("color: black;")
         ui.krCheckBox.setStyleSheet("color: black;")
