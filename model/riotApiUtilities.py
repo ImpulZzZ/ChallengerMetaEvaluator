@@ -17,8 +17,8 @@ def keep_request_limits(response):
         time.sleep(120)
 
 # requests Api
-def request_api(region, api_key, base_url, parameter_url):
-    url = f"https://{region}.{base_url}{parameter_url}?api_key={api_key}"
+def request_api(region, api_key, parameter_url):
+    url = f"https://{region}.api.riotgames.com{parameter_url}?api_key={api_key}"
     response = requests.get(url)
     if response.status_code != 200:
         print(response.content)
@@ -27,8 +27,8 @@ def request_api(region, api_key, base_url, parameter_url):
     return response.json()
 
 # requests TFT-Matches Api
-def request_matches_by_match_id(region, api_key, base_url, match):
-    url = f"https://{region}.{base_url}/tft/match/v1/matches/{match}?api_key={api_key}"
+def request_matches_by_match_id(region, api_key, match):
+    url = f"https://{region}.api.riotgames.com/tft/match/v1/matches/{match}?api_key={api_key}"
     response = requests.get(url)
     if response.status_code != 200: 
         print(response.content)
@@ -37,8 +37,8 @@ def request_matches_by_match_id(region, api_key, base_url, match):
     return response.json()
 
 # requests TFT-Matches Api
-def request_matches_by_puuid(region, api_key, base_url, puuid, count):
-    url = f"https://{region}.{base_url}/tft/match/v1/matches/by-puuid/{puuid}/ids?count={str(count)}&api_key={api_key}"
+def request_matches_by_puuid(region, api_key, puuid, count):
+    url = f"https://{region}.api.riotgames.com/tft/match/v1/matches/by-puuid/{puuid}/ids?count={str(count)}&api_key={api_key}"
     response = requests.get(url)
     if response.status_code != 200:
         print(response.content)
@@ -47,8 +47,8 @@ def request_matches_by_puuid(region, api_key, base_url, puuid, count):
     return response.json()
 
 # requests puuid of a summoner by name
-def request_puuid_by_summonername(region, api_key, base_url, summoner_name):
-    url = f"https://{region}.{base_url}/tft/summoner/v1/summoners/by-name/{summoner_name}?&api_key={api_key}"
+def request_puuid_by_summonername(region, api_key, summoner_name):
+    url = f"https://{region}.api.riotgames.com/tft/summoner/v1/summoners/by-name/{summoner_name}?&api_key={api_key}"
     response = requests.get(url)
     if response.status_code != 200:
         print(response.content) 
@@ -57,8 +57,8 @@ def request_puuid_by_summonername(region, api_key, base_url, summoner_name):
     return response.json()["puuid"]
 
 # requests playerlist by league
-def request_players_by_league(region, api_key, base_url, ranked_league):
-    url = f"https://{region}.{base_url}/tft/league/v1/{ranked_league}?api_key={api_key}"
+def request_players_by_league(region, api_key, ranked_league):
+    url = f"https://{region}.api.riotgames.com/tft/league/v1/{ranked_league}?api_key={api_key}"
     response = requests.get(url)
     if response.status_code != 200:
         print(response.content) 
@@ -67,8 +67,8 @@ def request_players_by_league(region, api_key, base_url, ranked_league):
     return response.json()["entries"]
 
 # requests TFT-Matches Api
-def request_participants_by_match_id(region, api_key, base_url, match):
-    url = f"https://{region}.{base_url}/tft/match/v1/matches/{match}?api_key={api_key}"
+def request_participants_by_match_id(region, api_key, match):
+    url = f"https://{region}.api.riotgames.com/tft/match/v1/matches/{match}?api_key={api_key}"
     response = requests.get(url)
     if response.status_code != 200: 
         print(response.content)

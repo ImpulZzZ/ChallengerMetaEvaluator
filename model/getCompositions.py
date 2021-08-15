@@ -9,7 +9,6 @@ import re
 def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league):
 
     api_key        = open("apikey.txt", "r").read()
-    base_url       = "api.riotgames.com"
     analyzed_games = []
     compositions   = []
 
@@ -24,8 +23,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
         regional_routing_value  = "unknown"
 
     player_list = request_players_by_league(region        = platform_routing_value, 
-                                            api_key       = api_key, 
-                                            base_url      = base_url, 
+                                            api_key       = api_key,
                                             ranked_league = ranked_league)
 
     player_list  = sort_players_by_rank(player_list)
@@ -36,12 +34,10 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
         summoner_name   = player["summonerName"]
         puuid = request_puuid_by_summonername(region        = platform_routing_value,
                                               api_key       = api_key,
-                                              base_url      = base_url,
                                               summoner_name = summoner_name)
         # request last X games of each player
         matches = request_matches_by_puuid(region   = regional_routing_value,
                                            api_key  = api_key,
-                                           base_url = base_url ,
                                            puuid    = puuid,
                                            count    = games_per_player)
         # do not consider matches multiple times
@@ -52,7 +48,6 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
         try:
             api_result  = request_matches_by_match_id(region   = regional_routing_value,
                                                       api_key  = api_key,
-                                                      base_url = base_url,
                                                       match    = match)
 
             participants = api_result["info"]["participants"]
