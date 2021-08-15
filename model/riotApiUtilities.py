@@ -27,7 +27,7 @@ def request_api(region, api_key, parameter_url):
     return response.json()
 
 # requests TFT-Matches Api
-def request_matches_by_match_id(region, api_key, match):
+def request_match_by_match_id(region, api_key, match):
     url = f"https://{region}.api.riotgames.com/tft/match/v1/matches/{match}?api_key={api_key}"
     response = requests.get(url)
     if response.status_code != 200: 

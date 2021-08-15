@@ -46,9 +46,9 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
 
     for match in analyzed_games:
         try:
-            api_result  = request_matches_by_match_id(region   = regional_routing_value,
-                                                      api_key  = api_key,
-                                                      match    = match)
+            api_result  = request_match_by_match_id(region   = regional_routing_value,
+                                                    api_key  = api_key,
+                                                    match    = match)
 
             participants = api_result["info"]["participants"]
 

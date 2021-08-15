@@ -1,4 +1,4 @@
-from model.riotApiUtilities import request_matches_by_match_id, request_puuid_by_summonername, request_matches_by_puuid, request_summonername_by_puuid
+from model.riotApiUtilities import request_match_by_match_id, request_puuid_by_summonername, request_matches_by_puuid, request_summonername_by_puuid
 from model.sortUtilities    import sort_dict_by_value
 
 ## Requests for the last 200 games and counts appearances of enemies
@@ -27,7 +27,9 @@ def played_with(summoner_name, region, api_key):
     result  = {}
     for match_id in matches:
 
-        match = request_matches_by_match_id(region=region, api_key=api_key, match=match_id)
+        match = request_match_by_match_id(region  = region, 
+                                          api_key = api_key, 
+                                          match   = match_id)
 
         for participant_puuid in match["metadata"]["participants"]:
             if participant_puuid == puuid: continue
