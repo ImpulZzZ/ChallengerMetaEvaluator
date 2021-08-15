@@ -455,7 +455,7 @@ def run_main_gui():
     test_response = requests.get(f"https://euw1.api.riotgames.com/tft/summoner/v1/summoners/by-name/ImpulZzZ?api_key={api_key}")
 
     if test_response.status_code != 200: 
-        print("API could not be called")
+        print(test_response.content)
         return
     
     # setup the gui
