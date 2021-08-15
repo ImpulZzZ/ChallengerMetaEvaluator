@@ -9,6 +9,7 @@ import re
 def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league):
 
     api_key        = open("apikey.txt", "r").read()
+    games_counter  = 0
     analyzed_games = []
     compositions   = []
 
@@ -36,10 +37,10 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                               api_key       = api_key,
                                               summoner_name = summoner_name)
         # request last X games of each player
-        matches = request_matches_by_puuid(region   = regional_routing_value,
-                                           api_key  = api_key,
-                                           puuid    = puuid,
-                                           count    = games_per_player)
+        matches = request_matches_by_puuid(region  = regional_routing_value,
+                                           api_key = api_key,
+                                           puuid   = puuid,
+                                           count   = games_per_player)
         # do not consider matches multiple times
         for match in matches:
             analyzed_games.append(match) if match not in analyzed_games else analyzed_games
@@ -51,6 +52,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                                     match    = match)
 
             participants = api_result["info"]["participants"]
+            games_counter += 1
 
         except KeyError:
             print(api_result)
@@ -98,4 +100,5 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                             champions = champions,
                                             traits    = sorted_traits,
                                             patch     = patch))
-    return compositions
+
+    return {"compositions" : compositions, "analyzed_games" : games_counter}
