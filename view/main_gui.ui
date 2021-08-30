@@ -607,7 +607,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>1</string>
+     <string>8</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="gamesPerPlayer">
@@ -620,7 +620,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>1</string>
+     <string>8</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
@@ -748,6 +748,9 @@
      <number>1</number>
     </property>
     <property name="maximum">
+     <number>8</number>
+    </property>
+    <property name="value">
      <number>4</number>
     </property>
     <property name="sliderPosition">
@@ -770,52 +773,26 @@
     <property name="geometry">
      <rect>
       <x>1030</x>
-      <y>690</y>
+      <y>700</y>
       <width>54</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>Top 4</string>
+     <string>Top 8</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_11">
     <property name="geometry">
      <rect>
       <x>880</x>
-      <y>690</y>
+      <y>700</y>
       <width>54</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
      <string>Top 1</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_12">
-    <property name="geometry">
-     <rect>
-      <x>980</x>
-      <y>690</y>
-      <width>54</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Top 3</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_13">
-    <property name="geometry">
-     <rect>
-      <x>930</x>
-      <y>690</y>
-      <width>54</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Top 2</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_14">
@@ -1329,6 +1306,48 @@
     </property>
     <property name="text">
      <string>and</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_31">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>31</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show </string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="minOccurencesFilter">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>40</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>2</string>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_32">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>40</y>
+      <width>111</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>or more occurences</string>
     </property>
    </widget>
   </widget>

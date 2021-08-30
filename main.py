@@ -110,7 +110,7 @@ def run_main_gui():
 
                 ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
 
-                if composition_group.counter < 2: continue
+                #if composition_group.counter < 2: continue
 
                 # add the counter to table
                 current_counter = QTableWidgetItem(str(composition_group.counter))
