@@ -56,7 +56,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
         games_counter += 1
 
         for participant in participants:
-            if participant["placement"] > 4: continue
+            #if participant["placement"] > 4: continue
 
             champions_unsorted = []
             for unit in participant["units"]:
