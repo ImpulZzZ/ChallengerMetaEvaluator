@@ -8,10 +8,10 @@ import re
 
 def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league):
 
-    api_key        = open("apikey.txt", "r").read()
-    games_counter  = 0
-    analyzed_games = []
-    compositions   = []
+    api_key         = open("apikey.txt", "r").read()
+    games_counter   = 0
+    visited_matches = {}
+    compositions    = []
 
     if region == "europe":
         platform_routing_value  = "euw1"
@@ -30,41 +30,35 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
     player_list  = sort_players_by_rank(player_list)
     best_players = player_list[0:players_per_region]
 
-    # loop over each player
     for player in best_players:
-        summoner_name   = player["summonerName"]
         puuid = request_puuid_by_summonername(region        = platform_routing_value,
                                               api_key       = api_key,
-                                              summoner_name = summoner_name)
-        # request last X games of each player
+                                              summoner_name = player["summonerName"])
+                                                    
         matches = request_matches_by_puuid(region  = regional_routing_value,
                                            api_key = api_key,
                                            puuid   = puuid,
                                            count   = games_per_player)
-        # do not consider matches multiple times
+        
+        ## Ignore multiple occurences of a match
         for match in matches:
-            analyzed_games.append(match) if match not in analyzed_games else analyzed_games
+            if match not in visited_matches: visited_matches.update({match : 1})
 
-    for match in analyzed_games:
-        try:
-            api_result  = request_match_by_match_id(region   = regional_routing_value,
-                                                    api_key  = api_key,
-                                                    match    = match)
-
-            participants = api_result["info"]["participants"]
-            games_counter += 1
-
-        except KeyError:
-            print(api_result)
-            return
+    for match in visited_matches:
+        api_result = request_match_by_match_id(region   = regional_routing_value,
+                                               api_key  = api_key,
+                                               match    = match)
 
         patch = re.search("<Releases/(.*)>", api_result["info"]["game_version"]).group(1)
         if patch != current_patch: continue
 
+        participants   = api_result["info"]["participants"]
+        games_counter += 1
+
         for participant in participants:
             if participant["placement"] > 4: continue
 
-            champions_unsorted   = []
+            champions_unsorted = []
             for unit in participant["units"]:
                 item_list = []
 
@@ -80,7 +74,7 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
 
             trait_dict = {}
             for trait in participant["traits"]:
-                # only consider active traits
+                ## Only consider active traits
                 if trait["style"] > 0:
                     trait_name = trait["name"].split("_")
                     if len(trait_name) > 1: trait_name_short = trait_name[1]
@@ -88,9 +82,9 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
 
                     trait_dict.update({trait_name_short : trait["style"]})
 
-            # sort the trait dictionary for tiers
+            ## Sort the trait dictionary by tiers
             sorted_traits = {}
-            sorted_keys = sorted(trait_dict, key=trait_dict.get, reverse=True)
+            sorted_keys   = sorted(trait_dict, key=trait_dict.get, reverse=True)
             
             for x in sorted_keys:
                 sorted_traits[x] = trait_dict[x]
