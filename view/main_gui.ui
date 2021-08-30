@@ -1321,22 +1321,6 @@
      <string>Show </string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="minOccurencesFilter">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>40</y>
-      <width>51</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>2</string>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_32">
     <property name="geometry">
      <rect>
@@ -1348,6 +1332,19 @@
     </property>
     <property name="text">
      <string>or more occurences</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="minOccurencesFilter">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>40</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>2</string>
     </property>
    </widget>
   </widget>
