@@ -393,7 +393,6 @@ def run_main_gui():
         ui.grandmasterCheckBox.setStyleSheet("color: black;")
         ui.masterCheckBox.setStyleSheet("color: black;")
         ui.analyzedMatchesCounter.setText("0")
-        ui.analyzedCompsCounter.setText("0")
 
     def load_data():
         nonlocal composition_group_database
@@ -435,7 +434,6 @@ def run_main_gui():
 
             ui.euwCheckBox.setStyleSheet("color: green;")
             ui.analyzedMatchesCounter.setText(str(europe["analyzed_games"]))
-            ui.analyzedCompsCounter.setText(str(len(europe["compositions"])))
 
         if checkboxes["kr"] and not composition_group_database["kr"]["loaded"]:
             korea = get_compositions(region             = "korea",
@@ -452,7 +450,6 @@ def run_main_gui():
 
             ui.krCheckBox.setStyleSheet("color: green;")
             ui.analyzedMatchesCounter.setText(str(korea["analyzed_games"]))
-            ui.analyzedCompsCounter.setText(str(len(korea["compositions"])))
 
     ## Setup global variables
     data                       = Data()
