@@ -400,13 +400,12 @@ class Ui_mainWindow(object):
         self.label_31 = QtWidgets.QLabel(self.centralwidget)
         self.label_31.setGeometry(QtCore.QRect(10, 40, 31, 20))
         self.label_31.setObjectName("label_31")
-        self.minOccurencesFilter = QtWidgets.QLineEdit(self.centralwidget)
-        self.minOccurencesFilter.setGeometry(QtCore.QRect(50, 40, 51, 21))
-        self.minOccurencesFilter.setReadOnly(True)
-        self.minOccurencesFilter.setObjectName("minOccurencesFilter")
         self.label_32 = QtWidgets.QLabel(self.centralwidget)
         self.label_32.setGeometry(QtCore.QRect(110, 40, 111, 20))
         self.label_32.setObjectName("label_32")
+        self.minOccurencesFilter = QtWidgets.QLineEdit(self.centralwidget)
+        self.minOccurencesFilter.setGeometry(QtCore.QRect(50, 40, 51, 21))
+        self.minOccurencesFilter.setObjectName("minOccurencesFilter")
         mainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(mainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1475, 22))
@@ -470,8 +469,8 @@ class Ui_mainWindow(object):
         self.label_29.setText(_translate("mainWindow", "matches"))
         self.label_30.setText(_translate("mainWindow", "and"))
         self.label_31.setText(_translate("mainWindow", "Show "))
-        self.minOccurencesFilter.setText(_translate("mainWindow", "2"))
         self.label_32.setText(_translate("mainWindow", "or more occurences"))
+        self.minOccurencesFilter.setText(_translate("mainWindow", "2"))
 
 
 if __name__ == "__main__":
