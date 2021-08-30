@@ -14,7 +14,6 @@ from model.bestInSlot               import compute_best_in_slot
 
 import requests
 
-# starts the main gui
 def run_main_gui():
 
     def build_filters(checkboxes):
@@ -95,43 +94,40 @@ def run_main_gui():
         counter = 0
         for region in considered_regions:
 
-            # always filter for given placements
             composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(composition_groups = considered_regions[region],
                                                                                                   max_placement      = filters["placements"])
-            # apply other possible filters on dataset
+
             composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups = composition_group_database["shown_in_table"], 
                                                                                      filters            = filters)
-            # loop over compisitiongroups of each region
+            
             for composition_group in composition_group_database["shown_in_table"]:
+                if composition_group.counter < int(ui.minOccurencesFilter.text()): continue
                 
-                # assert composition groups to be grouped by traits, so entries should be equal
-                #   => consider only first entry
+                ## Assert composition groups to be grouped by traits, so entry 0 equals entry n
                 element = composition_group.compositions[0]
 
                 ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
 
-                if composition_group.counter < int(ui.minOccurencesFilter.text()): continue
-
-                # add the counter to table
+                ## Add counter to table
                 current_counter = QTableWidgetItem(str(composition_group.counter))
                 ui.tableWidget.setItem(counter, 0, current_counter)
 
-                # add the average placement to table
+                ## Add average placement to table
                 current_avg_placement = QTableWidgetItem(str(composition_group.avg_placement))
                 ui.tableWidget.setItem(counter, 1, current_avg_placement)
 
-                # fill row starting at second index (counter is at first index)
+                ## Fill row starting at second index
                 keycounter = 2
                 for key in element.traits:
-                    # add the elements into the table
+                    ## Add the elements into the table
                     current = QTableWidgetItem(str(key))
                     ui.tableWidget.setItem(counter, keycounter, current)
 
-                    # background color depending on trait class
-                    if    element.traits[key] == 1: ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
-                    elif  element.traits[key] == 2: ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
-                    elif  element.traits[key] == 3: ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
-                    else:                           ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
+                    ## Background color depending on trait class
+                    if   element.traits[key] == 1: ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
+                    elif element.traits[key] == 2: ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
+                    elif element.traits[key] == 3: ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
+                    else:                          ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
 
                     keycounter += 1
                 counter += 1
@@ -143,13 +139,12 @@ def run_main_gui():
         counter = 0
         for region in considered_regions:
 
-            # always filter for given placements
             composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(composition_groups = considered_regions[region],
                                                                                                   max_placement      = filters["placements"])
-            # apply other possible filters on dataset
+
             composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups = composition_group_database["shown_in_table"], 
                                                                                      filters            = filters)
-
+            
             combination_dict = group_composition_groups_by_n_traits(composition_groups     = composition_group_database["shown_in_table"],
                                                                     n                      = ui.nTraitFilterSlider.value(),
                                                                     ignore_one_unit_traits = ui.one_unit_trait_ignore_checkbox.isChecked())
@@ -157,15 +152,15 @@ def run_main_gui():
             for combination in combination_dict:
                 composition_groups.append(CompositionGroup(combination_dict[combination]["compositions"]))
 
-            composition_group_database["shown_in_table"] = composition_groups
+            composition_group_database["shown_in_table"]     = composition_groups
             composition_group_database[region]["grouped_by"] = "n_traits"
 
             for combination in combination_dict:
+                if combination_dict[combination]["counter"] < int(ui.minOccurencesFilter.text()): continue
+                
                 trait_combinations = combination.split('+')
                 
                 ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
-
-                if combination_dict[combination]["counter"] < 2: continue
 
                 current_counter = QTableWidgetItem(str(combination_dict[combination]["counter"]))
                 ui.tableWidget.setItem(counter, 0, current_counter)
@@ -173,7 +168,7 @@ def run_main_gui():
                 current_avg_placement = QTableWidgetItem(str(combination_dict[combination]["avg_placement"]))
                 ui.tableWidget.setItem(counter, 1, current_avg_placement)
 
-                # fill row starting at second index (counter is at first index)
+                ## Fill row starting at second index
                 keycounter = 2
                 for trait_combination in trait_combinations:
                     (tier, trait) = trait_combination.split('--')
@@ -182,11 +177,11 @@ def run_main_gui():
                     current = QTableWidgetItem(trait)
                     ui.tableWidget.setItem(counter, keycounter, current)
 
-                    # background color depending on trait class
-                    if      tier == 1:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
-                    elif    tier == 2:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
-                    elif    tier == 3:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
-                    else:                ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
+                    ## Background color depending on trait class
+                    if   tier == 1:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
+                    elif tier == 2:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
+                    elif tier == 3:   ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
+                    else:             ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
 
                     keycounter += 1
                 counter += 1
@@ -206,17 +201,17 @@ def run_main_gui():
             composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups = composition_group_database["shown_in_table"], 
                                                                                      filters            = filters)
             for composition_group in composition_group_database["shown_in_table"]:
+                if composition_group.counter < int(ui.minOccurencesFilter.text()): continue
+                
                 element = composition_group.compositions[0]
 
                 ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
 
-                if composition_group.counter < 2: continue
-
-                # add the counter to table
+                ## Add counter to table
                 current_counter = QTableWidgetItem(str(composition_group.counter))
                 ui.tableWidget.setItem(counter, 0, current_counter)
 
-                # add the average placement to table
+                ## Add average placement to table
                 current_avg_placement = QTableWidgetItem(str(composition_group.avg_placement))
                 ui.tableWidget.setItem(counter, 1, current_avg_placement)
 
@@ -238,7 +233,7 @@ def run_main_gui():
     def show_best_in_slot():
         nonlocal composition_group_database
         composition_groups = []
-        item_amount = ui.bestInSlotSlider.value()
+        item_amount        = ui.bestInSlotSlider.value()
 
         reset_tableview(headers=["Champion", "Items", "", "", "Occurences", "Avg Placement"])
 
@@ -248,7 +243,7 @@ def run_main_gui():
 
         if len(champions) == 0: champions = data.champions
 
-        # merge all data from regions together
+        ## Merge all data from regions together
         for region in composition_group_database:
             try: composition_groups.append(composition_group_database[region]["database"])
             except TypeError: continue
@@ -264,7 +259,7 @@ def run_main_gui():
             label.setPixmap(pixmap)
             ui.tableWidget.setCellWidget(row_counter, 0, label)
 
-            # exception handling, when bis was not found for a champion 
+            ## Exception handling, when bis was not found for a champion 
             try:
                 if len(bis_dict[champion]) == 0:
                         error_text = QTableWidgetItem()
@@ -302,19 +297,18 @@ def run_main_gui():
             row_counter += 1
 
     def show_composition_group():
-        # prevents infinite loop of function calls
+        ## Prevents infinite loop of function calls
         ui.tableWidget.itemDoubleClicked = False
 
-        #show_composition_group doesnt work properly for other cases => TODO 
-        if composition_group_database["euw"]["grouped_by"] not in ["traits", "champions", "n_traits"]:
-            return
+        ## TODO show_composition_group doesnt work properly for other cases 
+        if composition_group_database["euw"]["grouped_by"] not in ["traits", "champions", "n_traits"]: return
 
         popup.setupUi(popup_window)
         popup.tableWidget.setRowCount(0)
         popup.tableWidget.clearContents()
         popup.tableWidget.setColumnCount(COLUMN_COUNT)
 
-        # get selected composition group
+        ## Get selected composition group
         selected_composition_group = composition_group_database["shown_in_table"][ui.tableWidget.currentItem().row()]
 
         row_counter = 0
@@ -331,7 +325,7 @@ def run_main_gui():
                 current_trait = QTableWidgetItem(trait)
                 popup.tableWidget.setItem(row_counter, column_counter, current_trait)
 
-                # background color depending on trait class
+                ## Background color depending on trait class
                 if   composition.traits[trait] == 1: popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("brown"))
                 elif composition.traits[trait] == 2: popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("silver"))
                 elif composition.traits[trait] == 3: popup.tableWidget.item(row_counter, column_counter).setBackground(QColor("gold"))
@@ -350,7 +344,7 @@ def run_main_gui():
                 label.setPixmap(pixmap)
                 popup.tableWidget.setCellWidget(row_counter, 0, label)
 
-                # show amount of stars right to champion icon
+                ## Show amount of stars right to champion icon
                 if   champion.tier == 1: current_champion.setText("   *")
                 elif champion.tier == 2: current_champion.setText("   **")
                 elif champion.tier == 3: current_champion.setText("   ***")
@@ -371,7 +365,7 @@ def run_main_gui():
                 popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
                 row_counter += 1
 
-            # create an empty row to divide compositions
+            ## Create an empty row to divide compositions
             popup.tableWidget.setRowCount(popup.tableWidget.rowCount() + 1)
             row_counter += 1
         
@@ -412,7 +406,7 @@ def run_main_gui():
 
         if not checkboxes["euw"] and not checkboxes["kr"]: return
 
-        # choose highest league of checked ones
+        ## Choose highest league of checked ones
         if checkboxes["challenger"]:
             considered_league = "challenger"
             ui.challengerCheckBox.setStyleSheet("color: green;")
@@ -460,12 +454,12 @@ def run_main_gui():
             ui.analyzedMatchesCounter.setText(str(korea["analyzed_games"]))
             ui.analyzedCompsCounter.setText(str(len(korea["compositions"])))
 
-    # setup global variables
+    ## Setup global variables
     data                       = Data()
     COLUMN_COUNT               = 15
     composition_group_database = {}
     
-    # check api key and get limits
+    ## Check api key and service
     api_key       = open("apikey.txt", "r").read()
     test_response = requests.get(f"https://euw1.api.riotgames.com/tft/summoner/v1/summoners/by-name/ImpulZzZ?api_key={api_key}")
 
@@ -473,14 +467,14 @@ def run_main_gui():
         print(test_response.content)
         return
     
-    # setup the gui
+    ## Setup the gui
     app         = QApplication([])
     main_window = QMainWindow()
     ui          = main_gui.Ui_mainWindow()
     ui.setupUi(main_window)
     reset_data()
 
-    # bind functions to the buttons
+    ## Bind functions to the buttons
     ui.traitsButton.clicked.connect(show_traits)
     ui.groupNTraitsButton.clicked.connect(show_n_traits)
     ui.championsButton.clicked.connect(show_champions)
@@ -489,7 +483,7 @@ def run_main_gui():
     ui.resetDataButton.clicked.connect(reset_data)
     ui.bestInSlotButton.clicked.connect(show_best_in_slot)
 
-    # add traits to dropdown filters
+    ## Add traits to dropdown filters
     ui.traitFilter1.addItems(data.traits)
     ui.traitFilter2.addItems(data.traits)
     ui.traitFilter3.addItems(data.traits)
@@ -503,12 +497,11 @@ def run_main_gui():
     ui.itemFilter3.addItems(data.items)
     ui.itemFilter4.addItems(data.items)
 
-    # current patch
     ui.currentPatchFilter.setText(data.current_patch)
 
-    # setup the other guis
+    ## Setup the other guis
     popup_window = QMainWindow()
-    popup = composition_group_view.Ui_compositionGroupView()
+    popup        = composition_group_view.Ui_compositionGroupView()
 
     main_window.show()
     app.exec_()
