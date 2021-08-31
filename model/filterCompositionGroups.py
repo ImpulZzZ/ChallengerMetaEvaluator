@@ -75,7 +75,7 @@ def filter_composition_groups_by_placement(composition_groups, max_placement):
     return result_composition_groups
 
 def filter_composition_groups(composition_groups, filters):
-    result_composition_groups = []
+    result = []
 
     trait_filter_active     = len(filters["traits"])    > 0
     champion_filter_active  = len(filters["champions"]) > 0
@@ -83,15 +83,15 @@ def filter_composition_groups(composition_groups, filters):
 
     if not trait_filter_active and not champion_filter_active and not item_filter_active: return composition_groups
 
-    if trait_filter_active: result_composition_groups = filter_composition_groups_by_traits(composition_groups  = composition_groups, 
-                                                                                            traits              = filters["traits"],
-                                                                                            tier_relevant       = filters["traitTier"])
+    if trait_filter_active:    result = filter_composition_groups_by_traits( composition_groups = composition_groups, 
+                                                                             traits             = filters["traits"],
+                                                                             tier_relevant      = filters["traitTier"] )
 
-    if champion_filter_active: result_composition_groups = filter_composition_groups_by_champions(  composition_groups  = composition_groups, 
-                                                                                                    champions           = filters["champions"],
-                                                                                                    star_relevant       = filters["championStar"])
+    if champion_filter_active: result = filter_composition_groups_by_champions( composition_groups = composition_groups, 
+                                                                                champions          = filters["champions"],
+                                                                                star_relevant      = filters["championStar"] )
 
-    if item_filter_active: result_composition_groups = filter_composition_groups_by_items(  composition_groups  = composition_groups, 
-                                                                                            items               = filters["items"])
+    if item_filter_active:     result = filter_composition_groups_by_items( composition_groups = composition_groups, 
+                                                                            items              = filters["items"] )
     
-    return result_composition_groups
+    return result
