@@ -22,6 +22,7 @@ def run_main_gui():
             "champions"    : {},
             "items"        : [],
             "placements"   : ui.placementFilter.value(),
+            "avgPlacement" : ui.avgPlacementFilter.value(),
             "traitTier"    : checkboxes["traitTier"],
             "championStar" : checkboxes["championStar"]
             }
@@ -94,13 +95,14 @@ def run_main_gui():
         counter = 0
         for region in considered_regions:
 
-            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(composition_groups = considered_regions[region],
-                                                                                                  max_placement      = filters["placements"])
+            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement( composition_groups = considered_regions[region],
+                                                                                                   max_placement      = filters["placements"],
+                                                                                                   max_avg_placement  = filters["avgPlacement"] )
 
-            composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups = composition_group_database["shown_in_table"], 
-                                                                                     filters            = filters)
+            composition_group_database["shown_in_table"] = filter_composition_groups( composition_groups = composition_group_database["shown_in_table"], 
+                                                                                      filters            = filters )
 
-            composition_group_database["shown_in_table"] = sort_composition_groups_by_occurence_and_placement(composition_group_database["shown_in_table"])
+            composition_group_database["shown_in_table"] = sort_composition_groups_by_occurence_and_placement( composition_group_database["shown_in_table"] )
             
             for composition_group in composition_group_database["shown_in_table"]:
                 if composition_group.counter < int(ui.minOccurencesFilter.text()): continue
@@ -141,8 +143,9 @@ def run_main_gui():
         counter = 0
         for region in considered_regions:
 
-            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(composition_groups = considered_regions[region],
-                                                                                                  max_placement      = filters["placements"])
+            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement( composition_groups = considered_regions[region],
+                                                                                                   max_placement      = filters["placements"],
+                                                                                                   max_avg_placement  = filters["avgPlacement"] )
 
             composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups = composition_group_database["shown_in_table"], 
                                                                                      filters            = filters)
@@ -196,13 +199,14 @@ def run_main_gui():
         counter = 0
         for region in considered_regions:
 
-            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement(composition_groups = considered_regions[region],
-                                                                                                  max_placement      = filters["placements"])
+            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement( composition_groups = considered_regions[region],
+                                                                                                   max_placement      = filters["placements"],
+                                                                                                   max_avg_placement  = filters["avgPlacement"] )
 
-            composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups = composition_group_database["shown_in_table"], 
-                                                                                     filters            = filters)
+            composition_group_database["shown_in_table"] = filter_composition_groups( composition_groups = composition_group_database["shown_in_table"], 
+                                                                                      filters            = filters )
             
-            composition_group_database["shown_in_table"] = sort_composition_groups_by_occurence_and_placement(composition_group_database["shown_in_table"])
+            composition_group_database["shown_in_table"] = sort_composition_groups_by_occurence_and_placement( composition_group_database["shown_in_table"] )
 
             for composition_group in composition_group_database["shown_in_table"]:
                 if composition_group.counter < int(ui.minOccurencesFilter.text()): continue
