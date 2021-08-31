@@ -24,9 +24,8 @@ def filter_composition_groups_by_traits(composition_groups, traits, tier_relevan
     result_composition_groups = []
 
     for current_comp_group in composition_groups:
-
-        # composition groups can have 1 or more equal composition-traits
-        #   => consider only first composition
+        
+        ## Traits of compostition 0 equals traits of composition n
         current = current_comp_group.compositions[0]
 
         eligible = True
@@ -44,14 +43,13 @@ def filter_composition_groups_by_champions(composition_groups, champions, star_r
 
     for current_comp_group in composition_groups:
 
-        # composition groups can have 1 or more equal composition-champions
-        #   => consider only first composition
+        ## Champions of compostition 0 equals champions of composition n
         current = current_comp_group.compositions[0]
 
         eligible = True
         for key in champions:
             if key in current.champion_names:
-                if star_relevant: 
+                if star_relevant:
                     eligible = False
                     for champion in current.champions:
                         if champion.name == key and champion.tier >= champions[key]: eligible = True
