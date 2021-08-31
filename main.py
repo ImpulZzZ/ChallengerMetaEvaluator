@@ -99,6 +99,8 @@ def run_main_gui():
 
             composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups = composition_group_database["shown_in_table"], 
                                                                                      filters            = filters)
+
+            composition_group_database["shown_in_table"] = sort_composition_groups_by_occurence_and_placement(composition_group_database["shown_in_table"])
             
             for composition_group in composition_group_database["shown_in_table"]:
                 if composition_group.counter < int(ui.minOccurencesFilter.text()): continue
@@ -191,7 +193,6 @@ def run_main_gui():
 
         (considered_regions, filters) = initialize_variables(group_by = "champions")
 
-        # TODO: at the moment regions are just grouped within theirselves and not with other regions
         counter = 0
         for region in considered_regions:
 
@@ -200,6 +201,9 @@ def run_main_gui():
 
             composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups = composition_group_database["shown_in_table"], 
                                                                                      filters            = filters)
+            
+            composition_group_database["shown_in_table"] = sort_composition_groups_by_occurence_and_placement(composition_group_database["shown_in_table"])
+
             for composition_group in composition_group_database["shown_in_table"]:
                 if composition_group.counter < int(ui.minOccurencesFilter.text()): continue
                 
@@ -416,11 +420,9 @@ def run_main_gui():
                                       current_patch      = ui.currentPatchFilter.text(),
                                       ranked_league      = considered_league)
 
-            euw_comps_unsorted = group_compositions_by_traits(europe["compositions"])
-
-            composition_group_database["euw"]["database"]   = sort_composition_groups_by_occurence_and_placement(euw_comps_unsorted)
+            euw_comps = group_compositions_by_traits(europe["compositions"])
+            composition_group_database["euw"]["database"]   = euw_comps
             composition_group_database["euw"]["grouped_by"] = "traits"
-            composition_group_database["euw"]["loaded"]     = True
 
             ui.euwCheckBox.setStyleSheet("color: green;")
             ui.analyzedMatchesCounter.setText(str(europe["analyzed_games"]))
@@ -432,11 +434,9 @@ def run_main_gui():
                                      current_patch      = ui.currentPatchFilter.text(),
                                      ranked_league      = considered_league)
             
-            kr_comps_unsorted = group_compositions_by_traits(korea["compositions"])
-
-            composition_group_database["kr"]["database"]    = sort_composition_groups_by_occurence_and_placement(kr_comps_unsorted)
+            kr_comps = group_compositions_by_traits(korea["compositions"])
+            composition_group_database["kr"]["database"]    = kr_comps
             composition_group_database["euw"]["grouped_by"] = "traits"
-            composition_group_database["kr"]["loaded"]      = True
 
             ui.krCheckBox.setStyleSheet("color: green;")
             ui.analyzedMatchesCounter.setText(str(korea["analyzed_games"]))
