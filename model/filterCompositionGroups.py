@@ -7,8 +7,7 @@ def filter_composition_groups_by_items(composition_groups, items):
 
     for current_comp_group in composition_groups:
 
-        # composition groups can have 1 or more equal composition-items
-        #   => consider only first composition
+        ## Here items of compostition 0 equals items of composition n
         current = current_comp_group.compositions[0]
 
         found_items = 0
