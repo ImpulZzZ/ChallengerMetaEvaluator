@@ -1,7 +1,7 @@
 from model.sortUtilities import sort_dict_by_occurence_and_placement
 
 # returns dictionary with occurences of items on each champion and the average placement
-def compute_best_in_slot(composition_groups, item_amount):
+def compute_best_in_slot(composition_groups, item_amount, max_avg_placement):
     if item_amount < 1:
         return
 
@@ -88,14 +88,15 @@ def compute_best_in_slot(composition_groups, item_amount):
         result_dict.update({champion : {}})
     
         for items in counter_dict[champion]:
-            # do not consider unique occurences
+            ## Do not consider unique occurences
             if counter_dict[champion][items]["counter"] > 1:
                 counter_dict[champion][items]["avg_placement"] /= counter_dict[champion][items]["counter"]
                 counter_dict[champion][items]["avg_placement"] = round(counter_dict[champion][items]["avg_placement"], 2)
 
-                result_dict[champion].update({items : {}})
-                result_dict[champion][items].update({"counter" : counter_dict[champion][items]["counter"]})
-                result_dict[champion][items].update({"avg_placement" : counter_dict[champion][items]["avg_placement"]})
+                if counter_dict[champion][items]["avg_placement"] <= max_avg_placement:
+                    result_dict[champion].update({items : {}})
+                    result_dict[champion][items].update({"counter" : counter_dict[champion][items]["counter"]})
+                    result_dict[champion][items].update({"avg_placement" : counter_dict[champion][items]["avg_placement"]})
 
         sorted_dict = sort_dict_by_occurence_and_placement(result_dict[champion])
         result_dict[champion] = sorted_dict
