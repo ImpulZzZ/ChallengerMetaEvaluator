@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'main_gui.ui'
+# Form implementation generated from reading ui file 'view/main_gui.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.1
 #
@@ -215,16 +215,16 @@ class Ui_mainWindow(object):
         self.label_7 = QtWidgets.QLabel(self.centralwidget)
         self.label_7.setGeometry(QtCore.QRect(460, 0, 111, 20))
         self.label_7.setObjectName("label_7")
-        self.challengerCheckBox = QtWidgets.QCheckBox(self.centralwidget)
-        self.challengerCheckBox.setGeometry(QtCore.QRect(350, 0, 81, 23))
-        self.challengerCheckBox.setChecked(True)
-        self.challengerCheckBox.setObjectName("challengerCheckBox")
-        self.grandmasterCheckBox = QtWidgets.QCheckBox(self.centralwidget)
-        self.grandmasterCheckBox.setGeometry(QtCore.QRect(350, 20, 101, 23))
-        self.grandmasterCheckBox.setObjectName("grandmasterCheckBox")
-        self.masterCheckBox = QtWidgets.QCheckBox(self.centralwidget)
-        self.masterCheckBox.setGeometry(QtCore.QRect(350, 40, 82, 23))
-        self.masterCheckBox.setObjectName("masterCheckBox")
+        self.challengerRadioButton = QtWidgets.QRadioButton(self.centralwidget)
+        self.challengerRadioButton.setGeometry(QtCore.QRect(350, 0, 81, 23))
+        self.challengerRadioButton.setChecked(True)
+        self.challengerRadioButton.setObjectName("challengerRadioButton")
+        self.grandmasterRadioButton = QtWidgets.QRadioButton(self.centralwidget)
+        self.grandmasterRadioButton.setGeometry(QtCore.QRect(350, 20, 101, 23))
+        self.grandmasterRadioButton.setObjectName("grandmasterRadioButton")
+        self.masterRadioButton = QtWidgets.QRadioButton(self.centralwidget)
+        self.masterRadioButton.setGeometry(QtCore.QRect(350, 40, 82, 23))
+        self.masterRadioButton.setObjectName("masterRadioButton")
         self.label_8 = QtWidgets.QLabel(self.centralwidget)
         self.label_8.setGeometry(QtCore.QRect(720, 660, 161, 31))
         font = QtGui.QFont()
@@ -428,9 +428,9 @@ class Ui_mainWindow(object):
         self.gamesPerPlayer.setText(_translate("mainWindow", "8"))
         self.label_6.setText(_translate("mainWindow", "Games per Player"))
         self.label_7.setText(_translate("mainWindow", "Players per Region"))
-        self.challengerCheckBox.setText(_translate("mainWindow", "Challenger"))
-        self.grandmasterCheckBox.setText(_translate("mainWindow", "Grandmaster"))
-        self.masterCheckBox.setText(_translate("mainWindow", "Master"))
+        self.challengerRadioButton.setText(_translate("mainWindow", "Challenger"))
+        self.grandmasterRadioButton.setText(_translate("mainWindow", "Grandmaster"))
+        self.masterRadioButton.setText(_translate("mainWindow", "Master"))
         self.label_8.setText(_translate("mainWindow", "Item Filter"))
         self.label_9.setText(_translate("mainWindow", "Placement Filter"))
         self.label_10.setText(_translate("mainWindow", "Top 8"))

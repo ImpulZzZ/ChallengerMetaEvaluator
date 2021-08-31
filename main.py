@@ -389,9 +389,9 @@ def run_main_gui():
 
         ui.euwCheckBox.setStyleSheet("color: black;")
         ui.krCheckBox.setStyleSheet("color: black;")
-        ui.challengerCheckBox.setStyleSheet("color: black;")
-        ui.grandmasterCheckBox.setStyleSheet("color: black;")
-        ui.masterCheckBox.setStyleSheet("color: black;")
+        ui.challengerRadioButton.setStyleSheet("color: black;")
+        ui.grandmasterRadioButton.setStyleSheet("color: black;")
+        ui.masterRadioButton.setStyleSheet("color: black;")
         ui.analyzedMatchesCounter.setText("0")
 
     def load_data():
@@ -399,25 +399,15 @@ def run_main_gui():
 
         checkboxes = {"euw"         : ui.euwCheckBox.isChecked(),
                       "kr"          : ui.krCheckBox.isChecked(),
-                      "challenger"  : ui.challengerCheckBox.isChecked(),
-                      "grandmaster" : ui.grandmasterCheckBox.isChecked(),
-                      "master"      : ui.masterCheckBox.isChecked()}
+                      "challenger"  : ui.challengerRadioButton.isChecked(),
+                      "grandmaster" : ui.grandmasterRadioButton.isChecked(),
+                      "master"      : ui.masterRadioButton.isChecked()}
 
         if not checkboxes["euw"] and not checkboxes["kr"]: return
 
-        ## Choose highest league of checked ones
-        if checkboxes["challenger"]:
-            considered_league = "challenger"
-            ui.challengerCheckBox.setStyleSheet("color: green;")
-        else:
-            if checkboxes["grandmaster"]:
-                considered_league = "grandmaster"
-                ui.grandmasterCheckBox.setStyleSheet("color: green;")
-            else:
-                if checkboxes["master"]:
-                    considered_league = "master"
-                    ui.masterCheckBox.setStyleSheet("color: green;")
-                else: return
+        if checkboxes["challenger"]:    considered_league = "challenger"
+        elif checkboxes["grandmaster"]: considered_league = "grandmaster"
+        else:                           considered_league = "master"
 
         if checkboxes["euw"] and not composition_group_database["euw"]["loaded"]:
             europe = get_compositions(region             = "europe",

@@ -649,7 +649,7 @@
      <string>Players per Region</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="challengerCheckBox">
+   <widget class="QRadioButton" name="challengerRadioButton">
     <property name="geometry">
      <rect>
       <x>350</x>
@@ -665,7 +665,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QCheckBox" name="grandmasterCheckBox">
+   <widget class="QRadioButton" name="grandmasterRadioButton">
     <property name="geometry">
      <rect>
       <x>350</x>
@@ -678,7 +678,7 @@
      <string>Grandmaster</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="masterCheckBox">
+   <widget class="QRadioButton" name="masterRadioButton">
     <property name="geometry">
      <rect>
       <x>350</x>
