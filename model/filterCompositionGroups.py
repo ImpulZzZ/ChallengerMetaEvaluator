@@ -1,5 +1,6 @@
 from model.CompositionGroup import CompositionGroup
 from model.Data             import Data
+from model.sortUtilities    import sort_composition_groups_by_occurence_and_placement
 
 def filter_composition_groups_by_items(composition_groups, items):
     item_map                    = Data().item_name_to_id_map
@@ -72,7 +73,7 @@ def filter_composition_groups_by_placement(composition_groups, max_placement):
             
     return result_composition_groups
 
-def filter_composition_groups_by_avg_placement(composition_groups, max_avg_placement):
+def remove_compositions_from_group_by_avg_placement(composition_groups, max_avg_placement):
     result_composition_groups = []
        
     for current_comp_group in composition_groups:
@@ -101,3 +102,20 @@ def filter_composition_groups(composition_groups, filters):
                                                                             items              = filters["items"] )
     
     return result
+
+
+def filter_and_sort_composition_groups(composition_groups, filters):
+    result_composition_groups = []
+
+    result_composition_groups = filter_composition_groups_by_placement( composition_groups = composition_groups,
+                                                                        max_placement      = filters["placements"] )
+
+    result_composition_groups = filter_composition_groups( composition_groups = result_composition_groups, 
+                                                           filters            = filters )
+
+    result_composition_groups = remove_compositions_from_group_by_avg_placement( composition_groups = result_composition_groups,
+                                                                                 max_avg_placement  = filters["avgPlacement"] )
+
+    result_composition_groups = sort_composition_groups_by_occurence_and_placement( result_composition_groups )
+
+    return result_composition_groups

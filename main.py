@@ -4,13 +4,11 @@ from PyQt5.QtWidgets                import *
 from PyQt5.QtGui                    import QColor, QFont, QPixmap
 from model.CompositionGroup         import CompositionGroup
 from model.Data                     import Data
-from model.sortUtilities            import sort_composition_groups_by_occurence_and_placement
 from model.bestInSlot               import compute_best_in_slot
-from model.getCompositions          import get_compositions, request_api
+from model.getCompositions          import get_compositions
 from model.groupCompositions        import group_compositions_by_traits, group_compositions
 from model.groupCompositionGroups   import group_composition_groups_by_n_traits
-from model.filterCompositionGroups  import filter_composition_groups, filter_composition_groups_by_placement, filter_composition_groups_by_avg_placement
-from model.bestInSlot               import compute_best_in_slot
+from model.filterCompositionGroups  import filter_and_sort_composition_groups, filter_composition_groups_by_placement, filter_composition_groups
 
 import requests
 
@@ -55,18 +53,27 @@ def run_main_gui():
         ui.tableWidget.setHorizontalHeaderLabels(headers)
 
     def calculate_api_call_duration():
+        checkboxes = get_checkboxes()
+
+        regions = 0
+        for region in checkboxes["regions"]:
+            if checkboxes["regions"][region]: regions += 1
+
+        if regions == 0:
+            ui.calculatedMinutes.setText("0")
+            ui.apiCallsCounter.setText("0")
+            return
+
         gpp = ui.gamesPerPlayer.value()
         ppr = ui.playersPerRegion.value()
 
-        api_calls = 1 + 2*ppr + gpp*ppr
+        api_calls = (1 + 2*ppr + gpp*ppr) * regions
         ui.apiCallsCounter.setText(str(api_calls))
 
         sleeps_needed = api_calls / 99
 
         if sleeps_needed < 1: ui.calculatedMinutes.setText("< 1")
         else:                 ui.calculatedMinutes.setText(str(int(sleeps_needed) * 2))
-
-        
 
     def get_checkboxes():
         
@@ -109,17 +116,8 @@ def run_main_gui():
         counter = 0
         for region in considered_regions:
 
-            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement( composition_groups = considered_regions[region],
-                                                                                                   max_placement      = filters["placements"] )
-
-            composition_group_database["shown_in_table"] = filter_composition_groups( composition_groups = composition_group_database["shown_in_table"], 
-                                                                                      filters            = filters )
-
-            composition_group_database["shown_in_table"] = filter_composition_groups_by_avg_placement( composition_groups = composition_group_database["shown_in_table"],
-                                                                                                       max_avg_placement  = filters["avgPlacement"] )
-
-            composition_group_database["shown_in_table"] = sort_composition_groups_by_occurence_and_placement( composition_group_database["shown_in_table"] )
-            
+            composition_group_database["shown_in_table"] = filter_and_sort_composition_groups( composition_groups = considered_regions[region], 
+                                                                                               filters            = filters )            
             for composition_group in composition_group_database["shown_in_table"]:
                 if composition_group.counter < int(ui.minOccurencesFilter.text()): continue
                 
@@ -215,17 +213,8 @@ def run_main_gui():
         counter = 0
         for region in considered_regions:
 
-            composition_group_database["shown_in_table"] = filter_composition_groups_by_placement( composition_groups = considered_regions[region],
-                                                                                                   max_placement      = filters["placements"] )
-
-            composition_group_database["shown_in_table"] = filter_composition_groups( composition_groups = composition_group_database["shown_in_table"], 
-                                                                                      filters            = filters )
-
-            composition_group_database["shown_in_table"] = filter_composition_groups_by_avg_placement( composition_groups = composition_group_database["shown_in_table"],
-                                                                                                       max_avg_placement  = filters["avgPlacement"] )
-            
-            composition_group_database["shown_in_table"] = sort_composition_groups_by_occurence_and_placement( composition_group_database["shown_in_table"] )
-
+            composition_group_database["shown_in_table"] = filter_and_sort_composition_groups( composition_groups = considered_regions[region], 
+                                                                                               filters            = filters )
             for composition_group in composition_group_database["shown_in_table"]:
                 if composition_group.counter < int(ui.minOccurencesFilter.text()): continue
                 
