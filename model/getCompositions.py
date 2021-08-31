@@ -23,31 +23,31 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
         platform_routing_value  = "unknown"
         regional_routing_value  = "unknown"
 
-    player_list = request_players_by_league(region        = platform_routing_value, 
-                                            api_key       = api_key,
-                                            ranked_league = ranked_league)
+    player_list = request_players_by_league( region        = platform_routing_value, 
+                                             api_key       = api_key,
+                                             ranked_league = ranked_league )
 
     player_list  = sort_players_by_rank(player_list)
     best_players = player_list[0:players_per_region]
 
     for player in best_players:
-        puuid = request_puuid_by_summonername(region        = platform_routing_value,
-                                              api_key       = api_key,
-                                              summoner_name = player["summonerName"])
+        puuid = request_puuid_by_summonername( region        = platform_routing_value,
+                                               api_key       = api_key,
+                                               summoner_name = player["summonerName"] )
                                                     
-        matches = request_matches_by_puuid(region  = regional_routing_value,
-                                           api_key = api_key,
-                                           puuid   = puuid,
-                                           count   = games_per_player)
+        matches = request_matches_by_puuid( region  = regional_routing_value,
+                                            api_key = api_key,
+                                            puuid   = puuid,
+                                            count   = games_per_player )
         
         ## Ignore multiple occurences of a match
         for match in matches:
             if match not in visited_matches: visited_matches.update({match : 1})
 
     for match in visited_matches:
-        api_result = request_match_by_match_id(region   = regional_routing_value,
-                                               api_key  = api_key,
-                                               match    = match)
+        api_result = request_match_by_match_id( region   = regional_routing_value,
+                                                api_key  = api_key,
+                                                match    = match )
 
         patch = re.search("<Releases/(.*)>", api_result["info"]["game_version"]).group(1)
         if patch != current_patch: continue
@@ -65,10 +65,10 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                 for item in unit["items"]:
                     item_list.append(Item(item))
                     
-                champions_unsorted.append(Champion(name   = unit["character_id"],
-                                                   items  = item_list,
-                                                   tier   = unit["tier"],
-                                                   rarity = unit["rarity"]))
+                champions_unsorted.append(Champion( name   = unit["character_id"],
+                                                    items  = item_list,
+                                                    tier   = unit["tier"],
+                                                    rarity = unit["rarity"]) )
 
             champions = sort_champions_by_stars(champions_unsorted)
 
@@ -89,10 +89,10 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
             for x in sorted_keys:
                 sorted_traits[x] = trait_dict[x]
 
-            compositions.append(Composition(level     = participant["level"],
-                                            placement = participant["placement"],
-                                            champions = champions,
-                                            traits    = sorted_traits,
-                                            patch     = patch))
+            compositions.append(Composition( level     = participant["level"],
+                                             placement = participant["placement"],
+                                             champions = champions,
+                                             traits    = sorted_traits,
+                                             patch     = patch) )
 
     return {"compositions" : compositions, "analyzed_games" : games_counter}
