@@ -9,7 +9,7 @@ from model.bestInSlot               import compute_best_in_slot
 from model.getCompositions          import get_compositions, request_api
 from model.groupCompositions        import group_compositions_by_traits, group_compositions
 from model.groupCompositionGroups   import group_composition_groups_by_n_traits
-from model.filterCompositionGroups  import filter_composition_groups, filter_composition_groups_by_placement
+from model.filterCompositionGroups  import filter_composition_groups, filter_composition_groups_by_placement, filter_composition_groups_by_avg_placement
 from model.bestInSlot               import compute_best_in_slot
 
 import requests
@@ -110,11 +110,13 @@ def run_main_gui():
         for region in considered_regions:
 
             composition_group_database["shown_in_table"] = filter_composition_groups_by_placement( composition_groups = considered_regions[region],
-                                                                                                   max_placement      = filters["placements"],
-                                                                                                   max_avg_placement  = filters["avgPlacement"] )
+                                                                                                   max_placement      = filters["placements"] )
 
             composition_group_database["shown_in_table"] = filter_composition_groups( composition_groups = composition_group_database["shown_in_table"], 
                                                                                       filters            = filters )
+
+            composition_group_database["shown_in_table"] = filter_composition_groups_by_avg_placement( composition_groups = composition_group_database["shown_in_table"],
+                                                                                                       max_avg_placement  = filters["avgPlacement"] )
 
             composition_group_database["shown_in_table"] = sort_composition_groups_by_occurence_and_placement( composition_group_database["shown_in_table"] )
             
@@ -158,8 +160,7 @@ def run_main_gui():
         for region in considered_regions:
 
             composition_group_database["shown_in_table"] = filter_composition_groups_by_placement( composition_groups = considered_regions[region],
-                                                                                                   max_placement      = filters["placements"],
-                                                                                                   max_avg_placement  = filters["avgPlacement"] )
+                                                                                                   max_placement      = filters["placements"] )
 
             composition_group_database["shown_in_table"] = filter_composition_groups( composition_groups = composition_group_database["shown_in_table"], 
                                                                                       filters            = filters )
@@ -176,6 +177,7 @@ def run_main_gui():
 
             for combination in combination_dict:
                 if combination_dict[combination]["counter"] < int(ui.minOccurencesFilter.text()): continue
+                if combination_dict[combination]["avg_placement"] >= filters["avgPlacement"]:     continue
                 
                 trait_combinations = combination.split('+')
                 
@@ -214,11 +216,13 @@ def run_main_gui():
         for region in considered_regions:
 
             composition_group_database["shown_in_table"] = filter_composition_groups_by_placement( composition_groups = considered_regions[region],
-                                                                                                   max_placement      = filters["placements"],
-                                                                                                   max_avg_placement  = filters["avgPlacement"] )
+                                                                                                   max_placement      = filters["placements"] )
 
             composition_group_database["shown_in_table"] = filter_composition_groups( composition_groups = composition_group_database["shown_in_table"], 
                                                                                       filters            = filters )
+
+            composition_group_database["shown_in_table"] = filter_composition_groups_by_avg_placement( composition_groups = composition_group_database["shown_in_table"],
+                                                                                                       max_avg_placement  = filters["avgPlacement"] )
             
             composition_group_database["shown_in_table"] = sort_composition_groups_by_occurence_and_placement( composition_group_database["shown_in_table"] )
 
@@ -324,8 +328,8 @@ def run_main_gui():
         ## Prevents infinite loop of function calls
         ui.tableWidget.itemDoubleClicked = False
 
-        ## TODO show_composition_group doesnt work properly for other cases 
-        if composition_group_database["euw"]["grouped_by"] not in ["traits", "champions", "n_traits"]: return
+        ## TODO show_composition_group doesnt work properly for other cases
+        if composition_group_database["euw"]["grouped_by"] not in ["traits", "champions"]: return
 
         popup.setupUi(popup_window)
         popup.tableWidget.setRowCount(0)

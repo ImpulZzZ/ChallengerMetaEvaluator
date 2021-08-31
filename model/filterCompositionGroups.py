@@ -58,7 +58,7 @@ def filter_composition_groups_by_champions(composition_groups, champions, star_r
 
     return result_composition_groups
 
-def filter_composition_groups_by_placement(composition_groups, max_placement, max_avg_placement):
+def filter_composition_groups_by_placement(composition_groups, max_placement):
     result_composition_groups = []
        
     for current_comp_group in composition_groups:
@@ -68,9 +68,16 @@ def filter_composition_groups_by_placement(composition_groups, max_placement, ma
             if composition.placement <= max_placement: current_valid_compositions.append(composition)
                 
         if len(current_valid_compositions) > 0:
-            current_comp_group = CompositionGroup(current_valid_compositions)
-            if current_comp_group.avg_placement <= max_avg_placement: result_composition_groups.append(current_comp_group)
+            result_composition_groups.append(CompositionGroup(current_valid_compositions))
             
+    return result_composition_groups
+
+def filter_composition_groups_by_avg_placement(composition_groups, max_avg_placement):
+    result_composition_groups = []
+       
+    for current_comp_group in composition_groups:
+        if current_comp_group.avg_placement <= max_avg_placement: result_composition_groups.append(current_comp_group)
+                
     return result_composition_groups
 
 def filter_composition_groups(composition_groups, filters):
