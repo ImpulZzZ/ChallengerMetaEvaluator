@@ -147,12 +147,12 @@ def run_main_gui():
                                                                                                    max_placement      = filters["placements"],
                                                                                                    max_avg_placement  = filters["avgPlacement"] )
 
-            composition_group_database["shown_in_table"] = filter_composition_groups(composition_groups = composition_group_database["shown_in_table"], 
-                                                                                     filters            = filters)
+            composition_group_database["shown_in_table"] = filter_composition_groups( composition_groups = composition_group_database["shown_in_table"], 
+                                                                                      filters            = filters )
             
-            combination_dict = group_composition_groups_by_n_traits(composition_groups     = composition_group_database["shown_in_table"],
-                                                                    n                      = ui.nTraitFilterSlider.value(),
-                                                                    ignore_one_unit_traits = ui.one_unit_trait_ignore_checkbox.isChecked())
+            combination_dict = group_composition_groups_by_n_traits( composition_groups     = composition_group_database["shown_in_table"],
+                                                                     n                      = ui.nTraitFilterSlider.value(),
+                                                                     ignore_one_unit_traits = ui.one_unit_trait_ignore_checkbox.isChecked() )
             composition_groups = []
             for combination in combination_dict:
                 composition_groups.append(CompositionGroup(combination_dict[combination]["compositions"]))
@@ -418,11 +418,11 @@ def run_main_gui():
         else:                           considered_league = "master"
 
         if checkboxes["euw"] and not composition_group_database["euw"]["loaded"]:
-            europe = get_compositions(region             = "europe",
-                                      games_per_player   = int(ui.gamesPerPlayer.text()),
-                                      players_per_region = int(ui.playersPerRegion.text()),
-                                      current_patch      = ui.currentPatchFilter.text(),
-                                      ranked_league      = considered_league)
+            europe = get_compositions( region             = "europe",
+                                       games_per_player   = int(ui.gamesPerPlayer.text()),
+                                       players_per_region = int(ui.playersPerRegion.text()),
+                                       current_patch      = ui.currentPatchFilter.text(),
+                                       ranked_league      = considered_league )
 
             euw_comps = group_compositions_by_traits(europe["compositions"])
             composition_group_database["euw"]["database"]   = euw_comps
@@ -432,11 +432,11 @@ def run_main_gui():
             ui.analyzedMatchesCounter.setText(str(europe["analyzed_games"]))
 
         if checkboxes["kr"] and not composition_group_database["kr"]["loaded"]:
-            korea = get_compositions(region             = "korea",
-                                     games_per_player   = int(ui.gamesPerPlayer.text()),
-                                     players_per_region = int(ui.playersPerRegion.text()),
-                                     current_patch      = ui.currentPatchFilter.text(),
-                                     ranked_league      = considered_league)
+            korea = get_compositions( region             = "korea",
+                                      games_per_player   = int(ui.gamesPerPlayer.text()),
+                                      players_per_region = int(ui.playersPerRegion.text()),
+                                      current_patch      = ui.currentPatchFilter.text(),
+                                      ranked_league      = considered_league )
             
             kr_comps = group_compositions_by_traits(korea["compositions"])
             composition_group_database["kr"]["database"]    = kr_comps
