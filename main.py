@@ -54,6 +54,20 @@ def run_main_gui():
             
         ui.tableWidget.setHorizontalHeaderLabels(headers)
 
+    def calculate_api_call_duration():
+        gpp = ui.gamesPerPlayer.value()
+        ppr = ui.playersPerRegion.value()
+
+        api_calls = 1 + 2*ppr + gpp*ppr
+        ui.apiCallsCounter.setText(str(api_calls))
+
+        sleeps_needed = api_calls / 99
+
+        if sleeps_needed < 1: ui.calculatedMinutes.setText("< 1")
+        else:                 ui.calculatedMinutes.setText(str(int(sleeps_needed) * 2))
+
+        
+
     def get_checkboxes():
         
         return {
@@ -256,7 +270,9 @@ def run_main_gui():
             try: composition_groups.append(composition_group_database[region]["database"])
             except TypeError: continue
 
-        bis_dict = compute_best_in_slot(composition_groups, item_amount)
+        bis_dict = compute_best_in_slot( composition_groups = composition_groups,
+                                         item_amount        = item_amount,
+                                         max_avg_placement  = ui.avgPlacementFilter.value() )
 
         ui.tableWidget.setRowCount(ui.tableWidget.rowCount() + 1)
         
@@ -419,8 +435,8 @@ def run_main_gui():
 
         if checkboxes["euw"] and not composition_group_database["euw"]["loaded"]:
             europe = get_compositions( region             = "europe",
-                                       games_per_player   = int(ui.gamesPerPlayer.text()),
-                                       players_per_region = int(ui.playersPerRegion.text()),
+                                       games_per_player   = ui.gamesPerPlayer.value(),
+                                       players_per_region = ui.playersPerRegion.value(),
                                        current_patch      = ui.currentPatchFilter.text(),
                                        ranked_league      = considered_league )
 
@@ -433,8 +449,8 @@ def run_main_gui():
 
         if checkboxes["kr"] and not composition_group_database["kr"]["loaded"]:
             korea = get_compositions( region             = "korea",
-                                      games_per_player   = int(ui.gamesPerPlayer.text()),
-                                      players_per_region = int(ui.playersPerRegion.text()),
+                                      games_per_player   = ui.gamesPerPlayer.value(),
+                                      players_per_region = ui.playersPerRegion.value(),
                                       current_patch      = ui.currentPatchFilter.text(),
                                       ranked_league      = considered_league )
             
@@ -473,6 +489,7 @@ def run_main_gui():
     ui.loadDataButton.clicked.connect(load_data)
     ui.resetDataButton.clicked.connect(reset_data)
     ui.bestInSlotButton.clicked.connect(show_best_in_slot)
+    ui.refreshDurationButton.clicked.connect(calculate_api_call_duration)
 
     ## Add traits to dropdown filters
     ui.traitFilter1.addItems(data.traits)
