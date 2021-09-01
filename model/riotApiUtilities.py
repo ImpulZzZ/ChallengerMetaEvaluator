@@ -1,8 +1,12 @@
 import time
 import requests
 
-# checks if request limit is near and if so, sleep
-def keep_request_limits(response):
+## Checks if request was successfull and handles Key limits
+def valid_request(response):
+    if response.status_code != 200:
+        print(response.content)
+        return False
+
     request_limits  = response.headers["X-App-Rate-Limit"].split(",")
     request_counter = response.headers["X-App-Rate-Limit-Count"].split(",")
     requests_per_seconds             = int(request_limits[0].split(":")[0])
@@ -20,75 +24,54 @@ def keep_request_limits(response):
             time.sleep(15)
             sleep_counter -= 15
         print("Continue processing data...")
-        
-    return
+    
+    return True
 
-# requests Api
+## Requests Api
 def request_api(region, api_key, parameter_url):
     url = f"https://{region}.api.riotgames.com{parameter_url}?api_key={api_key}"
     response = requests.get(url)
-    if response.status_code != 200:
-        print(response.content)
-        return None
-    keep_request_limits(response)
-    return response.json()
+    if valid_request(response): return response.json()
+    return None
 
-# requests TFT-Matches Api
+## Requests TFT-Matches Api
 def request_match_by_match_id(region, api_key, match):
     url = f"https://{region}.api.riotgames.com/tft/match/v1/matches/{match}?api_key={api_key}"
     response = requests.get(url)
-    if response.status_code != 200: 
-        print(response.content)
-        return None
-    keep_request_limits(response)
-    return response.json()
+    if valid_request(response): return response.json()
+    return None
 
-# requests TFT-Matches Api
+## Requests TFT-Matches Api
 def request_matches_by_puuid(region, api_key, puuid, count):
     url = f"https://{region}.api.riotgames.com/tft/match/v1/matches/by-puuid/{puuid}/ids?count={str(count)}&api_key={api_key}"
     response = requests.get(url)
-    if response.status_code != 200:
-        print(response.content)
-        return None
-    keep_request_limits(response)
-    return response.json()
+    if valid_request(response): return response.json()
+    return None
 
-# requests puuid of a summoner by name
+## Requests puuid of a summoner by name
 def request_puuid_by_summonername(region, api_key, summoner_name):
     url = f"https://{region}.api.riotgames.com/tft/summoner/v1/summoners/by-name/{summoner_name}?&api_key={api_key}"
     response = requests.get(url)
-    if response.status_code != 200:
-        print(response.content) 
-        return None
-    keep_request_limits(response)
-    return response.json()["puuid"]
+    if valid_request(response): return response.json()["puuid"]
+    return None
 
-# requests playerlist by league
+## Requests playerlist by league
 def request_players_by_league(region, api_key, ranked_league):
     url = f"https://{region}.api.riotgames.com/tft/league/v1/{ranked_league}?api_key={api_key}"
     response = requests.get(url)
-    if response.status_code != 200:
-        print(response.content) 
-        return None
-    keep_request_limits(response)
-    return response.json()["entries"]
+    if valid_request(response): return response.json()["entries"]
+    return None
 
-# requests participant list by match id
+## Requests participant list by match id
 def request_participants_by_match_id(region, api_key, match):
     url = f"https://{region}.api.riotgames.com/tft/match/v1/matches/{match}?api_key={api_key}"
     response = requests.get(url)
-    if response.status_code != 200: 
-        print(response.content)
-        return None
-    keep_request_limits(response)
-    return response.json()["info"]["participants"]
+    if valid_request(response): return response.json()["info"]["participants"]
+    return None
 
-# requests summonername by puuid
+## Requests summonername by puuid
 def request_summonername_by_puuid(region, api_key, puuid):
     url = f"https://{region}.api.riotgames.com/tft/summoner/v1/summoners/by-puuid/{puuid}?api_key={api_key}"
     response = requests.get(url)
-    if response.status_code != 200: 
-        print(response.content)
-        return None
-    keep_request_limits(response)
-    return response.json()["name"]
+    if valid_request(response): return response.json()["name"]
+    return None
