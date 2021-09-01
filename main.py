@@ -318,6 +318,30 @@ def run_main_gui():
         ## Prevents infinite loop of function calls
         ui.tableWidget.itemDoubleClicked = False
 
+        if composition_group_database["euw"]["grouped_by"] == "n_traits":
+            
+            
+            ## TODO: program does not run with mapping dict. Cyan needs to be added aswell
+            #mapping_dict = {"#a52a2a" : 1, "#c0c0c0" : 2,  "#ffd700" : 3}
+            trait1 = ui.tableWidget.item(ui.tableWidget.currentRow(), 2)
+            trait2 = ui.tableWidget.item(ui.tableWidget.currentRow(), 3)
+            trait3 = ui.tableWidget.item(ui.tableWidget.currentRow(), 4)
+
+            ui.traitFilterTierCheckBox.setChecked(True)
+
+            if trait1 is not None:
+                ui.traitFilter1.setCurrentText(trait1.text())
+                ui.traitFilterCheckBox1.setChecked(True)
+                #ui.traitFilterSlider1.setValue(mapping_dict[f"{trait1.background().color().name()}"])
+            if trait2 is not None:
+                ui.traitFilter2.setCurrentText(trait2.text())
+                ui.traitFilterCheckBox2.setChecked(True)
+                #ui.traitFilterSlider2.setValue(mapping_dict[f"{trait2.background().color().name()}"])
+            if trait3 is not None:
+                ui.traitFilter3.setCurrentText(trait3.text())
+                ui.traitFilterCheckBox3.setChecked(True)
+                #ui.traitFilterSlider3.setValue(mapping_dict[f"{trait3.background().color().name()}"])
+            
         ## TODO show_composition_group doesnt work properly for other cases
         if composition_group_database["euw"]["grouped_by"] not in ["traits", "champions"]: return
 
