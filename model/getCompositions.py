@@ -92,6 +92,8 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                              api_key       = api_key,
                                              ranked_league = ranked_league )
 
+    if player_list is None: return {"compositions" : [], "analyzed_games" : -404}
+    
     player_list  = sort_players_by_rank(player_list)
     best_players = player_list[0:players_per_region]
 
@@ -99,11 +101,15 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
         puuid = request_puuid_by_summonername( region        = platform_routing_value,
                                                api_key       = api_key,
                                                summoner_name = player["summonerName"] )
+
+        if puuid is None: return {"compositions" : [], "analyzed_games" : -404}
                                                     
         matches = request_matches_by_puuid( region  = regional_routing_value,
                                             api_key = api_key,
                                             puuid   = puuid,
                                             count   = games_per_player )
+
+        if matches is None: return {"compositions" : [], "analyzed_games" : -404}
         
         (compositions, games_counter, visited_matches) = analyze_matches(matches, compositions, games_counter, visited_matches, current_patch, min_date_time, regional_routing_value, api_key)
     
