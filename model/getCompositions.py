@@ -5,8 +5,9 @@ from model.sortUtilities    import sort_players_by_rank, sort_champions_by_stars
 from model.riotApiUtilities import *
 
 import re
+import datetime
 
-def analyze_matches(matches, compositions, games_counter, visited_matches, current_patch, regional_routing_value, api_key):
+def analyze_matches(matches, compositions, games_counter, visited_matches, current_patch, min_date_time, regional_routing_value, api_key):
     
     for match in matches:
         if match in visited_matches: return ( compositions, games_counter, visited_matches )
@@ -17,9 +18,12 @@ def analyze_matches(matches, compositions, games_counter, visited_matches, curre
                                                 api_key  = api_key,
                                                 match    = match )
 
-        ## Matches are ordered by time. Therefore after the first match from last patch, consecutive matches are aswell from last patch
+        ## Matches are ordered by time. Therefore after the first too old match, consecutive matches are too old aswell
         patch = re.search("<Releases/(.*)>", api_result["info"]["game_version"]).group(1)
         if patch != current_patch: return ( compositions, games_counter, visited_matches )
+        match_date_time = datetime.datetime.fromtimestamp((api_result["info"]["game_datetime"] // 1000))
+        if min_date_time > match_date_time: return ( compositions, games_counter, visited_matches )
+
 
         participants   = api_result["info"]["participants"]
         games_counter += 1
@@ -67,7 +71,7 @@ def analyze_matches(matches, compositions, games_counter, visited_matches, curre
 
 
 
-def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league):
+def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league, min_date_time):
 
     api_key         = open("apikey.txt", "r").read()
     games_counter   = 0
@@ -101,6 +105,6 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                             puuid   = puuid,
                                             count   = games_per_player )
         
-        (compositions, games_counter, visited_matches) = analyze_matches(matches, compositions, games_counter, visited_matches, current_patch, regional_routing_value, api_key)
+        (compositions, games_counter, visited_matches) = analyze_matches(matches, compositions, games_counter, visited_matches, current_patch, min_date_time, regional_routing_value, api_key)
     
     return {"compositions" : compositions, "analyzed_games" : games_counter}

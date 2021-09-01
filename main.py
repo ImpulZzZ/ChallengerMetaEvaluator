@@ -4,6 +4,7 @@ from PyQt5.QtWidgets                import *
 from PyQt5.QtGui                    import QColor, QFont, QPixmap
 from model.CompositionGroup         import CompositionGroup
 from model.Data                     import Data
+from datetime                       import datetime, timedelta
 from model.bestInSlot               import compute_best_in_slot
 from model.getCompositions          import get_compositions
 from model.groupCompositions        import group_compositions_by_traits, group_compositions
@@ -414,11 +415,11 @@ def run_main_gui():
     def load_data():
         nonlocal composition_group_database
 
-        checkboxes = {"euw"         : ui.euwCheckBox.isChecked(),
-                      "kr"          : ui.krCheckBox.isChecked(),
-                      "challenger"  : ui.challengerRadioButton.isChecked(),
-                      "grandmaster" : ui.grandmasterRadioButton.isChecked(),
-                      "master"      : ui.masterRadioButton.isChecked()}
+        checkboxes = { "euw"         : ui.euwCheckBox.isChecked(),
+                       "kr"          : ui.krCheckBox.isChecked(),
+                       "challenger"  : ui.challengerRadioButton.isChecked(),
+                       "grandmaster" : ui.grandmasterRadioButton.isChecked(),
+                       "master"      : ui.masterRadioButton.isChecked() }
 
         if not checkboxes["euw"] and not checkboxes["kr"]: return
 
@@ -426,12 +427,15 @@ def run_main_gui():
         elif checkboxes["grandmaster"]: considered_league = "grandmaster"
         else:                           considered_league = "master"
 
+        min_date_time = ui.dateTimeEdit.dateTime().toPyDateTime()
+
         if checkboxes["euw"] and not composition_group_database["euw"]["loaded"]:
             europe = get_compositions( region             = "europe",
                                        games_per_player   = ui.gamesPerPlayer.value(),
                                        players_per_region = ui.playersPerRegion.value(),
                                        current_patch      = ui.currentPatchFilter.text(),
-                                       ranked_league      = considered_league )
+                                       ranked_league      = considered_league,
+                                       min_date_time      = min_date_time )
 
             euw_comps = group_compositions_by_traits(europe["compositions"])
             composition_group_database["euw"]["database"]   = euw_comps
@@ -445,7 +449,8 @@ def run_main_gui():
                                       games_per_player   = ui.gamesPerPlayer.value(),
                                       players_per_region = ui.playersPerRegion.value(),
                                       current_patch      = ui.currentPatchFilter.text(),
-                                      ranked_league      = considered_league )
+                                      ranked_league      = considered_league,
+                                      min_date_time      = min_date_time )
             
             kr_comps = group_compositions_by_traits(korea["compositions"])
             composition_group_database["kr"]["database"]    = kr_comps
@@ -499,6 +504,8 @@ def run_main_gui():
     ui.itemFilter4.addItems(data.items)
 
     ui.currentPatchFilter.setText(data.current_patch)
+    timestamp = datetime.now()
+    ui.dateTimeEdit.setDate(timestamp - timedelta(days=30))
 
     ## Setup the other guis
     popup_window = QMainWindow()
