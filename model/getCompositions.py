@@ -6,51 +6,20 @@ from model.riotApiUtilities import *
 
 import re
 
-def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league):
+def analyze_matches(matches, compositions, games_counter, visited_matches, current_patch, regional_routing_value, api_key):
+    
+    for match in matches:
+        if match in visited_matches: return ( compositions, games_counter, visited_matches )
 
-    api_key         = open("apikey.txt", "r").read()
-    games_counter   = 0
-    visited_matches = {}
-    compositions    = []
+        visited_matches.update({match : 1})
 
-    if region == "europe":
-        platform_routing_value  = "euw1"
-        regional_routing_value  = "europe"
-    elif region == "korea":
-        platform_routing_value  = "kr"
-        regional_routing_value  = "asia"
-    else:
-        platform_routing_value  = "unknown"
-        regional_routing_value  = "unknown"
-
-    player_list = request_players_by_league( region        = platform_routing_value, 
-                                             api_key       = api_key,
-                                             ranked_league = ranked_league )
-
-    player_list  = sort_players_by_rank(player_list)
-    best_players = player_list[0:players_per_region]
-
-    for player in best_players:
-        puuid = request_puuid_by_summonername( region        = platform_routing_value,
-                                               api_key       = api_key,
-                                               summoner_name = player["summonerName"] )
-                                                    
-        matches = request_matches_by_puuid( region  = regional_routing_value,
-                                            api_key = api_key,
-                                            puuid   = puuid,
-                                            count   = games_per_player )
-        
-        ## Ignore multiple occurences of a match
-        for match in matches:
-            if match not in visited_matches: visited_matches.update({match : 1})
-
-    for match in visited_matches:
         api_result = request_match_by_match_id( region   = regional_routing_value,
                                                 api_key  = api_key,
                                                 match    = match )
 
+        ## Matches are ordered by time. Therefore after the first match from last patch, consecutive matches are aswell from last patch
         patch = re.search("<Releases/(.*)>", api_result["info"]["game_version"]).group(1)
-        if patch != current_patch: continue
+        if patch != current_patch: return ( compositions, games_counter, visited_matches )
 
         participants   = api_result["info"]["participants"]
         games_counter += 1
@@ -94,4 +63,44 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
                                              traits    = sorted_traits,
                                              patch     = patch) )
 
+    return ( compositions, games_counter, visited_matches )
+
+
+
+def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league):
+
+    api_key         = open("apikey.txt", "r").read()
+    games_counter   = 0
+    visited_matches = {}
+    compositions    = []
+
+    if region == "europe":
+        platform_routing_value  = "euw1"
+        regional_routing_value  = "europe"
+    elif region == "korea":
+        platform_routing_value  = "kr"
+        regional_routing_value  = "asia"
+    else:
+        platform_routing_value  = "unknown"
+        regional_routing_value  = "unknown"
+
+    player_list = request_players_by_league( region        = platform_routing_value, 
+                                             api_key       = api_key,
+                                             ranked_league = ranked_league )
+
+    player_list  = sort_players_by_rank(player_list)
+    best_players = player_list[0:players_per_region]
+
+    for player in best_players:
+        puuid = request_puuid_by_summonername( region        = platform_routing_value,
+                                               api_key       = api_key,
+                                               summoner_name = player["summonerName"] )
+                                                    
+        matches = request_matches_by_puuid( region  = regional_routing_value,
+                                            api_key = api_key,
+                                            puuid   = puuid,
+                                            count   = games_per_player )
+        
+        (compositions, games_counter, visited_matches) = analyze_matches(matches, compositions, games_counter, visited_matches, current_patch, regional_routing_value, api_key)
+    
     return {"compositions" : compositions, "analyzed_games" : games_counter}
