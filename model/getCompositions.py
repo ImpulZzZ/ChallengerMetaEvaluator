@@ -1,6 +1,7 @@
 from model.Composition      import Composition
 from model.Champion         import Champion
 from model.Item             import Item
+from model.Trait            import Trait
 from model.sortUtilities    import sort_players_by_rank, sort_champions_by_stars
 from model.riotApiUtilities import *
 
@@ -51,14 +52,11 @@ def analyze_matches(matches, compositions, games_counter, visited_matches, curre
             champions = sort_champions_by_stars(champions_unsorted)
 
             trait_dict = {}
-            for trait in participant["traits"]:
-                ## Only consider active traits
-                if trait["style"] > 0:
-                    trait_name = trait["name"].split("_")
-                    if len(trait_name) > 1: trait_name_short = trait_name[1]
-                    else:                   trait_name_short = trait_name[0]
+            for current_trait in participant["traits"]:
+                trait = Trait(current_trait["name"], current_trait["style"], current_trait["num_units"], static_data)
 
-                    trait_dict.update({trait_name_short : trait["style"]})
+                ## Only consider active traits
+                if trait.style > 0: trait_dict.update({trait.name : trait.style})
 
             ## Sort the trait dictionary by tiers
             sorted_traits = {}
