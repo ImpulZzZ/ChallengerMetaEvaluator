@@ -306,6 +306,7 @@ def run_main_gui():
                         label  = QLabel()
                         pixmap = QPixmap(data.item_static_data[item]["image"]).scaled(30, 30)
                         label.setPixmap(pixmap)
+                        label.setToolTip(item)
                         ui.tableWidget.setCellWidget(row_counter, item_position, label)
                         item_position += 1
 
