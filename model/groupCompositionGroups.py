@@ -1,11 +1,9 @@
 from model.Data             import Data
 from model.sortUtilities    import sort_dict_by_occurence_and_placement
 
-def group_composition_groups_by_n_traits(composition_groups, n, #ignore_one_unit_traits
-                                         ):
+def group_composition_groups_by_n_traits(composition_groups, n, ignore_one_unit_traits, static_data):
     if n < 1: return
 
-    data             = Data()
     compositions     = []
     single_traits    = []
     combination_dict = {}
@@ -17,8 +15,8 @@ def group_composition_groups_by_n_traits(composition_groups, n, #ignore_one_unit
         for composition in composition_group.compositions:
             compositions.append(composition)
     
-    for trait in data.traits:
-        #if ignore_one_unit_traits and trait in data.one_unit_traits: continue
+    for trait in static_data.traits:
+        if ignore_one_unit_traits and trait in static_data.single_unit_traits: continue
         for tier in [1,2,3,4]:
             key = f"{tier}--{trait}"
             combination_dict.update({key : {}})
