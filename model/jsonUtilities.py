@@ -47,6 +47,20 @@ def get_static_champion_data(json_file, path_to_img):
     return result
 
 
+def get_static_trait_data(json_file, path_to_img):
+    result = {}
+    with open(json_file) as jsonfile:
+        data = json.load(jsonfile)
+
+        for trait in data["data"]:
+            result.update({data["data"][trait]["id"] : { "name":  data["data"][trait]["name"], 
+                                                         "image": f"{path_to_img}/{data['data'][trait]['image']['full']}"
+                                                       }
+                          })
+
+    return result
+
+
 def get_static_item_data(json_file, path_to_img):
     result = {}
     with open(json_file) as jsonfile:
