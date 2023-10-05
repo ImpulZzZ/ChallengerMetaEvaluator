@@ -137,16 +137,16 @@ def run_main_gui():
 
                 ## Fill row starting at second index
                 keycounter = 2
-                for key in element.traits:
+                for current_trait in element.traits:
                     ## Add the elements into the table
-                    current = QTableWidgetItem(str(key))
+                    current = QTableWidgetItem(str(current_trait))
                     ui.tableWidget.setItem(counter, keycounter, current)
 
                     ## Background color depending on trait class
-                    if   element.traits[key] == 1: ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
-                    elif element.traits[key] == 2: ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
-                    elif element.traits[key] == 3: ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
-                    else:                          ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
+                    if   element.traits[current_trait] == 1: ui.tableWidget.item(counter, keycounter).setBackground(QColor("brown"))
+                    elif element.traits[current_trait] == 2: ui.tableWidget.item(counter, keycounter).setBackground(QColor("silver"))
+                    elif element.traits[current_trait] == 3: ui.tableWidget.item(counter, keycounter).setBackground(QColor("gold"))
+                    else:                                    ui.tableWidget.item(counter, keycounter).setBackground(QColor("cyan"))
 
                     keycounter += 1
                 counter += 1
