@@ -53,7 +53,7 @@ def analyze_matches(matches, compositions, games_counter, visited_matches, curre
 
             trait_dict = {}
             for current_trait in participant["traits"]:
-                trait = Trait(current_trait["name"], current_trait["style"], current_trait["num_units"], static_data)
+                trait = Trait(current_trait["name"], static_data, current_trait["style"] )
 
                 ## Only consider active traits
                 if trait.style > 0: trait_dict.update({trait.name : trait.style})
