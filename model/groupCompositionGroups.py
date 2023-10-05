@@ -1,7 +1,8 @@
 from model.Data             import Data
 from model.sortUtilities    import sort_dict_by_occurence_and_placement
 
-def group_composition_groups_by_n_traits(composition_groups, n, ignore_one_unit_traits):
+def group_composition_groups_by_n_traits(composition_groups, n, #ignore_one_unit_traits
+                                         ):
     if n < 1: return
 
     data             = Data()
@@ -17,7 +18,7 @@ def group_composition_groups_by_n_traits(composition_groups, n, ignore_one_unit_
             compositions.append(composition)
     
     for trait in data.traits:
-        if ignore_one_unit_traits and trait in data.one_unit_traits: continue
+        #if ignore_one_unit_traits and trait in data.one_unit_traits: continue
         for tier in [1,2,3,4]:
             key = f"{tier}--{trait}"
             combination_dict.update({key : {}})

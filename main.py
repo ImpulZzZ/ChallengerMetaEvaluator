@@ -165,8 +165,9 @@ def run_main_gui():
                                                                                       filters            = filters )
             
             combination_dict = group_composition_groups_by_n_traits( composition_groups     = composition_group_database["shown_in_table"],
-                                                                     n                      = ui.nTraitFilterSlider.value(),
-                                                                     ignore_one_unit_traits = ui.one_unit_trait_ignore_checkbox.isChecked() )
+                                                                     n                      = ui.nTraitFilterSlider.value()
+                                                                     #ignore_one_unit_traits = ui.one_unit_trait_ignore_checkbox.isChecked() 
+                                                                     )
             composition_groups = []
             for combination in combination_dict:
                 composition_groups.append(CompositionGroup(combination_dict[combination]["compositions"]))
@@ -211,6 +212,8 @@ def run_main_gui():
 
         (considered_regions, filters) = initialize_variables(group_by = "champions")
 
+        reset_tableview(headers=["Occurences", "Avg Placement", "Champions"])
+
         counter = 0
         for region in considered_regions:
 
@@ -233,14 +236,19 @@ def run_main_gui():
 
                 keycounter = 2
                 for champion in element.champions:
-
                     current_champion = QTableWidgetItem()
-                    label            = QLabel()
-                    pixmap           = QPixmap(champion.icon).scaled(30, 30)
-                    label.setPixmap(pixmap)
-                    ui.tableWidget.setCellWidget(counter, keycounter, label)
+                    current_champion.setToolTip(str(champion.name))
 
+                    ## Show champion icon
+                    label  = QLabel()
+                    pixmap = QPixmap(champion.icon).scaled(30, 30)
+                    label.setPixmap(pixmap)
+
+                    ## Show amount of stars right to champion icon
+                    current_champion.setText(champion.star_text)
                     current_champion.setFont(QFont('Arial', 24))
+
+                    ui.tableWidget.setCellWidget(counter, keycounter, label)
                     ui.tableWidget.setItem(counter, keycounter, current_champion)
 
                     keycounter += 1
@@ -273,8 +281,9 @@ def run_main_gui():
         row_counter = 0
         for champion in champions:
             label  = QLabel()
-            pixmap = QPixmap(f"{data.data_dir}/champions/TFT5_{champion}.png").scaled(30, 30)
+            pixmap = QPixmap(data.champion_name_to_icon_map[champion]).scaled(30, 30)
             label.setPixmap(pixmap)
+            label.setToolTip(champion)
             ui.tableWidget.setCellWidget(row_counter, 0, label)
 
             ## Exception handling, when bis was not found for a champion 
@@ -295,7 +304,7 @@ def run_main_gui():
                     item_position = 1
                     for item in items:
                         label  = QLabel()
-                        pixmap = QPixmap(f"{data.data_dir}/items/{item}.png").scaled(30, 30)
+                        pixmap = QPixmap(data.item_static_data[item]["image"]).scaled(30, 30)
                         label.setPixmap(pixmap)
                         ui.tableWidget.setCellWidget(row_counter, item_position, label)
                         item_position += 1
@@ -387,11 +396,7 @@ def run_main_gui():
                 popup.tableWidget.setCellWidget(row_counter, 0, label)
 
                 ## Show amount of stars right to champion icon
-                if   champion.tier == 1: current_champion.setText("   *")
-                elif champion.tier == 2: current_champion.setText("   **")
-                elif champion.tier == 3: current_champion.setText("   ***")
-                else:                    current_champion.setText("   ****")
-
+                current_champion.setText(champion.star_text)
                 current_champion.setFont(QFont('Arial', 24))
                 popup.tableWidget.setItem(row_counter, 0, current_champion)
 
@@ -459,7 +464,8 @@ def run_main_gui():
                                        players_per_region = ui.playersPerRegion.value(),
                                        current_patch      = ui.currentPatchFilter.text(),
                                        ranked_league      = considered_league,
-                                       min_date_time      = min_date_time )
+                                       min_date_time      = min_date_time,
+                                       static_data        = data )
 
             euw_comps = group_compositions_by_traits(europe["compositions"])
             composition_group_database["euw"]["database"]   = euw_comps
@@ -474,7 +480,8 @@ def run_main_gui():
                                       players_per_region = ui.playersPerRegion.value(),
                                       current_patch      = ui.currentPatchFilter.text(),
                                       ranked_league      = considered_league,
-                                      min_date_time      = min_date_time )
+                                      min_date_time      = min_date_time,
+                                      static_data        = data )
             
             kr_comps = group_compositions_by_traits(korea["compositions"])
             composition_group_database["kr"]["database"]    = kr_comps
@@ -489,8 +496,7 @@ def run_main_gui():
     composition_group_database = {}
     
     ## Check api key and service
-    api_key       = open("apikey.txt", "r").read()
-    test_response = requests.get(f"https://euw1.api.riotgames.com/tft/summoner/v1/summoners/by-name/ImpulZzZ?api_key={api_key}")
+    test_response = requests.get(f"https://euw1.api.riotgames.com/tft/summoner/v1/summoners/by-name/ImpulZzZ?api_key={data.api_key}")
 
     if test_response.status_code != 200: 
         print(test_response.content)

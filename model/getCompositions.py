@@ -7,7 +7,7 @@ from model.riotApiUtilities import *
 import re
 import datetime
 
-def analyze_matches(matches, compositions, games_counter, visited_matches, current_patch, min_date_time, regional_routing_value, api_key):
+def analyze_matches(matches, compositions, games_counter, visited_matches, current_patch, min_date_time, regional_routing_value, static_data):
     
     for match in matches:
         if match in visited_matches: return ( compositions, games_counter, visited_matches )
@@ -15,7 +15,7 @@ def analyze_matches(matches, compositions, games_counter, visited_matches, curre
         visited_matches.update({match : 1})
 
         api_result = request_match_by_match_id( region   = regional_routing_value,
-                                                api_key  = api_key,
+                                                api_key  = static_data.api_key,
                                                 match    = match )
 
         ## Matches are ordered by time. Therefore after the first too old match, consecutive matches are too old aswell
@@ -34,13 +34,19 @@ def analyze_matches(matches, compositions, games_counter, visited_matches, curre
             for unit in participant["units"]:
                 item_list = []
 
-                for item in unit["items"]:
-                    item_list.append(Item(item))
-                    
+                for item in unit["itemNames"]:
+                    try: static_data.item_static_data[item]
+                    except KeyError: continue
+                    item_list.append(Item(item, static_data))
+
+                ## Skip units, that are not champions
+                try: static_data.champion_static_data[unit["character_id"]]
+                except KeyError: continue
+
                 champions_unsorted.append(Champion( name   = unit["character_id"],
                                                     items  = item_list,
                                                     tier   = unit["tier"],
-                                                    rarity = unit["rarity"]) )
+                                                    data   = static_data ) )
 
             champions = sort_champions_by_stars(champions_unsorted)
 
@@ -71,7 +77,7 @@ def analyze_matches(matches, compositions, games_counter, visited_matches, curre
 
 
 
-def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league, min_date_time):
+def get_compositions(region, players_per_region, games_per_player, current_patch, ranked_league, min_date_time, static_data):
 
     api_key         = open("apikey.txt", "r").read()
     games_counter   = 0
@@ -111,6 +117,6 @@ def get_compositions(region, players_per_region, games_per_player, current_patch
 
         if matches is None: return {"compositions" : [], "analyzed_games" : -404}
         
-        (compositions, games_counter, visited_matches) = analyze_matches(matches, compositions, games_counter, visited_matches, current_patch, min_date_time, regional_routing_value, api_key)
+        (compositions, games_counter, visited_matches) = analyze_matches(matches, compositions, games_counter, visited_matches, current_patch, min_date_time, regional_routing_value, static_data)
     
     return {"compositions" : compositions, "analyzed_games" : games_counter}
