@@ -165,9 +165,9 @@ def run_main_gui():
                                                                                       filters            = filters )
             
             combination_dict = group_composition_groups_by_n_traits( composition_groups     = composition_group_database["shown_in_table"],
-                                                                     n                      = ui.nTraitFilterSlider.value()
-                                                                     #ignore_one_unit_traits = ui.one_unit_trait_ignore_checkbox.isChecked() 
-                                                                     )
+                                                                     n                      = ui.nTraitFilterSlider.value(),
+                                                                     ignore_one_unit_traits = ui.one_unit_trait_ignore_checkbox.isChecked(),
+                                                                     static_data            = data )
             composition_groups = []
             for combination in combination_dict:
                 composition_groups.append(CompositionGroup(combination_dict[combination]["compositions"]))
