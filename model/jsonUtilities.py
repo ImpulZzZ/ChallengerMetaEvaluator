@@ -1,6 +1,6 @@
 import json
 
-def extract_names_from_json(json_file):
+def get_names_from_json(json_file):
     result = []
     with open(json_file) as jsonfile:
         data = json.load(jsonfile)
@@ -10,7 +10,7 @@ def extract_names_from_json(json_file):
 
     return sorted(result)
 
-def create_name_to_id_map(json_file):
+def get_name_to_id_map(json_file):
     result = {}
     with open(json_file) as jsonfile:
         data = json.load(jsonfile)
@@ -21,7 +21,7 @@ def create_name_to_id_map(json_file):
     return result
 
 
-def create_name_to_icon_map(json_file, path_to_img):
+def get_name_to_icon_map(json_file, path_to_img):
     result = {}
     with open(json_file) as jsonfile:
         data = json.load(jsonfile)
@@ -71,18 +71,5 @@ def get_static_item_data(json_file, path_to_img):
                                                         "image": f"{path_to_img}/{data['data'][item]['image']['full']}"
                                                       }
                           })
-
-    return result
-
-
-def extract_one_unit_traits_from_json(json_file):
-    result = []
-    with open(json_file) as jsonfile:
-        data = json.load(jsonfile)
-
-        for current in data["data"]:
-            for set in current["sets"]:
-                if set["min"] == 1:
-                    result.append(current["name"])
 
     return result
