@@ -7,6 +7,8 @@ class Data:
         self.data_version  = "13.18.1"
         self.api_key       = open("apikey.txt", "r").read()
 
+        self.single_unit_traits = ["Technogenius", "Redeemer", "Empress", "Wanderer", "Reaver King"]
+
         self.traits    = get_names_from_json(f"{self.data_dir}/traits.json")
         self.champions = get_names_from_json(f"{self.data_dir}/champions.json")
         self.items     = get_names_from_json(f"{self.data_dir}/items.json")
